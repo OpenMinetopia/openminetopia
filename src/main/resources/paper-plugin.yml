@@ -3,7 +3,7 @@ version: '1.3.0'
 main: nl.openminetopia.OpenMinetopia
 api-version: '1.21'
 loader: nl.openminetopia.OpenMinetopiaLoader
-authors: [ 'KaasPlakje', 'OmeJan', 'TheBathDuck' ]
+authors: [ 'KaasPlakje', 'OmeJan', 'TheBathDuck', 'NijhuisSven' ]
 dependencies:
   server:
     PlaceholderAPI:
