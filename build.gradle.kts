@@ -89,7 +89,7 @@ dependencies {
     /* Rest API & Portal dependencies */
     compileOnly("io.vertx:vertx-core:4.5.11")
     compileOnly("io.vertx:vertx-web:4.5.11")
-    compileOnly("io.vertx:vertx-web-client:4.5.11")
+    compileOnly("io.vertx:vertx-web-client:4.5.12")
 }
 
 val targetJavaVersion = 21
