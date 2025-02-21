@@ -69,7 +69,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     /* WorldGuard */
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13-SNAPSHOT")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14-SNAPSHOT")
 
     /* PersistentData addons */
     implementation("com.jeff-media:custom-block-data:2.2.3")
