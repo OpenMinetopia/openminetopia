@@ -72,7 +72,7 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13-SNAPSHOT")
 
     /* PersistentData addons */
-    implementation("com.jeff-media:custom-block-data:2.2.3")
+    implementation("com.jeff-media:custom-block-data:2.2.4")
     implementation("com.jeff-media:MorePersistentDataTypes:2.4.0")
 
     /* InventoryLib (JAZZZZ) */
