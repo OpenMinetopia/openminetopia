@@ -47,9 +47,9 @@ public class ExprPlaytime extends SimpleExpression<Integer> {
     protected Integer[] get(Event event) {
         Player p = player.getSingle(event);
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
-        if (minetopiaPlayer != null) {
-            return new Integer[] {minetopiaPlayer.getPlaytime()};
-        }
-        return null;
+        if (minetopiaPlayer != null) return null;
+        return new Integer[] {minetopiaPlayer.getPlaytime()};
+
+
     }
 }

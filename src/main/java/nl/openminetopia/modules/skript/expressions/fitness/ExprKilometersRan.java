@@ -1,4 +1,4 @@
-package nl.openminetopia.modules.skript.expressions;
+package nl.openminetopia.modules.skript.expressions.fitness;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -8,29 +8,27 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
-import nl.openminetopia.modules.prefix.objects.Prefix;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
-public class ExprPrefixes extends SimpleExpression<String> {
+public class ExprKilometersRan extends SimpleExpression<Integer> {
 
     static {
-        Skript.registerExpression(ExprPrefixes.class, String.class, ExpressionType.COMBINED, "[the] (omt|openminetopia) prefixes of %player%");
+        Skript.registerExpression(ExprKilometersRan.class, Integer.class, ExpressionType.COMBINED, "[the] (omt|openminetopia) fitness kilometers ran of %player%");
     }
 
     private Expression<Player> player;
 
     @Override
-    public Class<? extends String> getReturnType() {
-        return String.class;
+    public Class<? extends Integer> getReturnType() {
+        return Integer.class;
     }
 
     @Override
     public boolean isSingle() {
-        return false;
+        return true;
     }
 
     @SuppressWarnings("unchecked")
@@ -42,18 +40,15 @@ public class ExprPrefixes extends SimpleExpression<String> {
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return "Prefixes expression with player: " + player.toString(event, debug);
+        return "Example expression with expression player" + player.toString(event, debug);
     }
 
     @Override
     @Nullable
-    protected String[] get(Event event) {
+    protected Integer[] get(Event event) {
         Player p = player.getSingle(event);
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
-        if (minetopiaPlayer == null) return new String[0];
-        List<Prefix> prefixes = minetopiaPlayer.getPrefixes();
-        return prefixes.stream()
-                       .map(Prefix::getPrefix)
-                       .toArray(String[]::new);
+        if (minetopiaPlayer == null) return null;
+        return new Integer[] {(minetopiaPlayer.getBukkit().getStatistic(Statistic.SPRINT_ONE_CM) / 1000)};
     }
 }

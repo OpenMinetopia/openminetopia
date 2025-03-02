@@ -15,10 +15,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ExprPrefixes extends SimpleExpression<String> {
+public class ExprCurrentPrefix extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprPrefixes.class, String.class, ExpressionType.COMBINED, "[the] (omt|openminetopia) prefixes of %player%");
+        Skript.registerExpression(ExprCurrentPrefix.class, String.class, ExpressionType.COMBINED, "[the] (omt|openminetopia) current prefix of %player%");
     }
 
     private Expression<Player> player;
@@ -51,9 +51,6 @@ public class ExprPrefixes extends SimpleExpression<String> {
         Player p = player.getSingle(event);
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
         if (minetopiaPlayer == null) return new String[0];
-        List<Prefix> prefixes = minetopiaPlayer.getPrefixes();
-        return prefixes.stream()
-                       .map(Prefix::getPrefix)
-                       .toArray(String[]::new);
+        return new String[] {minetopiaPlayer.getActivePrefix().getPrefix()};
     }
 }
