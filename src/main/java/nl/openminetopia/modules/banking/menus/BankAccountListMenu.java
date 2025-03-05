@@ -16,7 +16,7 @@ public class BankAccountListMenu extends PaginatedMenu {
         super(MessageConfiguration.component("banking_all_accounts"), 6);
         this.registerPageSlotsBetween(0, 45);
 
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
         for (BankAccountModel accountModel : bankingModule.getBankAccountModels()) {
             ItemBuilder accountStack = new ItemBuilder(accountModel.getType().getMaterial())

@@ -20,7 +20,7 @@ public class BankAccountSelectionMenu extends PaginatedMenu {
     public BankAccountSelectionMenu(Player player, AccountType type) {
         super(ChatUtils.color(type.getColor() + type.getName()), 4);
         this.registerPageSlotsBetween(0, 27);
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
         this.addSpecialIcon(new Icon(31, new ItemBuilder(Material.OAK_SIGN)
                 .setName(MessageConfiguration.message("go_back"))

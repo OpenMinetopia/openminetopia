@@ -4,8 +4,11 @@ import com.craftmend.storm.api.enums.Where;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.milkbowl.vault.economy.Economy;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import nl.openminetopia.OpenMinetopia;
-import nl.openminetopia.modules.Module;
+import nl.openminetopia.modules.data.DataModule;
+import org.jetbrains.annotations.NotNull;
 import nl.openminetopia.modules.banking.commands.BankingCommand;
 import nl.openminetopia.modules.banking.commands.subcommands.*;
 import nl.openminetopia.modules.banking.enums.AccountPermission;
@@ -34,66 +37,69 @@ import java.util.stream.Collectors;
  */
 
 @Getter
-public class BankingModule extends Module {
+public class BankingModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     private DecimalFormat decimalFormat;
-    private Collection<BankAccountModel> bankAccountModels = new ArrayList<>();
+    private Collection<BankAccountModel> bankAccountModels;
+
+    public BankingModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
+    }
 
     @Override
-    public void enable() {
+    public void onEnable() {
         decimalFormat = new DecimalFormat(OpenMinetopia.getBankingConfiguration().getEconomyFormat());
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.GERMAN));
 
-        Bukkit.getScheduler().runTaskLater(OpenMinetopia.getInstance(), () -> {
-            OpenMinetopia.getInstance().getLogger().info("Loading bank accounts..");
+        this.bankAccountModels = new ArrayList<>();
 
-            this.getBankAccounts().whenComplete((accounts, accountThrowable) -> {
-                if (accountThrowable != null) {
-                    OpenMinetopia.getInstance().getLogger().severe("Something went wrong while trying to load all bank accounts: " + accountThrowable.getMessage());
+        OpenMinetopia.getInstance().getLogger().info("Loading bank accounts..");
+        this.getBankAccounts().whenComplete((accounts, accountThrowable) -> {
+            if (accountThrowable != null) {
+                OpenMinetopia.getInstance().getLogger().severe("Something went wrong while trying to load all bank accounts: " + accountThrowable.getMessage());
+                return;
+            }
+
+            bankAccountModels = accounts;
+            bankAccountModels.forEach(BankAccountModel::initSavingTask);
+
+            OpenMinetopia.getInstance().getLogger().info("Loaded a total of " + bankAccountModels.size() + " accounts.");
+
+            this.getBankPermissions().whenComplete((permissions, throwable) -> {
+                if (throwable != null) {
+                    OpenMinetopia.getInstance().getLogger().severe("Something went wrong while trying to load all bank permissions: " + throwable.getMessage());
                     return;
                 }
 
-                bankAccountModels = accounts;
-                bankAccountModels.forEach(BankAccountModel::initSavingTask);
-
-                OpenMinetopia.getInstance().getLogger().info("Loaded a total of " + bankAccountModels.size() + " accounts.");
-
-                this.getBankPermissions().whenComplete((permissions, throwable) -> {
-                    if (throwable != null) {
-                        OpenMinetopia.getInstance().getLogger().severe("Something went wrong while trying to load all bank permissions: " + throwable.getMessage());
-                        return;
-                    }
-
-                    permissions.forEach(permission -> {
-                        BankAccountModel accountModel = getAccountById(permission.getAccount());
-                        if (accountModel == null) {
+                permissions.forEach(permission -> {
+                    BankAccountModel accountModel = getAccountById(permission.getAccount());
+                    if (accountModel == null) {
                             /*
                             todo: remove permission from db?
                              dataModule.getAdapter().deleteBankPermission(permission.getAccount(), permission.getUuid());
                              */
-                            return;
-                        }
-                        accountModel.getUsers().put(permission.getUuid(), permission.getPermission());
-                    });
-                    OpenMinetopia.getInstance().getLogger().info("Found and applied " + permissions.size() + " bank permissions.");
+                        return;
+                    }
+                    accountModel.getUsers().put(permission.getUuid(), permission.getPermission());
                 });
+                OpenMinetopia.getInstance().getLogger().info("Found and applied " + permissions.size() + " bank permissions.");
             });
-        }, 3L);
+        });
 
         OpenMinetopia.getCommandManager().getCommandCompletions().registerCompletion("accountNames", context -> bankAccountModels.stream().map(BankAccountModel::getName).collect(Collectors.toList()));
 
-        registerCommand(new BankingCommand());
-        registerCommand(new BankingCreateCommand());
-        registerCommand(new BankingDeleteCommand());
-        registerCommand(new BankingUsersCommand());
-        registerCommand(new BankingOpenCommand());
-        registerCommand(new BankingFreezeCommand());
-        registerCommand(new BankingInfoCommand());
-        registerCommand(new BankingBalanceCommand());
-        registerCommand(new BankingListCommand());
+        registerComponent(new BankingCommand());
+        registerComponent(new BankingCreateCommand());
+        registerComponent(new BankingDeleteCommand());
+        registerComponent(new BankingUsersCommand());
+        registerComponent(new BankingOpenCommand());
+        registerComponent(new BankingFreezeCommand());
+        registerComponent(new BankingInfoCommand());
+        registerComponent(new BankingBalanceCommand());
+        registerComponent(new BankingListCommand());
 
-        registerListener(new PlayerPreLoginListener());
-        registerListener(new BankingInteractionListener());
+        registerComponent(new PlayerPreLoginListener());
+        registerComponent(new BankingInteractionListener());
 
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             Bukkit.getServicesManager().register(Economy.class, new VaultEconomyHandler(), OpenMinetopia.getInstance(), ServicePriority.Normal);
@@ -102,7 +108,7 @@ public class BankingModule extends Module {
     }
 
     @Override
-    public void disable() {
+    public void onDisable() {
         bankAccountModels.forEach(accountModel -> {
             if (accountModel.getSavingTask() != null) {
                 accountModel.save();

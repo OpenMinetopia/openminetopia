@@ -21,7 +21,7 @@ public class MTCityCreateCommand extends BaseCommand {
     @CommandPermission("openminetopia.city.create")
     public void create(Player player, String name, String loadingName) {
 
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
         PlayerManager.getInstance().getMinetopiaPlayer(player).whenComplete((minetopiaPlayer, throwable) -> {
             if (minetopiaPlayer == null) return;

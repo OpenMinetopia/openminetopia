@@ -1,20 +1,27 @@
 package nl.openminetopia.modules.time;
 
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import nl.openminetopia.OpenMinetopia;
-import nl.openminetopia.modules.Module;
+import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.places.PlacesModule;
 import nl.openminetopia.modules.time.tasks.TimeSyncRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
-public class TimeModule extends Module {
+public class TimeModule extends SpigotModule<@NotNull OpenMinetopia> {
+
+    public TimeModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
+    }
 
     @Override
-    public void enable() {
+    public void onEnable() {
         if (!OpenMinetopia.getDefaultConfiguration().isSyncTime()) return;
 
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
         placesModule.worldModels.forEach(worldModel -> {
             World bukkitWorld = Bukkit.getWorld(worldModel.getName());
             if (bukkitWorld == null) return;
@@ -24,10 +31,5 @@ public class TimeModule extends Module {
 
         TimeSyncRunnable runnable = new TimeSyncRunnable();
         runnable.runTaskTimer(OpenMinetopia.getInstance(), 0L, 200L);
-    }
-
-    @Override
-    public void disable() {
-
     }
 }

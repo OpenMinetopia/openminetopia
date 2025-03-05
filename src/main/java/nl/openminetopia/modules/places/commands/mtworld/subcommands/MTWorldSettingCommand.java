@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 @CommandAlias("mtwereld|mtworld")
 public class MTWorldSettingCommand extends BaseCommand {
 
-    private final PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+    private final PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
     @Subcommand("setcolor")
     @CommandPermission("openminetopia.world.setcolor")

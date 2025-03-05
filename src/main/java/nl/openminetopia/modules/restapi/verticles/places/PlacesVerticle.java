@@ -24,7 +24,7 @@ public class PlacesVerticle extends BaseVerticle {
     private void handleGetWorlds(RoutingContext context) {
         JSONObject responseJson = new JSONObject();
         try {
-            PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+            PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
             JSONArray worldsArray = new JSONArray();
             placesModule.getWorldModels().forEach(worldModel -> {
@@ -48,7 +48,7 @@ public class PlacesVerticle extends BaseVerticle {
     private void handleGetCities(RoutingContext context) {
         JSONObject responseJson = new JSONObject();
         try {
-            PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+            PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
             JSONArray citiesArray = new JSONArray();
             placesModule.getCityModels().forEach(cityModel -> {

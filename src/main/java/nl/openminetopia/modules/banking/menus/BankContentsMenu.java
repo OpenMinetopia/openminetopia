@@ -24,14 +24,14 @@ import java.util.List;
 @Getter
 public class BankContentsMenu extends Menu {
 
-    private static final BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+    private static final BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
     private final Player player;
     private final BankAccountModel accountModel;
     private final boolean asAdmin;
 
     public BankContentsMenu(Player player, BankAccountModel accountModel, boolean asAdmin) {
-        super(ChatUtils.color(accountModel.getType().getColor() + accountModel.getName() + "<reset> | <red>" + OpenMinetopia.getModuleManager().getModule(BankingModule.class).format(accountModel.getBalance())), 6);
+        super(ChatUtils.color(accountModel.getType().getColor() + accountModel.getName() + "<reset> | <red>" + OpenMinetopia.getModuleManager().get(BankingModule.class).format(accountModel.getBalance())), 6);
         this.player = player;
         this.accountModel = accountModel;
         this.asAdmin = asAdmin;

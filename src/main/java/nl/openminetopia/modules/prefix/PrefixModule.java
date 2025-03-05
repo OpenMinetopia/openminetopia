@@ -1,10 +1,12 @@
 package nl.openminetopia.modules.prefix;
 
 import com.craftmend.storm.api.enums.Where;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import nl.openminetopia.OpenMinetopia;
-import nl.openminetopia.api.player.PlayerManager;
+import nl.openminetopia.modules.data.DataModule;
+import org.jetbrains.annotations.NotNull;import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
-import nl.openminetopia.modules.Module;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.data.utils.StormUtils;
 import nl.openminetopia.modules.player.models.PlayerModel;
@@ -23,16 +25,20 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class PrefixModule extends Module {
+public class PrefixModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     Collection<PrefixModel> prefixModels = new ArrayList<>();
 
+    public PrefixModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
+    }
+
     @Override
-    public void enable() {
-        registerCommand(new PrefixCommand());
-        registerCommand(new PrefixMenuCommand());
-        registerCommand(new PrefixAddCommand());
-        registerCommand(new PrefixRemoveCommand());
+    public void onEnable() {
+        registerComponent(new PrefixCommand());
+        registerComponent(new PrefixMenuCommand());
+        registerComponent(new PrefixAddCommand());
+        registerComponent(new PrefixRemoveCommand());
 
         Bukkit.getScheduler().runTaskLater(OpenMinetopia.getInstance(), () -> {
             OpenMinetopia.getInstance().getLogger().info("Loading prefixes...");
@@ -63,10 +69,7 @@ public class PrefixModule extends Module {
         });
     }
 
-    @Override
-    public void disable() {
 
-    }
 
     public List<Prefix> getPrefixesFromPlayer(PlayerModel playerModel) {
         return playerModel.getPrefixes().stream().map(prefixModel ->

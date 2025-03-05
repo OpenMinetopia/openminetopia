@@ -8,7 +8,7 @@ import org.bukkit.Location;
 
 public class MTPlaceManager {
 
-    private final PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+    private final PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
     private static MTPlaceManager instance;
 
     public static MTPlaceManager getInstance() {

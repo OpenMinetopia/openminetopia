@@ -26,14 +26,14 @@ public class EmergencyCommand extends BaseCommand {
         if (hasCooldown(player)) {
             MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
 
-            long cooldown = OpenMinetopia.getModuleManager().getModule(PoliceModule.class).getEmergencyCooldowns().get(player.getUniqueId());
+            long cooldown = OpenMinetopia.getModuleManager().get(PoliceModule.class).getEmergencyCooldowns().get(player.getUniqueId());
             ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("emergency_too_soon"));
             ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("emergency_cooldown")
                     .replace("<time>", cooldownToTime(cooldown)));
             return;
         }
 
-        OpenMinetopia.getModuleManager().getModule(PoliceModule.class).getEmergencyCooldowns().put(player.getUniqueId(), System.currentTimeMillis());
+        OpenMinetopia.getModuleManager().get(PoliceModule.class).getEmergencyCooldowns().put(player.getUniqueId(), System.currentTimeMillis());
         broadcastEmergency(message, sender);
     }
 
@@ -75,7 +75,7 @@ public class EmergencyCommand extends BaseCommand {
     }
 
     private boolean hasCooldown(Player player) {
-        PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+        PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
 
         if (!policeModule.getEmergencyCooldowns().containsKey(player.getUniqueId())) return false;
 

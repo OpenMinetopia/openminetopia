@@ -25,7 +25,7 @@ public class BankingCreateCommand extends BaseCommand {
     @Syntax("<type> <name>")
     @CommandPermission("openminetopia.banking.create")
     public void createAccount(Player player, AccountType type, String name) {
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
         PlayerManager.getInstance().getMinetopiaPlayer(player).whenComplete((minetopiaPlayer, throwable) -> {
             if (type == AccountType.PRIVATE) {

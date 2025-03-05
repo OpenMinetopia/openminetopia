@@ -49,7 +49,7 @@ public class OpenMinetopiaExpansion extends PlaceholderExpansion {
             case "world" -> minetopiaPlayer.getWorld().getName();
             case "temperature" -> String.valueOf(minetopiaPlayer.getPlace().getTemperature());
             case "balance", "balance_formatted" -> {
-                BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+                BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
                 BankAccountModel accountModel = bankingModule.getAccountById(player.getUniqueId());
                 if (accountModel != null) {
                     yield params.equalsIgnoreCase("balance_formatted")

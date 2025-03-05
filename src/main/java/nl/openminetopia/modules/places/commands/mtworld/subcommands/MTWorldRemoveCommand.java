@@ -18,7 +18,7 @@ public class MTWorldRemoveCommand extends BaseCommand {
     public void onRemove(Player player, String worldName) {
         // Remove the world from the database
 
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
         WorldModel worldModel = placesModule.getWorldModels().stream()
                 .filter(model -> model.getName().equalsIgnoreCase(worldName))

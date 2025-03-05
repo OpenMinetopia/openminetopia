@@ -20,7 +20,7 @@ public class LevelUtil {
         int oldCalculatedLevel = minetopiaPlayer.getCalculatedLevel();
 
         // Points per 5k balance
-        BankAccountModel accountModel = OpenMinetopia.getModuleManager().getModule(BankingModule.class).getAccountById(minetopiaPlayer.getUuid());
+        BankAccountModel accountModel = OpenMinetopia.getModuleManager().get(BankingModule.class).getAccountById(minetopiaPlayer.getUuid());
         double balance = (accountModel == null) ? 0 : accountModel.getBalance();
         points += Math.floor(balance / 5000) * configuration.getPointsPer5KBalance();
 

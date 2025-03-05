@@ -29,7 +29,7 @@ public class PlayerInteractListener implements Listener {
 
         if (minetopiaPlayer == null) return;
 
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
         BankAccountModel bankAccountModel = bankingModule.getAccountByIdAsync(event.getPlayer().getUniqueId()).join();
 
         new AdminToolMenu(event.getPlayer(), event.getPlayer(), minetopiaPlayer, bankAccountModel).open(event.getPlayer());

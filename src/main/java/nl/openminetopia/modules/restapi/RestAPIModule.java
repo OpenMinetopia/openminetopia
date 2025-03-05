@@ -1,11 +1,13 @@
 package nl.openminetopia.modules.restapi;
 
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import nl.openminetopia.OpenMinetopia;
-import nl.openminetopia.modules.Module;
+import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.restapi.base.VerticleManager;
 import nl.openminetopia.modules.restapi.verticles.MainVerticle;
 import nl.openminetopia.modules.restapi.verticles.banking.BankAccountTransactionVerticle;
@@ -15,13 +17,18 @@ import nl.openminetopia.modules.restapi.verticles.banking.BankAccountsVerticle;
 import nl.openminetopia.modules.restapi.verticles.places.PlacesVerticle;
 import nl.openminetopia.modules.restapi.verticles.player.*;
 import nl.openminetopia.modules.restapi.verticles.plots.PlotsVerticle;
+import org.jetbrains.annotations.NotNull;
 
-public class RestAPIModule extends Module {
+public class RestAPIModule extends SpigotModule<@NotNull OpenMinetopia> {
+
+    public RestAPIModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
+    }
 
     public VerticleManager verticleManager;
 
     @Override
-    public void enable() {
+    public void onEnable() {
         if (OpenMinetopia.getDefaultConfiguration().isRestApiEnabled()) {
             Vertx vertx = OpenMinetopia.getInstance().getOrCreateVertx();
 
@@ -51,10 +58,5 @@ public class RestAPIModule extends Module {
                     new BankAccountTransactionVerticle()
             );
         }
-    }
-
-    @Override
-    public void disable() {
-
     }
 }

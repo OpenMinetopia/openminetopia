@@ -22,7 +22,7 @@ public class BankingFreezeCommand extends BaseCommand {
     @CommandCompletion("@accountNames")
     @CommandPermission("openminetopia.banking.freeze")
     public void freezeAccount(CommandSender sender, String accountName) {
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
         BankAccountModel accountModel = bankingModule.getAccountByName(accountName);
 
         if (accountModel == null) {

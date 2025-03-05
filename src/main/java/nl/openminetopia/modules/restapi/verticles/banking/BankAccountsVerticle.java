@@ -20,7 +20,7 @@ public class BankAccountsVerticle extends BaseVerticle {
     private void handleGetBankAccounts(RoutingContext context) {
         JSONObject responseJson = new JSONObject();
 
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
         bankingModule.getBankAccounts().whenComplete((accounts, throwable) -> {
             if (throwable != null) {

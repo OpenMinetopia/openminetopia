@@ -34,7 +34,7 @@ public class Fitness {
 
     private @Setter int totalFitness;
 
-    private final FitnessModule fitnessModule = OpenMinetopia.getModuleManager().getModule(FitnessModule.class);
+    private final FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
 
     public Fitness(MinetopiaPlayer minetopiaPlayer) {
         this.minetopiaPlayer = minetopiaPlayer;

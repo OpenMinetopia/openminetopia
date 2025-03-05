@@ -21,7 +21,7 @@ public class BankingUsersCommand extends BaseCommand {
     @Syntax("<player> <naam> <permission>")
     @CommandCompletion("@players @accountNames")
     public void addUser(CommandSender sender, OfflinePlayer target, String accountName, AccountPermission permission) {
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
         BankAccountModel accountModel = bankingModule.getAccountByName(accountName);
         PlayerManager.getInstance().getMinetopiaPlayer((Player) sender).whenComplete((minetopiaPlayer, throwable1) -> {
             if (accountModel == null) {
@@ -55,7 +55,7 @@ public class BankingUsersCommand extends BaseCommand {
     @Syntax("<player> <naam>")
     @CommandCompletion("@players @accountNames")
     public void removeUser(CommandSender sender, OfflinePlayer target, String accountName) {
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
         BankAccountModel accountModel = bankingModule.getAccountByName(accountName);
 
         PlayerManager.getInstance().getMinetopiaPlayer((Player) sender).whenComplete((minetopiaPlayer, throwable1) -> {

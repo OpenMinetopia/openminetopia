@@ -34,7 +34,7 @@ public class PlayerBankAccountsVerticle extends BaseVerticle {
                 return;
             }
 
-            BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+            BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
             JSONObject accountsObject = new JSONObject();
 

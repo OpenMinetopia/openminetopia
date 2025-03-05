@@ -1,9 +1,11 @@
 package nl.openminetopia.modules.detectiongates;
 
 import lombok.Getter;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import nl.openminetopia.OpenMinetopia;
+import org.jetbrains.annotations.NotNull;
 import nl.openminetopia.configuration.DefaultConfiguration;
-import nl.openminetopia.modules.Module;
 import nl.openminetopia.modules.detectiongates.listeners.DetectionListener;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,17 +16,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.*;
 
 @Getter
-public class DetectionModule extends Module {
+public class DetectionModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     private final Map<Location, Material> blocks = new HashMap<>();
 
-    @Override
-    public void enable() {
-        registerListener(new DetectionListener());
+    public DetectionModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager) {
+        super(moduleManager);
     }
 
     @Override
-    public void disable() {
+    public void onEnable() {
+        registerComponent(new DetectionListener());
+    }
+
+    @Override
+    public void onDisable() {
         blocks.forEach((location, material) -> location.getBlock().setType(material));
     }
 

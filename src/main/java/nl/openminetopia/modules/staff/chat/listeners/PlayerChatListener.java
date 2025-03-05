@@ -18,7 +18,7 @@ public class PlayerChatListener implements Listener {
     public void onChat(AsyncChatEvent event) {
         Player source = event.getPlayer();
 
-        PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+        PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
         if (policeModule.getWalkieTalkieManager().isComposingMessage(source)
                 || policeModule.getWalkieTalkieManager().isPoliceChatEnabled(source)) return;
 

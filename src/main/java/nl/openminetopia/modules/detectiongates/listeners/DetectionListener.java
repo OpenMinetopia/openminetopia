@@ -36,7 +36,7 @@ public class DetectionListener implements Listener {
         if (block.getRelative(BlockFace.DOWN).getType() != configuration.getDetectionActivationBlock()) return;
         if (cooldown.contains(block)) return;
 
-        DetectionModule detectionModule = OpenMinetopia.getModuleManager().getModule(DetectionModule.class);
+        DetectionModule detectionModule = OpenMinetopia.getModuleManager().get(DetectionModule.class);
         List<ItemStack> flaggedItems = detectionModule.getFlaggedItems(player);
 
         Map<Material, Material> replacementBlocks = (flaggedItems.isEmpty() ? configuration.getDetectionSafeBlocks() : configuration.getDetectionFlaggedBlocks());

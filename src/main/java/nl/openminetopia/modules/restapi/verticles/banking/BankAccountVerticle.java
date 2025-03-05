@@ -27,7 +27,7 @@ public class BankAccountVerticle extends BaseVerticle {
             return;
         }
 
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
         bankingModule.getAccountByIdAsync(accountUuid).whenComplete((account, throwable) -> {
             if (throwable != null) {

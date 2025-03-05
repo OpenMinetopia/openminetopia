@@ -14,6 +14,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.modules.plots.PlotModule;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.entity.Player;
 
@@ -43,7 +44,7 @@ public class PlotListCommand extends BaseCommand {
 
         // Create a new map with only regions that have the PLOT_FLAG set
         Map<String, ProtectedRegion> filteredRegions = manager.getRegions().entrySet().stream()
-                .filter(entry -> entry.getValue().getFlag(OpenMinetopia.PLOT_FLAG) != null)
+                .filter(entry -> entry.getValue().getFlag(PlotModule.PLOT_FLAG) != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Collection<String> regionNames = filteredRegions.keySet();

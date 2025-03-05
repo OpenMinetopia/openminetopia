@@ -10,6 +10,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.configuration.MessageConfiguration;
+import nl.openminetopia.modules.plots.PlotModule;
 import nl.openminetopia.utils.WorldGuardUtils;
 import org.bukkit.entity.Player;
 
@@ -29,7 +30,7 @@ public class PlotClearCommand extends BaseCommand {
             return;
         }
 
-        if (region.getFlag(OpenMinetopia.PLOT_FLAG) == null) {
+        if (region.getFlag(PlotModule.PLOT_FLAG) == null) {
             player.sendMessage(MessageConfiguration.component("plot_invalid"));
             return;
         }

@@ -27,7 +27,7 @@ public class LinkCommand extends BaseCommand {
         requestBody.put("minecraft_username", player.getName());
         requestBody.put("minecraft_uuid", player.getUniqueId().toString());
 
-        PortalModule portalModule = OpenMinetopia.getModuleManager().getModule(PortalModule.class);
+        PortalModule portalModule = OpenMinetopia.getModuleManager().get(PortalModule.class);
         WebClient webClient = WebClient.create(OpenMinetopia.getInstance().getOrCreateVertx());
 
         webClient.postAbs(portalModule.getPortalApiUrl() + "/minecraft/verify")

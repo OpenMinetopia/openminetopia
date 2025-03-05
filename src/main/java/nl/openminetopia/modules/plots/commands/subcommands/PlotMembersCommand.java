@@ -6,6 +6,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.configuration.MessageConfiguration;
+import nl.openminetopia.modules.plots.PlotModule;
 import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.WorldGuardUtils;
 import org.bukkit.OfflinePlayer;
@@ -33,7 +34,7 @@ public class PlotMembersCommand extends BaseCommand {
             return;
         }
 
-        if (region.getFlag(OpenMinetopia.PLOT_FLAG) == null) {
+        if (region.getFlag(PlotModule.PLOT_FLAG) == null) {
             ChatUtils.sendMessage(player, MessageConfiguration.message("plot_not_valid")
                     .replace("<player>", offlinePlayer.getName() != null ? offlinePlayer.getName() : "Onbekend"));
             return;
@@ -69,7 +70,7 @@ public class PlotMembersCommand extends BaseCommand {
             return;
         }
 
-        if (region.getFlag(OpenMinetopia.PLOT_FLAG) == null) {
+        if (region.getFlag(PlotModule.PLOT_FLAG) == null) {
             ChatUtils.sendMessage(player, MessageConfiguration.message("plot_not_valid")
                     .replace("<player>", profile.getName() != null ? profile.getName() : "Onbekend"));
             return;

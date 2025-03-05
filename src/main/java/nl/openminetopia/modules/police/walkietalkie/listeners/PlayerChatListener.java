@@ -15,7 +15,7 @@ import java.util.List;
 
 public class PlayerChatListener implements Listener {
 
-    private final PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+    private final PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
 
     @EventHandler
     public void onChat(final AsyncChatEvent event) {

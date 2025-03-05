@@ -68,7 +68,7 @@ public class ChatUtils {
                     .replace("<max_fitness>", OpenMinetopia.getFitnessConfiguration().getMaxFitnessLevel() + "");
         }
 
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
         BankAccountModel accountModel = bankingModule.getAccountById(player.getUniqueId());
         if (accountModel != null) {
             message = message.replace("<balance_formatted>", bankingModule.format(accountModel.getBalance())

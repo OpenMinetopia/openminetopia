@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 @CommandAlias("staffchat|staffc|sc")
 public class StaffchatCommand extends BaseCommand {
 
-    private final PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+    private final PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
 
     @Default
     @CommandPermission("openminetopia.staffchat")

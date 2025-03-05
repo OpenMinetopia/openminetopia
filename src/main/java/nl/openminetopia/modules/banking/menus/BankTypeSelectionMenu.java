@@ -26,7 +26,7 @@ public class BankTypeSelectionMenu extends Menu {
             this.addItem(new Icon(type.getSlot(), iconStack, true, (event) -> {
                 event.setCancelled(true);
 
-                BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+                BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
                 Collection<BankAccountModel> accountModels = bankingModule.getAccountsFromPlayer(player.getUniqueId())
                         .stream().filter(account -> account.getType() == type)
                         .toList();

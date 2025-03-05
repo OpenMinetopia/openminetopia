@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class WalkieTalkieContactsMenu extends PaginatedMenu {
 
-    private final PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+    private final PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
 
     public WalkieTalkieContactsMenu(Player player) {
         super(ChatUtils.color("<gold>Contacten"), 3);

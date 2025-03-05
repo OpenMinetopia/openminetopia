@@ -13,7 +13,7 @@ public class PlayerPreLoginListener implements Listener {
 
     @EventHandler
     public void playerPreLogin(final AsyncPlayerPreLoginEvent event) {
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
         bankingModule.getAccountModel(event.getUniqueId()).whenComplete(((bankAccountModel, throwable) -> {
             if (throwable != null) {
@@ -24,7 +24,6 @@ public class PlayerPreLoginListener implements Listener {
 
             if (bankAccountModel == null) {
                 OpenMinetopia.getInstance().getLogger().info("account is null, creating.");
-
                 bankingModule.createBankAccount(event.getUniqueId(), AccountType.PRIVATE, 0L, event.getName(), false).whenComplete((accountModel, accountThrowable) -> {
                     if (accountThrowable != null) {
                         OpenMinetopia.getInstance().getLogger().severe("Couldn't create account for " + event.getName() + ": " + accountThrowable.getMessage());
@@ -36,7 +35,6 @@ public class PlayerPreLoginListener implements Listener {
                     bankingModule.getBankAccountModels().add(accountModel);
                     OpenMinetopia.getInstance().getLogger().info("Loaded account for: " + event.getName() + " (" + accountModel.getUniqueId() + ")");
                 });
-
                 return;
             }
 

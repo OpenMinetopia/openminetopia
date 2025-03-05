@@ -17,7 +17,7 @@ public class WalkieTalkieMenu extends Menu {
     public WalkieTalkieMenu(Player player) {
         super(ChatUtils.color("<gold>Portofoon"), 3);
 
-        PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+        PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
 
         boolean policeChatEnabled = policeModule.getWalkieTalkieManager().isPoliceChatEnabled(player);
         ItemBuilder policeChatBuilder = new ItemBuilder(policeChatEnabled ? Material.GREEN_TERRACOTTA : Material.RED_TERRACOTTA)

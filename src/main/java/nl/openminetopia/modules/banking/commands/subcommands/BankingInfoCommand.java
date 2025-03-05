@@ -21,7 +21,7 @@ public class BankingInfoCommand extends BaseCommand {
     @CommandCompletion("@accountNames")
     @CommandPermission("openminetopia.banking.info")
     public void infoAccount(CommandSender sender, String accountName) {
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
         BankAccountModel accountModel = bankingModule.getAccountByName(accountName);
 
         PlayerManager.getInstance().getMinetopiaPlayer((OfflinePlayer) sender).whenComplete((minetopiaPlayer, throwable1 ) -> {

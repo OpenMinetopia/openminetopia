@@ -115,7 +115,7 @@ public class AdminToolInfoMenu extends Menu {
 
         /* -------- Banking -------- */
 
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
         ItemBuilder bankItemBuilder;
         Icon targetBankIcon;

@@ -1,6 +1,9 @@
 package nl.openminetopia.modules.staff;
 
-import nl.openminetopia.modules.Module;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
+import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.staff.admintool.commands.AdminToolCommand;
 import nl.openminetopia.modules.staff.admintool.commands.subcommands.AdminToolGetCommand;
 import nl.openminetopia.modules.staff.admintool.commands.subcommands.AdminToolOpenCommand;
@@ -13,29 +16,29 @@ import nl.openminetopia.modules.staff.mod.commands.ModCommand;
 import nl.openminetopia.modules.staff.mod.commands.subcommands.ModChatSpyCommand;
 import nl.openminetopia.modules.staff.mod.commands.subcommands.ModCommandSpyCommand;
 import nl.openminetopia.modules.staff.mod.commands.subcommands.ModSetLevelCommand;
+import org.jetbrains.annotations.NotNull;
 
-public class StaffModule extends Module {
-    @Override
-    public void enable() {
-        registerCommand(new ModCommand());
-        registerCommand(new ModSetLevelCommand());
-        registerCommand(new ModChatSpyCommand());
-        registerCommand(new ModCommandSpyCommand());
-
-        registerCommand(new AdminToolCommand());
-        registerCommand(new AdminToolOpenCommand());
-        registerCommand(new AdminToolGetCommand());
-
-        registerCommand(new StaffchatCommand());
-        registerListener(new PlayerChatListener());
-
-        registerListener(new PlayerDropItemListener());
-        registerListener(new PlayerInteractListener());
-        registerListener(new PlayerEntityInteractListener());
+public class StaffModule extends SpigotModule<@NotNull OpenMinetopia> {
+    public StaffModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
     }
 
     @Override
-    public void disable() {
+    public void onEnable() {
+        registerComponent(new ModCommand());
+        registerComponent(new ModSetLevelCommand());
+        registerComponent(new ModChatSpyCommand());
+        registerComponent(new ModCommandSpyCommand());
 
+        registerComponent(new AdminToolCommand());
+        registerComponent(new AdminToolOpenCommand());
+        registerComponent(new AdminToolGetCommand());
+
+        registerComponent(new StaffchatCommand());
+        registerComponent(new PlayerChatListener());
+
+        registerComponent(new PlayerDropItemListener());
+        registerComponent(new PlayerInteractListener());
+        registerComponent(new PlayerEntityInteractListener());
     }
 }

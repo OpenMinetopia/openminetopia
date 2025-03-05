@@ -1,20 +1,22 @@
 package nl.openminetopia.modules.misc;
 
-import nl.openminetopia.modules.Module;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
+import nl.openminetopia.OpenMinetopia;
+import org.jetbrains.annotations.NotNull;
 import nl.openminetopia.modules.misc.commands.HeadCommand;
 import nl.openminetopia.modules.misc.listeners.PlayerInteractListener;
 
-public class MiscModule extends Module {
+public class MiscModule extends SpigotModule<@NotNull OpenMinetopia> {
 
-    @Override
-    public void enable() {
-        registerCommand(new HeadCommand());
-
-        registerListener(new PlayerInteractListener());
+    public MiscModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager) {
+        super(moduleManager);
     }
 
     @Override
-    public void disable() {
+    public void onEnable() {
+        registerComponent(new HeadCommand());
 
+        registerComponent(new PlayerInteractListener());
     }
 }

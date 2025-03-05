@@ -10,6 +10,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.configuration.MessageConfiguration;
+import nl.openminetopia.modules.plots.PlotModule;
 import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.WorldGuardUtils;
 import org.bukkit.Bukkit;
@@ -33,7 +34,7 @@ public class PlotInfoCommand extends BaseCommand {
             return;
         }
 
-        if (region.getFlag(OpenMinetopia.PLOT_FLAG) == null) {
+        if (region.getFlag(PlotModule.PLOT_FLAG) == null) {
             ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("plot_not_valid"));
             return;
         }
@@ -55,8 +56,8 @@ public class PlotInfoCommand extends BaseCommand {
         ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("plot_info_members")
                 .replace("<members>", (region.getMembers().size() > 0 ? members : "Geen.")));
 
-        if (region.getFlag(OpenMinetopia.PLOT_DESCRIPTION) != null) {
-            String description = region.getFlag(OpenMinetopia.PLOT_DESCRIPTION);
+        if (region.getFlag(PlotModule.PLOT_DESCRIPTION) != null) {
+            String description = region.getFlag(PlotModule.PLOT_DESCRIPTION);
             if (description != null && !description.isEmpty())
                 ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("plot_info_description")
                         .replace("<description>", description));

@@ -1,11 +1,14 @@
 package nl.openminetopia.modules.color;
 
 import com.craftmend.storm.api.enums.Where;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.modules.data.DataModule;
+import org.jetbrains.annotations.NotNull;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.configuration.components.ColorComponent;
-import nl.openminetopia.modules.Module;
 import nl.openminetopia.modules.color.commands.ColorCommand;
 import nl.openminetopia.modules.color.commands.subcommands.ColorAddCommand;
 import nl.openminetopia.modules.color.commands.subcommands.ColorCreateCommand;
@@ -22,16 +25,20 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class ColorModule extends Module {
+public class ColorModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     Collection<ColorModel> colorModels = new ArrayList<>();
 
+    public ColorModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
+    }
+
     @Override
-    public void enable() {
-        registerCommand(new ColorCommand());
-        registerCommand(new ColorAddCommand());
-        registerCommand(new ColorRemoveCommand());
-        registerCommand(new ColorCreateCommand());
+    public void onEnable() {
+        registerComponent(new ColorCommand());
+        registerComponent(new ColorAddCommand());
+        registerComponent(new ColorRemoveCommand());
+        registerComponent(new ColorCreateCommand());
 
         Bukkit.getScheduler().runTaskLater(OpenMinetopia.getInstance(), () -> {
             OpenMinetopia.getInstance().getLogger().info("Loading colors...");
@@ -65,10 +72,7 @@ public class ColorModule extends Module {
         });
     }
 
-    @Override
-    public void disable() {
 
-    }
 
     public List<OwnableColor> getColorsFromPlayer(PlayerModel playerModel) {
         return playerModel.getColors().stream().map(colorModel -> switch (colorModel.getType()) {

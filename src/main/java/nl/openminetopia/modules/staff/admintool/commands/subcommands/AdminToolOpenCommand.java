@@ -45,7 +45,7 @@ public class AdminToolOpenCommand extends BaseCommand {
             System.out.println(minetopiaPlayer.getPlayerModel().getUniqueId());
             System.out.println(minetopiaPlayer.getFitness().getUuid());
 
-            BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+            BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
             BankAccountModel bankAccountModel = bankingModule.getAccountByIdAsync(offlinePlayer.getUniqueId()).join();
 
             Bukkit.getScheduler().runTask(OpenMinetopia.getInstance(), () -> {

@@ -21,7 +21,7 @@ public class MTWorldCreateCommand extends BaseCommand {
     public void create(Player player, String loadingName) {
         String title = "<bold>" + loadingName.toUpperCase();
 
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
         for (WorldModel worldModel : placesModule.getWorldModels()) {
             if (worldModel.getName().equalsIgnoreCase(player.getWorld().getName())) {
                 player.sendMessage(ChatUtils.color("<red>World <white>" + loadingName + " <red>already exists!"));

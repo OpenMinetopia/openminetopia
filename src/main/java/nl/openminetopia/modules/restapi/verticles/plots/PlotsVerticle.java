@@ -3,6 +3,7 @@ package nl.openminetopia.modules.restapi.verticles.plots;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.RoutingContext;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.modules.plots.PlotModule;
 import nl.openminetopia.modules.restapi.base.BaseVerticle;
 import nl.openminetopia.utils.WorldGuardUtils;
 import org.json.simple.JSONObject;
@@ -53,7 +54,7 @@ public class PlotsVerticle extends BaseVerticle {
             });
             plotObject.put("flags", flagsObject);
 
-            String description = region.getFlag(OpenMinetopia.PLOT_DESCRIPTION);
+            String description = region.getFlag(PlotModule.PLOT_DESCRIPTION);
             if (description != null && !description.isEmpty()) {
                 plotObject.put("description", description);
             }
@@ -95,7 +96,7 @@ public class PlotsVerticle extends BaseVerticle {
             JSONObject plotsObject = new JSONObject();
 
             WorldGuardUtils.getProtectedRegions(priority -> priority >= 0).stream()
-                    .filter(protectedRegion -> protectedRegion.getFlag(OpenMinetopia.PLOT_FLAG) != null)
+                    .filter(protectedRegion -> protectedRegion.getFlag(PlotModule.PLOT_FLAG) != null)
                             .forEach(protectedRegion -> {
                                 JSONObject plotObject = new JSONObject();
                                 plotObject.put("priority", protectedRegion.getPriority());
@@ -108,9 +109,9 @@ public class PlotsVerticle extends BaseVerticle {
                                 });
                                 plotObject.put("flags", flagsObject);
 
-                                String description = protectedRegion.getFlag(OpenMinetopia.PLOT_DESCRIPTION);
+                                String description = protectedRegion.getFlag(PlotModule.PLOT_DESCRIPTION);
                                 if (description != null && !description.isEmpty()) {
-                                    plotObject.put("description", protectedRegion.getFlag(OpenMinetopia.PLOT_DESCRIPTION));
+                                    plotObject.put("description", protectedRegion.getFlag(PlotModule.PLOT_DESCRIPTION));
                                 }
 
                                 JSONObject locationObject = new JSONObject();

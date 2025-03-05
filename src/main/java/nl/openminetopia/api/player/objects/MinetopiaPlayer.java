@@ -61,12 +61,12 @@ public class MinetopiaPlayer {
 
     private @Setter Fitness fitness;
 
-    private final PlayerModule playerModule = OpenMinetopia.getModuleManager().getModule(PlayerModule.class);
-    private final PrefixModule prefixModule = OpenMinetopia.getModuleManager().getModule(PrefixModule.class);
-    private final ColorModule colorModule = OpenMinetopia.getModuleManager().getModule(ColorModule.class);
-    private final PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
-    private final FitnessModule fitnessModule = OpenMinetopia.getModuleManager().getModule(FitnessModule.class);
-    private final PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+    private final PlayerModule playerModule = OpenMinetopia.getModuleManager().get(PlayerModule.class);
+    private final PrefixModule prefixModule = OpenMinetopia.getModuleManager().get(PrefixModule.class);
+    private final ColorModule colorModule = OpenMinetopia.getModuleManager().get(ColorModule.class);
+    private final PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
+    private final FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
+    private final PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
 
     public MinetopiaPlayer(UUID uuid, PlayerModel playerModel) {
         this.uuid = uuid;

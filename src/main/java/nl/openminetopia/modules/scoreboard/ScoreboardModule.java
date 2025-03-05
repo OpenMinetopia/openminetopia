@@ -6,25 +6,33 @@ import net.megavex.scoreboardlibrary.api.exception.NoPacketAdapterAvailableExcep
 import net.megavex.scoreboardlibrary.api.noop.NoopScoreboardLibrary;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.configuration.DefaultConfiguration;
-import nl.openminetopia.modules.Module;
+import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.scoreboard.commands.ScoreboardCommand;
 import nl.openminetopia.modules.scoreboard.listeners.PlayerJoinListener;
 import nl.openminetopia.modules.scoreboard.listeners.PlayerQuitListener;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
+import nl.openminetopia.OpenMinetopia;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class ScoreboardModule extends Module {
+public class ScoreboardModule extends SpigotModule<@NotNull OpenMinetopia> {
+
+    public ScoreboardModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
+    }
 
     private ScoreboardLibrary scoreboardLibrary;
 
     @Override
-    public void enable() {
+    public void onEnable() {
         DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
         if (!configuration.isScoreboardEnabled()) return;
 
-        registerListener(new PlayerJoinListener());
-        registerListener(new PlayerQuitListener());
+        registerComponent(new PlayerJoinListener());
+        registerComponent(new PlayerQuitListener());
 
-        registerCommand(new ScoreboardCommand());
+        registerComponent(new ScoreboardCommand());
 
         try {
             scoreboardLibrary = ScoreboardLibrary.loadScoreboardLibrary(OpenMinetopia.getInstance());
@@ -36,7 +44,7 @@ public class ScoreboardModule extends Module {
     }
 
     @Override
-    public void disable() {
+    public void onDisable() {
         if (scoreboardLibrary != null) scoreboardLibrary.close();
     }
 }

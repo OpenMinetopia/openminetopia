@@ -24,7 +24,7 @@ public class PlayerManager {
         return instance;
     }
 
-    private final PlayerModule playerModule = OpenMinetopia.getModuleManager().getModule(PlayerModule.class);
+    private final PlayerModule playerModule = OpenMinetopia.getModuleManager().get(PlayerModule.class);
     private final Map<UUID, MinetopiaPlayer> onlinePlayers = new ConcurrentHashMap<>();
 
     /**

@@ -19,7 +19,7 @@ public class BankingBalanceCommand extends BaseCommand {
     @CommandCompletion("@accountNames")
     @CommandPermission("openminetopia.banking.setbalance")
     public void setBalance(CommandSender sender, String accountName, double balance) {
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
         BankAccountModel accountModel = bankingModule.getAccountByName(accountName);
 
         if (accountModel == null) {

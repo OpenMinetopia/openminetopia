@@ -16,7 +16,7 @@ public class TimeSyncRunnable extends BukkitRunnable {
     @Override
     public void run() {
         String timeZone = OpenMinetopia.getDefaultConfiguration().getSyncTimeZone();
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
 
         for (WorldModel worldModel : placesModule.worldModels) {

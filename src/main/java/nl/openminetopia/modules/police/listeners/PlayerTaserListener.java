@@ -67,13 +67,13 @@ public class PlayerTaserListener implements Listener {
 
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(source);
         if (minetopiaPlayer == null) return;
-        PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+        PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
         policeModule.getTaserManager().taser(minetopiaPlayer);
     }
 
     @EventHandler
     public void playerMove(final PlayerMoveEvent event) {
-        PoliceModule policeModule = OpenMinetopia.getModuleManager().getModule(PoliceModule.class);
+        PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
         if (!policeModule.getTaserManager().isTasered(event.getPlayer())) return;
 
         Location from = event.getFrom();

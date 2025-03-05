@@ -2,7 +2,7 @@ package nl.openminetopia.modules.police;
 
 import com.craftmend.storm.api.enums.Where;
 import lombok.Getter;
-import nl.openminetopia.modules.Module;
+import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.data.utils.StormUtils;
 import nl.openminetopia.modules.player.models.PlayerModel;
@@ -20,52 +20,60 @@ import nl.openminetopia.modules.police.taser.TaserManager;
 import nl.openminetopia.modules.police.walkietalkie.WalkieTalkieManager;
 import nl.openminetopia.modules.police.walkietalkie.listeners.PlayerChatListener;
 import nl.openminetopia.modules.police.walkietalkie.listeners.PlayerInteractListener;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
+import nl.openminetopia.OpenMinetopia;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Getter
-public class PoliceModule extends Module {
+public class PoliceModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     private final HashMap<UUID, Long> emergencyCooldowns = new HashMap<>();
 
     private WalkieTalkieManager walkieTalkieManager;
     private TaserManager taserManager;
 
-    @Override
-    public void enable() {
-        walkieTalkieManager = new WalkieTalkieManager();
-        taserManager = new TaserManager();
-
-        registerCommand(new EmergencyCommand());
-        registerCommand(new CriminalRecordCommand());
-        registerCommand(new BodysearchCommand());
-        registerListener(new PlayerArmorChangeListener());
-
-        /* ---- Handcuff ---- */
-        registerListener(new PlayerHandcuffListener());
-        registerListener(new PlayerMoveListener());
-        registerListener(new PlayerDropItemListener());
-        registerListener(new PlayerEntityDamageListener());
-        registerListener(new PlayerOpenInventoryListener());
-        registerListener(new PlayerPickupItemListener());
-        registerListener(new PlayerSlotChangeListener());
-        registerListener(new PlayerInventoryClickListener());
-
-        /* ---- Walkie-talkie ---- */
-        registerListener(new PlayerChatListener());
-        registerListener(new PlayerInteractListener());
-
-        /* ---- Pepperspray ---- */
-        registerListener(new PlayerPeppersprayListener());
-
-        /* ---- Taser ---- */
-        registerListener(new PlayerTaserListener());
+    public PoliceModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
     }
 
     @Override
-    public void disable() {
+    public void onEnable() {
+        walkieTalkieManager = new WalkieTalkieManager();
+        taserManager = new TaserManager();
+
+        registerComponent(new EmergencyCommand());
+        registerComponent(new CriminalRecordCommand());
+        registerComponent(new BodysearchCommand());
+        registerComponent(new PlayerArmorChangeListener());
+
+        /* ---- Handcuff ---- */
+        registerComponent(new PlayerHandcuffListener());
+        registerComponent(new PlayerMoveListener());
+        registerComponent(new PlayerDropItemListener());
+        registerComponent(new PlayerEntityDamageListener());
+        registerComponent(new PlayerOpenInventoryListener());
+        registerComponent(new PlayerPickupItemListener());
+        registerComponent(new PlayerSlotChangeListener());
+        registerComponent(new PlayerInventoryClickListener());
+
+        /* ---- Walkie-talkie ---- */
+        registerComponent(new PlayerChatListener());
+        registerComponent(new PlayerInteractListener());
+
+        /* ---- Pepperspray ---- */
+        registerComponent(new PlayerPeppersprayListener());
+
+        /* ---- Taser ---- */
+        registerComponent(new PlayerTaserListener());
+    }
+
+    @Override
+    public void onDisable() {
         HandcuffManager.getInstance().getHandcuffedPlayers().forEach(HandcuffedPlayer::release);
     }
 

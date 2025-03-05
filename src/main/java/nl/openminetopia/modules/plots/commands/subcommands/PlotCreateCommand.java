@@ -19,6 +19,7 @@ import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.api.plots.events.PlotCreateEvent;
 import nl.openminetopia.configuration.MessageConfiguration;
+import nl.openminetopia.modules.plots.PlotModule;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -51,7 +52,7 @@ public class PlotCreateCommand extends BaseCommand {
             }
 
             ProtectedRegion wgRegion = new ProtectedCuboidRegion(name, min, max);
-            wgRegion.setFlag(OpenMinetopia.PLOT_FLAG, StateFlag.State.ALLOW);
+            wgRegion.setFlag(PlotModule.PLOT_FLAG, StateFlag.State.ALLOW);
 
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionManager manager = container.get(region.getWorld());

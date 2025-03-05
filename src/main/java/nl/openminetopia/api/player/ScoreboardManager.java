@@ -58,7 +58,7 @@ public class ScoreboardManager {
     public void addScoreboard(Player player) {
         if (!OpenMinetopia.getDefaultConfiguration().isScoreboardEnabled()) return;
         if (scoreboards.containsKey(player.getUniqueId())) return;
-        Sidebar sidebar = OpenMinetopia.getModuleManager().getModule(ScoreboardModule.class).getScoreboardLibrary().createSidebar();
+        Sidebar sidebar = OpenMinetopia.getModuleManager().get(ScoreboardModule.class).getScoreboardLibrary().createSidebar();
         sidebar.addPlayer(player);
         scoreboards.put(player.getUniqueId(), sidebar);
     }

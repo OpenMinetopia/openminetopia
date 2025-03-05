@@ -19,7 +19,7 @@ public class MTCitySettingCommand extends BaseCommand {
     @CommandPermission("openminetopia.city.setcolor")
     @CommandCompletion("@cityNames")
     public void setColor(Player player, String cityName, String color) {
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {
@@ -36,7 +36,7 @@ public class MTCitySettingCommand extends BaseCommand {
     @CommandPermission("openminetopia.city.settemperature")
     @CommandCompletion("@cityNames")
     public void setTemperature(Player player, String cityName, Double temperature) {
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {
@@ -53,7 +53,7 @@ public class MTCitySettingCommand extends BaseCommand {
     @CommandPermission("openminetopia.city.setloadingname")
     @CommandCompletion("@cityNames")
     public void setLoadingName(Player player, String cityName, String loadingName) {
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {
@@ -70,7 +70,7 @@ public class MTCitySettingCommand extends BaseCommand {
     @CommandPermission("openminetopia.city.settitle")
     @CommandCompletion("@cityNames")
     public void setTitle(Player player, String cityName, String title) {
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {

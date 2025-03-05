@@ -3,8 +3,11 @@ package nl.openminetopia.modules.places;
 import com.craftmend.storm.api.enums.Where;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import nl.openminetopia.OpenMinetopia;
-import nl.openminetopia.modules.Module;
+import nl.openminetopia.modules.data.DataModule;
+import org.jetbrains.annotations.NotNull;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.data.utils.StormUtils;
 import nl.openminetopia.modules.places.commands.mtcity.MTCityCommand;
@@ -29,26 +32,30 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 @Getter
-public class PlacesModule extends Module {
+public class PlacesModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     public Collection<WorldModel> worldModels = new ArrayList<>();
     public Collection<CityModel> cityModels = new ArrayList<>();
 
+    public PlacesModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
+    }
+
     @Override
-    public void enable() {
-        registerCommand(new MTWorldCommand());
-        registerCommand(new MTWorldCreateCommand());
-        registerCommand(new MTWorldRemoveCommand());
-        registerCommand(new MTWorldSettingCommand());
+    public void onEnable() {
+        registerComponent(new MTWorldCommand());
+        registerComponent(new MTWorldCreateCommand());
+        registerComponent(new MTWorldRemoveCommand());
+        registerComponent(new MTWorldSettingCommand());
 
-        registerCommand(new MTCityCommand());
-        registerCommand(new MTCityCreateCommand());
-        registerCommand(new MTCityRemoveCommand());
-        registerCommand(new MTCitySettingCommand());
+        registerComponent(new MTCityCommand());
+        registerComponent(new MTCityCreateCommand());
+        registerComponent(new MTCityRemoveCommand());
+        registerComponent(new MTCitySettingCommand());
 
-        registerListener(new PlayerJoinListener());
-        registerListener(new PlayerTeleportListener());
-        registerListener(new PlayerMoveListener());
+        registerComponent(new PlayerJoinListener());
+        registerComponent(new PlayerTeleportListener());
+        registerComponent(new PlayerMoveListener());
 
         Bukkit.getScheduler().runTaskLater(OpenMinetopia.getInstance(), () -> {
             OpenMinetopia.getInstance().getLogger().info("Loading worlds...");
@@ -83,10 +90,7 @@ public class PlacesModule extends Module {
                 this.getCityModels().stream().map(CityModel::getName).toList());
     }
 
-    @Override
-    public void disable() {
 
-    }
 
     public WorldModel getWorld(Location location) {
         for (WorldModel worldModel : worldModels) {

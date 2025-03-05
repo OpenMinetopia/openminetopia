@@ -11,6 +11,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.configuration.MessageConfiguration;
+import nl.openminetopia.modules.plots.PlotModule;
 import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.WorldGuardUtils;
 import org.bukkit.entity.Player;
@@ -31,19 +32,19 @@ public class PlotTransferCommand extends BaseCommand {
             return;
         }
 
-        if (region.getFlag(OpenMinetopia.PLOT_FLAG) == null) {
+        if (region.getFlag(PlotModule.PLOT_FLAG) == null) {
             player.sendMessage(MessageConfiguration.component("plot_not_valid"));
             return;
         }
 
         if (!transferable) {
-            region.setFlag(OpenMinetopia.PLOT_TRANSFER, StateFlag.State.DENY);
+            region.setFlag(PlotModule.PLOT_TRANSFER, StateFlag.State.DENY);
             ChatUtils.sendMessage(player, MessageConfiguration.message("plot_set_untranferable")
                     .replace("<plot_id>", region.getId()));
             return;
         }
 
-        region.setFlag(OpenMinetopia.PLOT_TRANSFER, StateFlag.State.ALLOW);
+        region.setFlag(PlotModule.PLOT_TRANSFER, StateFlag.State.ALLOW);
         ChatUtils.sendMessage(player, MessageConfiguration.message("plot_set_tranferable")
                 .replace("<plot_id>", region.getId()));
     }

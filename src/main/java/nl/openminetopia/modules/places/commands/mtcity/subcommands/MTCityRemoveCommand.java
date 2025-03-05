@@ -16,7 +16,7 @@ public class MTCityRemoveCommand extends BaseCommand {
     @Subcommand("remove")
     @CommandPermission("openminetopia.city.remove")
     public void onRemove(Player player, String cityName) {
-        PlacesModule placesModule = OpenMinetopia.getModuleManager().getModule(PlacesModule.class);
+        PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {

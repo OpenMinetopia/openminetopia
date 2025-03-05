@@ -13,7 +13,7 @@ import java.util.List;
 
 public class VaultEconomyHandler implements Economy {
 
-    private final BankingModule bankingModule = OpenMinetopia.getModuleManager().getModule(BankingModule.class);
+    private final BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
 
     @Override
     public boolean isEnabled() {

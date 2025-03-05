@@ -1,27 +1,32 @@
 package nl.openminetopia.modules.teleporter;
 
-import nl.openminetopia.modules.Module;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
+import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.teleporter.commands.TeleporterCommand;
 import nl.openminetopia.modules.teleporter.commands.subcommands.TeleporterCreateCommand;
 import nl.openminetopia.modules.teleporter.listeners.TeleporterInteractListener;
 import nl.openminetopia.modules.teleporter.listeners.block.TeleporterBreakListener;
 import nl.openminetopia.modules.teleporter.listeners.block.TeleporterPlaceListener;
+import org.jetbrains.annotations.NotNull;
 
-public final class TeleporterModule extends Module {
+public final class TeleporterModule extends SpigotModule<@NotNull OpenMinetopia> {
 
-    @Override
-    public void enable() {
-        registerCommand(new TeleporterCommand());
-        registerCommand(new TeleporterCreateCommand());
-
-        registerListener(new TeleporterPlaceListener());
-        registerListener(new TeleporterInteractListener());
-        registerListener(new TeleporterBreakListener());
+    public TeleporterModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
     }
 
     @Override
-    public void disable() {
+    public void onEnable() {
+        registerComponent(new TeleporterCommand());
+        registerComponent(new TeleporterCreateCommand());
 
+        registerComponent(new TeleporterPlaceListener());
+        registerComponent(new TeleporterInteractListener());
+        registerComponent(new TeleporterBreakListener());
     }
+
+
 
 }

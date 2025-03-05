@@ -1,11 +1,13 @@
 package nl.openminetopia.modules.player;
 
 import com.craftmend.storm.api.enums.Where;
+import com.jazzkuh.modulemanager.spigot.SpigotModule;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import lombok.Getter;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
-import nl.openminetopia.modules.Module;
+import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.player.commands.PlaytimeCommand;
 import nl.openminetopia.modules.player.listeners.PlayerPreLoginListener;
@@ -22,14 +24,18 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Getter
-public class PlayerModule extends Module {
+public class PlayerModule extends SpigotModule<@NotNull OpenMinetopia> {
+
+    public PlayerModule(SpigotModuleManager<@NotNull OpenMinetopia> moduleManager, DataModule dataModule) {
+        super(moduleManager);
+    }
 
     @Override
-    public void enable() {
-        registerListener(new PlayerPreLoginListener());
-        registerListener(new PlayerQuitListener());
+    public void onEnable() {
+        registerComponent(new PlayerPreLoginListener());
+        registerComponent(new PlayerQuitListener());
 
-        registerCommand(new PlaytimeCommand());
+        registerComponent(new PlaytimeCommand());
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(OpenMinetopia.getInstance(), () -> {
             for (MinetopiaPlayer minetopiaPlayer : PlayerManager.getInstance().getOnlinePlayers().values()) {
@@ -42,7 +48,7 @@ public class PlayerModule extends Module {
     }
 
     @Override
-    public void disable() {
+    public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerManager.getInstance().getMinetopiaPlayer(player).whenComplete((minetopiaPlayer, throwable) -> {
                 if (minetopiaPlayer == null) return;

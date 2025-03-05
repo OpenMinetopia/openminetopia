@@ -1,40 +1,18 @@
 package nl.openminetopia;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
 import com.jazzkuh.inventorylib.loader.InventoryLoader;
 import com.jazzkuh.inventorylib.objects.Menu;
+import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import com.jeff_media.customblockdata.CustomBlockData;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.flags.StringFlag;
-import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
-import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import io.vertx.core.Vertx;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import nl.openminetopia.configuration.*;
-import nl.openminetopia.modules.ModuleManager;
-import nl.openminetopia.modules.banking.BankingModule;
-import nl.openminetopia.modules.chat.ChatModule;
-import nl.openminetopia.modules.color.ColorModule;
-import nl.openminetopia.modules.core.CoreModule;
-import nl.openminetopia.modules.data.DataModule;
-import nl.openminetopia.modules.detectiongates.DetectionModule;
-import nl.openminetopia.modules.fitness.FitnessModule;
-import nl.openminetopia.modules.misc.MiscModule;
-import nl.openminetopia.modules.places.PlacesModule;
-import nl.openminetopia.modules.player.PlayerModule;
-import nl.openminetopia.modules.plots.PlotModule;
-import nl.openminetopia.modules.police.PoliceModule;
-import nl.openminetopia.modules.portal.PortalModule;
-import nl.openminetopia.modules.prefix.PrefixModule;
-import nl.openminetopia.modules.restapi.RestAPIModule;
-import nl.openminetopia.modules.scoreboard.ScoreboardModule;
-import nl.openminetopia.modules.skript.SkriptModule;
-import nl.openminetopia.modules.staff.StaffModule;
-import nl.openminetopia.modules.teleporter.TeleporterModule;
-import nl.openminetopia.modules.time.TimeModule;
+import nl.openminetopia.registry.CommandComponentRegistry;
 import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.placeholderapi.OpenMinetopiaExpansion;
 import org.bstats.bukkit.Metrics;
@@ -42,6 +20,7 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public final class OpenMinetopia extends JavaPlugin {
 
@@ -49,7 +28,8 @@ public final class OpenMinetopia extends JavaPlugin {
     private static OpenMinetopia instance;
 
     @Getter
-    private static ModuleManager moduleManager;
+    @Setter(AccessLevel.PRIVATE)
+    private static SpigotModuleManager<@NotNull OpenMinetopia> moduleManager;
 
     @Getter
     @Setter
@@ -81,25 +61,26 @@ public final class OpenMinetopia extends JavaPlugin {
 
     private Vertx vertx;
 
+    public OpenMinetopia() {
+        instance = this;
+        moduleManager = new SpigotModuleManager<>(this, getComponentLogger());
+    }
+
     @Override
     public void onEnable() {
-        instance = this;
-
         commandManager = new PaperCommandManager(this);
-        moduleManager = new ModuleManager();
-
-        CustomBlockData.registerListener(this);
+        moduleManager.debug(false);
 
         defaultConfiguration = new DefaultConfiguration(getDataFolder());
         defaultConfiguration.saveConfiguration();
+
+        messageConfiguration = new MessageConfiguration(getDataFolder());
+        messageConfiguration.saveConfiguration();
 
         if (defaultConfiguration.isMetricsEnabled()) {
             Metrics metrics = new Metrics(this, 23547);
             metrics.addCustomChart(new SimplePie("storage", () -> defaultConfiguration.getDatabaseType().toString()));
         }
-
-        messageConfiguration = new MessageConfiguration(getDataFolder());
-        messageConfiguration.saveConfiguration();
 
         levelcheckConfiguration = new LevelCheckConfiguration(getDataFolder());
         levelcheckConfiguration.saveConfiguration();
@@ -113,34 +94,12 @@ public final class OpenMinetopia extends JavaPlugin {
         fitnessConfiguration = new FitnessConfiguration(getDataFolder());
         fitnessConfiguration.saveConfiguration();
 
-        moduleManager.register(
-                new CoreModule(),
-                new DataModule(),
-                new BankingModule(),
-                new PlayerModule(),
-                new FitnessModule(),
-                new StaffModule(),
-                new PrefixModule(),
-                new ChatModule(),
-                new ColorModule(),
-                new PlacesModule(),
-                new ScoreboardModule(),
-                new PlotModule(),
-                new DetectionModule(),
-                new TeleporterModule(),
-                new PoliceModule(),
-                new MiscModule(),
-                new RestAPIModule(),
-                new PortalModule(),
-                new TimeModule(),
-                new SkriptModule()
-        );
-
         commandManager.enableUnstableAPI("help");
         commandManager.setFormat(MessageType.HELP, 1, ChatColor.GOLD);
         commandManager.setFormat(MessageType.HELP, 2, ChatColor.YELLOW);
         commandManager.setFormat(MessageType.HELP, 3, ChatColor.GRAY);
 
+        CustomBlockData.registerListener(this);
         Menu.init(this);
         InventoryLoader.setFormattingProvider(message -> ChatUtils.color("<red>" + message));
 
@@ -148,6 +107,12 @@ public final class OpenMinetopia extends JavaPlugin {
             new OpenMinetopiaExpansion().register();
             getLogger().info("Registered PlaceholderAPI expansion.");
         }
+
+        moduleManager.getComponentRegistry().registerComponentHandler(
+                BaseCommand.class,
+                new CommandComponentRegistry(commandManager)
+        );
+        moduleManager.enable();
     }
 
     @Override
@@ -157,7 +122,8 @@ public final class OpenMinetopia extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        loadFlags();
+        moduleManager.scanModules(this.getClass());
+        moduleManager.load();
     }
 
     public Vertx getOrCreateVertx() {
@@ -165,22 +131,5 @@ public final class OpenMinetopia extends JavaPlugin {
             vertx = Vertx.vertx();
         }
         return vertx;
-    }
-
-    public static StateFlag PLOT_FLAG = new StateFlag("openmt-plot", true);
-    public static StringFlag PLOT_DESCRIPTION = new StringFlag("openmt-description");
-    public static StateFlag PLOT_TRANSFER = new StateFlag("openmt-transfer", true);
-
-    public void loadFlags() {
-        FlagRegistry registry = WorldGuard.getInstance().getFlagRegistry();
-        try {
-            registry.register(PLOT_FLAG);
-            registry.register(PLOT_DESCRIPTION);
-            registry.register(PLOT_TRANSFER);
-        } catch (FlagConflictException e) {
-            PLOT_FLAG = (StateFlag) registry.get("openmt-plot");
-            PLOT_DESCRIPTION = (StringFlag) registry.get("openmt-description");
-            PLOT_TRANSFER = (StateFlag) registry.get("openmt-transfer");
-        }
     }
 }
