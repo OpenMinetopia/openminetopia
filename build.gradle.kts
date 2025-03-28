@@ -85,7 +85,7 @@ dependencies {
     compileOnly("net.objecthunter:exp4j:0.4.8")
 
     /* Npcs */
-    compileOnly("net.citizensnpcs:citizensapi:2.0.37-SNAPSHOT")
+    compileOnly("net.citizensnpcs:citizensapi:2.0.38-SNAPSHOT")
     compileOnly("de.oliver:FancyNpcs:2.4.4")
 }
 
