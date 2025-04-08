@@ -4,7 +4,7 @@ plugins {
     java
     id("io.freefair.lombok") version "8.13"
     id("com.gradleup.shadow") version "8.3.6"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
+    id("io.papermc.paperweight.userdev") version "2.0.0-SNAPSHOT"
     id("maven-publish")
 }
 
