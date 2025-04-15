@@ -80,7 +80,7 @@ dependencies {
     /* Rest API & Portal dependencies */
     compileOnly("io.vertx:vertx-core:4.5.13")
     compileOnly("io.vertx:vertx-web:4.5.13")
-    compileOnly("io.vertx:vertx-web-client:4.5.13")
+    compileOnly("io.vertx:vertx-web-client:4.5.14")
 
     compileOnly("net.objecthunter:exp4j:0.4.8")
 
