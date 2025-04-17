@@ -37,7 +37,7 @@ public class PinSetCommand extends BaseCommand {
         PinSession session = pinModule.createPinSession(player, target, amount);
         session.setState(PinState.CONSOLE);
 
-        player.sendMessage(ChatUtils.color("Pin Session for " + target.getName() + ": $" + amount));
+        player.sendMessage(ChatUtils.color("<gold>Je hebt een betaalverzoek aangemaakt, klik op de pin console om deze te versturen naar <red>" + target.getName() + "<gold>."));
     }
 
 }

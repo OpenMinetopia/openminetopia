@@ -27,7 +27,8 @@ public class PinSelectAccountMenu extends PaginatedMenu {
     private final PinSession session;
 
     public PinSelectAccountMenu(Player player, PinSession session) {
-        super(ChatUtils.color("Selecteer rekening."));
+        super(ChatUtils.color("Selecteer rekening."), 4);
+        this.registerPageSlotsBetween(0, 27);
         this.session = session;
 
         Collection<BankAccountModel> accountModels = bankingModule.getAccountsFromPlayer(player.getUniqueId());
@@ -47,11 +48,14 @@ public class PinSelectAccountMenu extends PaginatedMenu {
 
                 Player target = session.getTarget();
                 if (!target.isOnline()) {
-                    ChatUtils.sendMessage(player, "speler is niet langer online.");
+                    ChatUtils.sendMessage(player, "<red>De betaalverzoek is geannuleerd omdat de speler niet langer online is.");
+                    pinModule.getPinSessions().remove(session);
                     return;
                 }
 
-                target.sendMessage(ChatUtils.color("Je hebt een betaalverzoek ontvangen van " + player.getName() + " voor " + session.getAmount() + ", type 'ja' om te accepteren of 'annuleren' om het verzoek te weigeren"));
+                target.sendMessage(ChatUtils.color("<gold>Je hebt een betaalverzoek ontvangen van <red>" + player.getName() + " <gold>voor <red>" + bankingModule.format(session.getAmount()) + "<gold>, klik op de pin console met je bankpas om deze te <red>accepteren<gold.."));
+                player.sendMessage(ChatUtils.color("<gold>Je hebt je betaalverzoek verstuurd naar <red>" + player.getName() + " <gold>voor <red>" + bankingModule.format(session.getAmount()) + "<gold>."));
+                player.closeInventory();
             }));
         }
     }
@@ -61,7 +65,7 @@ public class PinSelectAccountMenu extends PaginatedMenu {
         ItemStack previousStack = new ItemBuilder(Material.ARROW)
                 .setName(MessageConfiguration.message("previous_page"))
                 .toItemStack();
-        return new Icon(47, previousStack, e -> e.setCancelled(true));
+        return new Icon(29, previousStack, e -> e.setCancelled(true));
     }
 
     @Override
@@ -69,12 +73,14 @@ public class PinSelectAccountMenu extends PaginatedMenu {
         ItemStack previousStack = new ItemBuilder(Material.ARROW)
                 .setName(MessageConfiguration.message("next_page"))
                 .toItemStack();
-        return new Icon(51, previousStack, e -> e.setCancelled(true));
+        return new Icon(33, previousStack, e -> e.setCancelled(true));
     }
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        if (session.getState() == PinState.READY) return;
+
         pinModule.getPinSessions().remove(session);
-        player.sendMessage(ChatUtils.color("Geannuleerd."));
+        player.sendMessage(ChatUtils.color("<red>Pin sessie geannuleerd."));
     }
 }

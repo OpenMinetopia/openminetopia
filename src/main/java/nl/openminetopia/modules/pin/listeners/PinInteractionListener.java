@@ -5,6 +5,7 @@ import nl.openminetopia.modules.pin.PinModule;
 import nl.openminetopia.modules.pin.enums.PinState;
 import nl.openminetopia.modules.pin.menu.PinSelectAccountMenu;
 import nl.openminetopia.modules.pin.objects.PinSession;
+import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +22,6 @@ public class PinInteractionListener implements Listener {
     @EventHandler
     public void onPinInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        Block block = event.getClickedBlock();
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
@@ -40,7 +40,7 @@ public class PinInteractionListener implements Listener {
         session.setConsole(event.getInteractionPoint());
         session.setState(PinState.ACCOUNT);
 
-        player.sendMessage("Pin console geselecteerd, kies nu een rekening.");
+        player.sendMessage(ChatUtils.color("<gold>Je hebt een pin console geselecteerd, kies een bestemming voor het geld."));
         new PinSelectAccountMenu(player, session).open(player);
     }
 

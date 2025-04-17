@@ -5,6 +5,9 @@ import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import lombok.Getter;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.banking.BankingModule;
+import nl.openminetopia.modules.pin.commands.PinSetCommand;
+import nl.openminetopia.modules.pin.listeners.PinInteractionListener;
+import nl.openminetopia.modules.pin.menu.PinSelectAccountMenu;
 import nl.openminetopia.modules.pin.objects.PinSession;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -24,7 +27,9 @@ public class PinModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     @Override
     public void onEnable() {
+        registerComponent(new PinSetCommand(this));
 
+        registerComponent(new PinInteractionListener(this));
     }
 
     public PinSession createPinSession(Player player, Player target, double amount) {
