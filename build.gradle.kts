@@ -61,7 +61,7 @@ dependencies {
     implementation("com.github.Jazzkuh.ModuleManager:spigot:0b399761d5")
 
     /* PersistentData addons */
-    implementation("com.jeff-media:custom-block-data:2.2.4")
+    implementation("com.jeff-media:custom-block-data:2.2.5")
     implementation("com.jeff-media:MorePersistentDataTypes:2.4.0")
 
     /* InventoryLib (JAZZZZ) */
