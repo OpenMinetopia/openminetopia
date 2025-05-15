@@ -79,7 +79,7 @@ dependencies {
     compileOnly("com.github.SkriptLang:Skript:2.10.2")
 
     /* Rest API & Portal dependencies */
-    compileOnly("io.vertx:vertx-core:4.5.13")
+    compileOnly("io.vertx:vertx-core:5.0.0")
     compileOnly("io.vertx:vertx-web:4.5.13")
     compileOnly("io.vertx:vertx-web-client:4.5.13")
 
