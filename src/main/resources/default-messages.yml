@@ -108,6 +108,7 @@ fitness_no_reset: "<red>Je hebt geen fitheidreset!"
 fitness_reset_enabled: "<gold>Succesvol <yellow><player> <gold>een fitheidreset gegeven."
 fitness_reset_disabled: "<gold>Succesvol de fitheidreset van <yellow><player> <gold>afgenomen."
 fitness_reset: "<gold>Jouw fitheid is succesvol <yellow>gereset<gold>."
+fitness_check: "<gold>De fitheid van <yellow><player> <gold>is <yellow><fitness><gold>."
 
 # Places
 
