@@ -8,6 +8,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.fitness.commands.FitnessCommand;
 import nl.openminetopia.modules.fitness.commands.subcommands.FitnessBoosterCommand;
+import nl.openminetopia.modules.fitness.commands.subcommands.FitnessCheckCommand;
 import nl.openminetopia.modules.fitness.commands.subcommands.FitnessResetCommand;
 import nl.openminetopia.modules.fitness.configuration.FitnessConfiguration;
 import nl.openminetopia.modules.fitness.listeners.*;
@@ -37,6 +38,7 @@ public class FitnessModule extends SpigotModule<@NotNull OpenMinetopia> {
         registerComponent(new FitnessCommand());
         registerComponent(new FitnessBoosterCommand());
         registerComponent(new FitnessResetCommand());
+        registerComponent(new FitnessCheckCommand());
 
         registerComponent(new PlayerEatListener());
         registerComponent(new PlayerDrinkListener());
