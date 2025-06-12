@@ -86,7 +86,7 @@ dependencies {
 
     /* Npcs */
     compileOnly("net.citizensnpcs:citizensapi:2.0.38-SNAPSHOT")
-    compileOnly("de.oliver:FancyNpcs:2.4.4")
+    compileOnly("de.oliver:FancyNpcs:2.5.1")
 
     /* Labymod */
     compileOnly("net.labymod.serverapi:server-bukkit:1.0.6")
