@@ -78,9 +78,9 @@ dependencies {
     compileOnly("com.github.SkriptLang:Skript:2.10.2")
 
     /* Rest API & Portal dependencies */
-    compileOnly("io.vertx:vertx-core:4.5.13")
-    compileOnly("io.vertx:vertx-web:4.5.13")
-    compileOnly("io.vertx:vertx-web-client:4.5.13")
+    compileOnly("io.vertx:vertx-core:5.0.1")
+    compileOnly("io.vertx:vertx-web:5.0.1")
+    compileOnly("io.vertx:vertx-web-client:5.0.1")
 
     compileOnly("net.objecthunter:exp4j:0.4.8")
 
