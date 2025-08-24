@@ -17,8 +17,7 @@ import nl.openminetopia.utils.input.ChatInputHandler;
 import nl.openminetopia.utils.placeholderapi.OpenMinetopiaExpansion;
 import nl.openminetopia.utils.wrappers.listeners.CitzensNpcClickListener;
 import nl.openminetopia.utils.wrappers.listeners.FancyNpcClickListener;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -69,8 +68,7 @@ public final class OpenMinetopia extends JavaPlugin {
         messageConfiguration.saveConfiguration();
 
         if (defaultConfiguration.isMetricsEnabled()) {
-            Metrics metrics = new Metrics(this, 23547);
-            metrics.addCustomChart(new SimplePie("storage", () -> defaultConfiguration.getDatabaseType().toString()));
+            initializeBStats();
         }
 
         commandManager.enableUnstableAPI("help");
@@ -129,5 +127,36 @@ public final class OpenMinetopia extends JavaPlugin {
             vertx = Vertx.vertx();
         }
         return vertx;
+    }
+
+    /**
+     * Initialize bStats metrics using reflection to avoid ClassNotFoundException
+     */
+    private void initializeBStats() {
+        try {
+            // Check if bStats is available
+            Class<?> metricsClass = Class.forName("org.bstats.bukkit.Metrics");
+            Class<?> simplePieClass = Class.forName("org.bstats.charts.SimplePie");
+            
+            // Create Metrics instance using reflection
+            Object metrics = metricsClass.getConstructor(JavaPlugin.class, int.class)
+                    .newInstance(this, 23547);
+            
+            // Create SimplePie chart using reflection
+            Object simplePie = simplePieClass.getConstructor(String.class, java.util.concurrent.Callable.class)
+                    .newInstance("storage", (java.util.concurrent.Callable<String>) () -> 
+                            defaultConfiguration.getDatabaseType().toString());
+            
+            // Add custom chart using reflection
+            metricsClass.getMethod("addCustomChart", Class.forName("org.bstats.charts.CustomChart"))
+                    .invoke(metrics, simplePie);
+            
+            getLogger().info("bStats metrics successfully initialized.");
+            
+        } catch (ClassNotFoundException e) {
+            getLogger().info("bStats plugin not found. Metrics disabled (this is normal if bStats is not installed).");
+        } catch (Exception e) {
+            getLogger().warning("Failed to initialize bStats metrics: " + e.getMessage());
+        }
     }
 }

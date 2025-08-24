@@ -16,6 +16,7 @@ import nl.openminetopia.modules.prefix.commands.subcommands.PrefixMenuCommand;
 import nl.openminetopia.modules.prefix.commands.subcommands.PrefixRemoveCommand;
 import nl.openminetopia.modules.prefix.models.PrefixModel;
 import nl.openminetopia.modules.prefix.objects.Prefix;
+import nl.openminetopia.utils.FeatureUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +37,12 @@ public class PrefixModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     @Override
     public void onEnable() {
+        // Check if prefix feature is enabled
+        if (FeatureUtils.isFeatureDisabled("prefix")) {
+            getLogger().info("Prefix feature is disabled in config.yml");
+            return;
+        }
+
         registerComponent(new PrefixCommand());
         registerComponent(new PrefixMenuCommand());
         registerComponent(new PrefixAddCommand());

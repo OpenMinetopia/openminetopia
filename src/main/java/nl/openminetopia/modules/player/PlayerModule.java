@@ -15,6 +15,7 @@ import nl.openminetopia.modules.player.configuration.LevelCheckConfiguration;
 import nl.openminetopia.modules.player.listeners.LevelcheckNpcListener;
 import nl.openminetopia.modules.player.listeners.PlayerPreLoginListener;
 import nl.openminetopia.modules.player.listeners.PlayerQuitListener;
+import nl.openminetopia.utils.FeatureUtils;
 import nl.openminetopia.modules.player.models.PlayerModel;
 import nl.openminetopia.modules.player.runnables.PlaytimeRunnable;
 import org.bukkit.Bukkit;
@@ -38,6 +39,12 @@ public class PlayerModule extends SpigotModule<@NotNull OpenMinetopia> {
     public void onEnable() {
         configuration = new LevelCheckConfiguration(OpenMinetopia.getInstance().getDataFolder());
         configuration.saveConfiguration();
+
+        // Check if player feature is enabled
+        if (FeatureUtils.isFeatureDisabled("player")) {
+            getLogger().info("Player feature is disabled in config.yml");
+            return;
+        }
 
         registerComponent(new PlayerPreLoginListener());
         registerComponent(new PlayerQuitListener());

@@ -21,6 +21,7 @@ import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.data.utils.StormUtils;
 import nl.openminetopia.modules.player.models.PlayerModel;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -44,6 +45,12 @@ public class ColorModule extends SpigotModule<@NotNull OpenMinetopia> {
     public void onEnable() {
         configuration = new ColorsConfiguration(OpenMinetopia.getInstance().getDataFolder());
         configuration.saveConfiguration();
+
+        // Check if color feature is enabled
+        if (FeatureUtils.isFeatureDisabled("color")) {
+            getLogger().info("Color feature is disabled in config.yml");
+            return;
+        }
 
         registerComponent(new ColorCommand());
         registerComponent(new ColorAddCommand());

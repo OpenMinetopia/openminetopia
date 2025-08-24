@@ -6,6 +6,7 @@ import lombok.Getter;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.configuration.DefaultConfiguration;
 import nl.openminetopia.modules.detectiongates.listeners.DetectionListener;
+import nl.openminetopia.utils.FeatureUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,6 +27,12 @@ public class DetectionModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     @Override
     public void onEnable() {
+        // Check if detectiongates feature is enabled
+        if (FeatureUtils.isFeatureDisabled("detectiongates")) {
+            getLogger().info("Detection gates feature is disabled in config.yml");
+            return;
+        }
+
         registerComponent(new DetectionListener());
     }
 

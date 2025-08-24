@@ -15,6 +15,7 @@ import nl.openminetopia.modules.currencies.objects.RegisteredCurrency;
 import nl.openminetopia.modules.currencies.tasks.CurrencyTask;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.player.PlayerModule;
+import nl.openminetopia.utils.FeatureUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +40,12 @@ public class CurrencyModule extends SpigotModule<@NotNull OpenMinetopia> {
     public void onEnable() {
         configuration = new CurrencyConfiguration(this, OpenMinetopia.getInstance().getDataFolder());
         configuration.saveConfiguration();
+
+        // Check if currencies feature is enabled
+        if (FeatureUtils.isFeatureDisabled("currencies")) {
+            getLogger().info("Currencies feature is disabled in config.yml");
+            return;
+        }
 
         registerComponent(new CurrencyJoinListener(this));
         registerComponent(new CurrencyQuitListener(this));

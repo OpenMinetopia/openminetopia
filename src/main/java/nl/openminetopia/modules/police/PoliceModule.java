@@ -21,6 +21,7 @@ import nl.openminetopia.modules.police.listeners.PlayerTaserListener;
 import nl.openminetopia.modules.police.models.CriminalRecordModel;
 import nl.openminetopia.modules.police.taser.TaserManager;
 import nl.openminetopia.modules.police.walkietalkie.WalkieTalkieManager;
+import nl.openminetopia.utils.FeatureUtils;
 import nl.openminetopia.modules.police.walkietalkie.listeners.PlayerChatListener;
 import nl.openminetopia.modules.police.walkietalkie.listeners.PlayerInteractListener;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +44,12 @@ public class PoliceModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     @Override
     public void onEnable() {
+        // Check if police feature is enabled
+        if (FeatureUtils.isFeatureDisabled("police")) {
+            getLogger().info("Police feature is disabled in config.yml");
+            return;
+        }
+
         walkieTalkieManager = new WalkieTalkieManager();
         taserManager = new TaserManager();
 

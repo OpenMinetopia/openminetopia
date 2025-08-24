@@ -12,6 +12,7 @@ import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.scoreboard.commands.ScoreboardCommand;
 import nl.openminetopia.modules.scoreboard.listeners.PlayerJoinListener;
 import nl.openminetopia.modules.scoreboard.listeners.PlayerQuitListener;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
@@ -27,6 +28,12 @@ public class ScoreboardModule extends SpigotModule<@NotNull OpenMinetopia> {
     public void onEnable() {
         DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
         if (!configuration.isScoreboardEnabled()) return;
+
+        // Check if scoreboard feature is enabled
+        if (FeatureUtils.isFeatureDisabled("scoreboard")) {
+            getLogger().info("Scoreboard feature is disabled in config.yml");
+            return;
+        }
 
         registerComponent(new PlayerJoinListener());
         registerComponent(new PlayerQuitListener());
