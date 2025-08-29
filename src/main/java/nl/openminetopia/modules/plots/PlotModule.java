@@ -14,6 +14,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.plots.commands.PlotCommand;
 import nl.openminetopia.modules.plots.commands.subcommands.*;
 import nl.openminetopia.modules.plots.configuration.PlotCalculateConfiguration;
+import nl.openminetopia.utils.FeatureUtils;
 import nl.openminetopia.utils.WorldGuardUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +31,12 @@ public class PlotModule extends SpigotModule<@NotNull OpenMinetopia> {
     public void onEnable() {
         calculateConfiguration = new PlotCalculateConfiguration(OpenMinetopia.getInstance().getDataFolder());
         calculateConfiguration.saveConfiguration();
+
+        // Check if plots feature is enabled
+        if (FeatureUtils.isFeatureDisabled("plots")) {
+            getLogger().info("Plots feature is disabled in config.yml");
+            return;
+        }
 
         registerComponent(new PlotInfoCommand());
 

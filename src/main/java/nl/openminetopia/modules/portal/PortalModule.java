@@ -5,6 +5,7 @@ import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.portal.commands.LinkCommand;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class PortalModule extends SpigotModule<@NotNull OpenMinetopia> {
@@ -16,6 +17,12 @@ public class PortalModule extends SpigotModule<@NotNull OpenMinetopia> {
     @Override
     public void onEnable() {
         if (OpenMinetopia.getDefaultConfiguration().isPortalEnabled()) {
+            // Check if portal feature is enabled
+            if (FeatureUtils.isFeatureDisabled("portal")) {
+                getLogger().info("Portal feature is disabled in config.yml");
+                return;
+            }
+
             registerComponent(new LinkCommand());
         }
     }

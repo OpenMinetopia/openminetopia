@@ -9,6 +9,7 @@ import nl.openminetopia.modules.misc.objects.PvPItem;
 import nl.openminetopia.modules.misc.utils.MiscUtils;
 import nl.openminetopia.modules.police.handcuff.HandcuffManager;
 import nl.openminetopia.utils.ChatUtils;
+import nl.openminetopia.utils.FeatureUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
@@ -25,6 +26,7 @@ public class PlayerAttackListener implements Listener {
     public void damagePlayer(final EntityDamageByEntityEvent event) {
         if (MTPlaceManager.getInstance().getPlace(event.getDamager().getLocation()) == null) return;
         if (!OpenMinetopia.getDefaultConfiguration().isPvpEnabled()) return;
+        if (FeatureUtils.isFeatureDisabled("pvp")) return;
 
         // Anti-armorstand shooting
         if (event.getEntity() instanceof ArmorStand && event.getDamager() instanceof Arrow) {

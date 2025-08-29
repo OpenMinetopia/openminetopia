@@ -9,6 +9,7 @@ import nl.openminetopia.modules.books.commands.BooksCommand;
 import nl.openminetopia.modules.books.configuration.BooksConfiguration;
 import nl.openminetopia.modules.books.objects.CustomBook;
 import nl.openminetopia.utils.input.ChatInputHandler;
+import nl.openminetopia.utils.FeatureUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +30,12 @@ public class BooksModule extends SpigotModule<@NotNull OpenMinetopia> {
     public void onEnable() {
         configuration = new BooksConfiguration(OpenMinetopia.getInstance().getDataFolder());
         variableResponses = new HashMap<>();
+
+        // Check if books feature is enabled
+        if (FeatureUtils.isFeatureDisabled("books")) {
+            getLogger().info("Books feature is disabled in config.yml");
+            return;
+        }
 
         registerComponent(new BooksCommand());
 

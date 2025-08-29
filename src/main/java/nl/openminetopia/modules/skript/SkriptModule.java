@@ -7,6 +7,7 @@ import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import lombok.Getter;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.data.DataModule;
+import nl.openminetopia.utils.FeatureUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +25,12 @@ public class SkriptModule extends SpigotModule<@NotNull OpenMinetopia> {
     @Override
     public void onEnable() {
         if(!Bukkit.getServer().getPluginManager().isPluginEnabled("Skript")) return;
+
+        // Check if skript feature is enabled
+        if (FeatureUtils.isFeatureDisabled("skript")) {
+            getLogger().info("Skript feature is disabled in config.yml");
+            return;
+        }
 
         addon = Skript.registerAddon(OpenMinetopia.getInstance());
         try {

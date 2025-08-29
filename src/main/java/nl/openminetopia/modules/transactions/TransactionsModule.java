@@ -10,6 +10,7 @@ import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.transactions.commands.TransactionCommand;
 import nl.openminetopia.modules.transactions.enums.TransactionType;
 import nl.openminetopia.modules.transactions.objects.TransactionModel;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -24,6 +25,12 @@ public class TransactionsModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     @Override
     public void onEnable() {
+        // Check if transactions feature is enabled
+        if (FeatureUtils.isFeatureDisabled("transactions")) {
+            getLogger().info("Transactions feature is disabled in config.yml");
+            return;
+        }
+
         registerComponent(new TransactionCommand());
     }
 

@@ -18,6 +18,7 @@ import nl.openminetopia.modules.restapi.verticles.banking.transactions.BankAccou
 import nl.openminetopia.modules.restapi.verticles.places.PlacesVerticle;
 import nl.openminetopia.modules.restapi.verticles.player.*;
 import nl.openminetopia.modules.restapi.verticles.plots.PlotsVerticle;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class RestAPIModule extends SpigotModule<@NotNull OpenMinetopia> {
@@ -31,6 +32,12 @@ public class RestAPIModule extends SpigotModule<@NotNull OpenMinetopia> {
     @Override
     public void onEnable() {
         if (OpenMinetopia.getDefaultConfiguration().isRestApiEnabled()) {
+            // Check if restapi feature is enabled
+            if (FeatureUtils.isFeatureDisabled("restapi")) {
+                getLogger().info("REST API feature is disabled in config.yml");
+                return;
+            }
+
             Vertx vertx = OpenMinetopia.getInstance().getOrCreateVertx();
 
             Context context = vertx.getOrCreateContext();

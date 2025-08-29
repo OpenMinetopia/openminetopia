@@ -16,6 +16,7 @@ import nl.openminetopia.modules.staff.mod.commands.ModCommand;
 import nl.openminetopia.modules.staff.mod.commands.subcommands.ModChatSpyCommand;
 import nl.openminetopia.modules.staff.mod.commands.subcommands.ModCommandSpyCommand;
 import nl.openminetopia.modules.staff.mod.commands.subcommands.ModSetLevelCommand;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class StaffModule extends SpigotModule<@NotNull OpenMinetopia> {
@@ -25,6 +26,12 @@ public class StaffModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     @Override
     public void onEnable() {
+        // Check if staff feature is enabled
+        if (FeatureUtils.isFeatureDisabled("staff")) {
+            getLogger().info("Staff feature is disabled in config.yml");
+            return;
+        }
+
         registerComponent(new ModCommand());
         registerComponent(new ModSetLevelCommand());
         registerComponent(new ModChatSpyCommand());
