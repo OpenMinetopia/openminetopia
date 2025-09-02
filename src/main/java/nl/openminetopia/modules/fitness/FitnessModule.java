@@ -11,6 +11,7 @@ import nl.openminetopia.modules.fitness.commands.subcommands.FitnessBoosterComma
 import nl.openminetopia.modules.fitness.commands.subcommands.FitnessResetCommand;
 import nl.openminetopia.modules.fitness.configuration.FitnessConfiguration;
 import nl.openminetopia.modules.fitness.listeners.*;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -33,6 +34,12 @@ public class FitnessModule extends SpigotModule<@NotNull OpenMinetopia> {
     public void onEnable() {
         configuration = new FitnessConfiguration(OpenMinetopia.getInstance().getDataFolder());
         configuration.saveConfiguration();
+
+        // Check if fitness feature is enabled
+        if (FeatureUtils.isFeatureDisabled("fitness")) {
+            getLogger().info("Fitness feature is disabled in config.yml");
+            return;
+        }
 
         registerComponent(new FitnessCommand());
         registerComponent(new FitnessBoosterCommand());

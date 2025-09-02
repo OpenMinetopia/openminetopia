@@ -198,14 +198,42 @@ public class DefaultConfiguration extends ConfigurateConfig {
     private final String syncTimeZone;
 
     /**
+     * Features configuration
+     */
+    private final Map<String, Boolean> features;
+
+    /**
      * Spy Webhook Configuration
      */
     public String commandSpyWebhookUrl;
     public String chatSpyWebhookUrl;
 
+    /**
+     * Check if a feature is enabled
+     * @param featureName The name of the feature to check
+     * @return true if the feature is enabled, false otherwise
+     */
+    public boolean isFeatureEnabled(String featureName) {
+        return features.getOrDefault(featureName, true);
+    }
+
     @SneakyThrows
     public DefaultConfiguration(File file) {
         super(file, "config.yml", "", false);
+        
+        /*
+         * Features configuration
+         */
+        this.features = new HashMap<>();
+        ConfigurationNode featuresNode = rootNode.node("features");
+        if (!featuresNode.isNull()) {
+            featuresNode.childrenMap().forEach((key, value) -> {
+                if (key instanceof String featureName) {
+                    features.put(featureName, value.getBoolean(true));
+                }
+            });
+        }
+        
         /*
          * Metrics configuration
          */

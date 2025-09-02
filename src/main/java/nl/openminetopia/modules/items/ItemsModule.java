@@ -7,6 +7,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.items.commands.ItemsCommand;
 import nl.openminetopia.modules.items.configuration.CategoriesConfiguration;
 import nl.openminetopia.modules.items.configuration.ItemConfiguration;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -28,6 +29,12 @@ public class ItemsModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     @Override
     public void onEnable() {
+        // Check if items feature is enabled
+        if (FeatureUtils.isFeatureDisabled("items")) {
+            getLogger().info("Items feature is disabled in config.yml");
+            return;
+        }
+
         reload();
 
         OpenMinetopia.getCommandManager().getCommandCompletions().registerAsyncCompletion("items",

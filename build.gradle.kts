@@ -68,7 +68,7 @@ dependencies {
     implementation("dev.triumphteam:triumph-gui-paper:3.1.13-SNAPSHOT")
 
     /* bStats */
-    implementation("org.bstats:bstats-bukkit:3.1.0")
+    compileOnly("org.bstats:bstats-bukkit:3.1.0")
 
     /* Vault */
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1") {
@@ -115,6 +115,7 @@ tasks {
             hangar("PlaceholderAPI", "2.11.6")
             modrinth("WorldGuard", "7.0.13")
             hangar("WorldEdit", "7.3.14")
+            url("https://github.com/Bastian/bStats-Metrics/releases/download/v3.1.0/bStats-bukkit-3.1.0.jar")
         }
     }
 
@@ -147,7 +148,6 @@ tasks {
         relocate("com.jeff_media.customblockdata", "nl.openminetopia.shaded.customblockdata")
         relocate("com.jeff_media.morepersistentdatatypes", "nl.openminetopia.shaded.morepersistentdatatypes")
         relocate("dev.triumphteam.gui", "nl.openminetopia.shaded.gui")
-        relocate("org.bstats", "nl.openminetopia.shaded.bstats")
     }
 
     build {

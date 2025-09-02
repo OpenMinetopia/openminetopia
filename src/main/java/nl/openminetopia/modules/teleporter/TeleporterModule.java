@@ -9,6 +9,7 @@ import nl.openminetopia.modules.teleporter.commands.subcommands.TeleporterCreate
 import nl.openminetopia.modules.teleporter.listeners.TeleporterInteractListener;
 import nl.openminetopia.modules.teleporter.listeners.block.TeleporterBreakListener;
 import nl.openminetopia.modules.teleporter.listeners.block.TeleporterPlaceListener;
+import nl.openminetopia.utils.FeatureUtils;
 import org.jetbrains.annotations.NotNull;
 
 public final class TeleporterModule extends SpigotModule<@NotNull OpenMinetopia> {
@@ -19,6 +20,12 @@ public final class TeleporterModule extends SpigotModule<@NotNull OpenMinetopia>
 
     @Override
     public void onEnable() {
+        // Check if teleporter feature is enabled
+        if (FeatureUtils.isFeatureDisabled("teleporter")) {
+            getLogger().info("Teleporter feature is disabled in config.yml");
+            return;
+        }
+
         registerComponent(new TeleporterCommand());
         registerComponent(new TeleporterCreateCommand());
 
