@@ -12,8 +12,8 @@ import lombok.Setter;
 import nl.openminetopia.configuration.DefaultConfiguration;
 import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.registry.CommandComponentRegistry;
-import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.input.ChatInputHandler;
+import nl.openminetopia.utils.language.I18n;
 import nl.openminetopia.utils.placeholderapi.OpenMinetopiaExpansion;
 import nl.openminetopia.utils.wrappers.listeners.CitzensNpcClickListener;
 import nl.openminetopia.utils.wrappers.listeners.FancyNpcClickListener;
@@ -22,8 +22,9 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 @Getter @Setter
 public final class OpenMinetopia extends JavaPlugin {
@@ -39,6 +40,9 @@ public final class OpenMinetopia extends JavaPlugin {
 
     @Getter @Setter
     private static DefaultConfiguration defaultConfiguration;
+
+    @Getter
+    private I18n i18n;
 
     @Getter @Setter
     private static MessageConfiguration messageConfiguration;
@@ -64,6 +68,9 @@ public final class OpenMinetopia extends JavaPlugin {
 
         defaultConfiguration = new DefaultConfiguration(getDataFolder());
         defaultConfiguration.saveConfiguration();
+
+        Locale defaultLocale = Locale.forLanguageTag(getConfig().getString("default-locale", "en-US"));
+        i18n = new I18n(this, defaultLocale);
 
         messageConfiguration = new MessageConfiguration(getDataFolder());
         messageConfiguration.saveConfiguration();
