@@ -1,10 +1,8 @@
 package nl.openminetopia.modules.scoreboard.listeners;
 
-import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.ScoreboardManager;
 import nl.openminetopia.utils.ChatUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,16 +22,6 @@ public class PlayerJoinListener implements Listener {
 
             minetopiaPlayer.setScoreboardVisible(true);
             ScoreboardManager.getInstance().addScoreboard(player);
-
-            Bukkit.getServer().getScheduler().runTaskTimer(OpenMinetopia.getInstance(), task -> {
-                if (!player.isOnline()) {
-                    task.cancel();
-                    return;
-                }
-                if (!minetopiaPlayer.isScoreboardVisible()) return;
-
-                ScoreboardManager.getInstance().updateBoard(minetopiaPlayer);
-            }, 0, 20);
         });
     }
 }

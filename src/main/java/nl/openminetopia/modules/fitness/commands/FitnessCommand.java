@@ -26,7 +26,7 @@ public class FitnessCommand extends BaseCommand {
 
             if (minetopiaPlayer == null) return;
 
-            minetopiaPlayer.getFitness().getRunnable().run();
+            minetopiaPlayer.getFitness().getFitnessModule().getFitnessRunnable().forceMarkDirty(player.getUniqueId());
         });
     }
 }

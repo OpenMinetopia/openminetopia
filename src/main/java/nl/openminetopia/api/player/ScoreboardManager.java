@@ -1,16 +1,17 @@
 package nl.openminetopia.api.player;
 
 import lombok.Getter;
+import net.megavex.scoreboardlibrary.api.ScoreboardLibrary;
 import net.megavex.scoreboardlibrary.api.sidebar.Sidebar;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.modules.scoreboard.ScoreboardModule;
 import nl.openminetopia.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class ScoreboardManager {
@@ -26,6 +27,8 @@ public class ScoreboardManager {
 
     public final HashMap<UUID, Sidebar> scoreboards = new HashMap<>();
 
+    private final ScoreboardLibrary scoreboardLibrary = OpenMinetopia.getModuleManager().get(ScoreboardModule.class).getScoreboardLibrary();
+
     public void updateBoard(MinetopiaPlayer minetopiaPlayer) {
         Sidebar sidebar = getScoreboard(minetopiaPlayer.getUuid());
         if (sidebar == null) return;
@@ -35,13 +38,10 @@ public class ScoreboardManager {
         if (player == null) return;
 
         if (!minetopiaPlayer.isInPlace()) {
-            if (!sidebar.players().contains(player)) return;
-            removeScoreboard(player);
+            if (sidebar.players().contains(player)) removeScoreboard(player);
             return;
         }
-        if (minetopiaPlayer.isInPlace() && !sidebar.players().contains(player) && minetopiaPlayer.isScoreboardVisible()) {
-            addScoreboard(player);
-        }
+        if (!sidebar.players().contains(player)) addScoreboard(player);
 
         List<String> lines = OpenMinetopia.getDefaultConfiguration().getScoreboardLines();
         int size = Math.min(lines.size(), 16);
@@ -49,26 +49,33 @@ public class ScoreboardManager {
             String line = lines.get(i);
             if (i == 0) {
                 sidebar.title(ChatUtils.format(minetopiaPlayer, line));
-                continue;
+            } else {
+                sidebar.line(i - 1, ChatUtils.format(minetopiaPlayer, line));
             }
-            sidebar.line(i - 1, ChatUtils.format(minetopiaPlayer, line));
         }
     }
 
     public void addScoreboard(Player player) {
         if (!OpenMinetopia.getDefaultConfiguration().isScoreboardEnabled()) return;
         if (scoreboards.containsKey(player.getUniqueId())) return;
-        Sidebar sidebar = OpenMinetopia.getModuleManager().get(ScoreboardModule.class).getScoreboardLibrary().createSidebar();
+
+        Sidebar sidebar = scoreboardLibrary.createSidebar();
+
         sidebar.addPlayer(player);
         scoreboards.put(player.getUniqueId(), sidebar);
     }
 
     public void removeScoreboard(Player player) {
-        Sidebar sidebar = getScoreboard(player.getUniqueId());
-        if (sidebar == null) return;
-        sidebar.removePlayer(player);
-        sidebar.close();
-        scoreboards.remove(player.getUniqueId());
+        removeScoreboard(player.getUniqueId());
+    }
+
+    public void removeScoreboard(UUID uuid) {
+        Sidebar sidebar = scoreboards.remove(uuid);
+        if (sidebar != null) {
+            Player p = Bukkit.getPlayer(uuid);
+            if (p != null) sidebar.removePlayer(p);
+            sidebar.close();
+        }
     }
 
     public Sidebar getScoreboard(UUID uuid) {

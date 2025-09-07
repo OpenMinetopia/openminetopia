@@ -12,17 +12,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-public class ExprPlaytime extends SimpleExpression<Integer> {
+public class ExprPlaytime extends SimpleExpression<Long> {
 
     static {
-        Skript.registerExpression(ExprPlaytime.class, Integer.class, ExpressionType.COMBINED, "[the] (omt|openminetopia) playtime of %player%");
+        Skript.registerExpression(ExprPlaytime.class, Long.class, ExpressionType.COMBINED, "[the] (omt|openminetopia) playtime of %player%");
     }
 
     private Expression<Player> player;
 
     @Override
-    public Class<? extends Integer> getReturnType() {
-        return Integer.class;
+    public Class<? extends Long> getReturnType() {
+        return Long.class;
     }
 
     @Override
@@ -44,11 +44,11 @@ public class ExprPlaytime extends SimpleExpression<Integer> {
 
     @Override
     @Nullable
-    protected Integer[] get(Event event) {
+    protected Long[] get(Event event) {
         Player p = player.getSingle(event);
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
         if (minetopiaPlayer != null) return null;
-        return new Integer[] {minetopiaPlayer.getPlaytime()};
+        return new Long[] {minetopiaPlayer.getPlaytime()};
 
 
     }

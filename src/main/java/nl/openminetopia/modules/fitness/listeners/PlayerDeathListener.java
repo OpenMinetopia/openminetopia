@@ -31,6 +31,6 @@ public class PlayerDeathListener implements Listener {
         FitnessUtils.clearFitnessEffects(player);
 
         minetopiaPlayer.getFitness().addBooster(amount, expiry);
-        minetopiaPlayer.getFitness().getRunnable().run();
+        minetopiaPlayer.getFitness().getFitnessModule().getFitnessRunnable().forceMarkDirty(player.getUniqueId());
     }
 }

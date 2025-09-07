@@ -20,77 +20,122 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @UtilityClass
 public class ChatUtils {
 
-    public Component color(String message) {
-        message = message.replaceAll("(?i)§([0-9a-fk-or])", "");
-        return MiniMessage.miniMessage().deserialize(message).decoration(TextDecoration.ITALIC, false);
+    private static final MiniMessage MM = MiniMessage.miniMessage();
+
+    private static String stripSectionCodes(String s) {
+        int n = s.length();
+        StringBuilder out = new StringBuilder(n);
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == '§' && i + 1 < n) { i++; continue; } // skip code
+            out.append(c);
+        }
+        return out.toString();
     }
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    public Component color(String message) {
+        String noLegacy = stripSectionCodes(message);
+        return MM.deserialize(noLegacy).decoration(TextDecoration.ITALIC, false);
+    }
 
-    public Component format(MinetopiaPlayer minetopiaPlayer, String message) {
-        Player player = minetopiaPlayer.getBukkit().getPlayer();
+    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
+    private static String nowDate() { return LocalDate.now().format(DATE_FMT); }
+    private static String nowTime() { return LocalTime.now().format(TIME_FMT); }
+
+    public Component format(MinetopiaPlayer mtp, String template) {
+        Player player = mtp.getBukkit().getPlayer();
         if (player == null) return Component.empty();
 
-        int levelUps = minetopiaPlayer.getCalculatedLevel() - minetopiaPlayer.getLevel();
+        final var modules = OpenMinetopia.getModuleManager();
+        final CurrencyModule currencyModule = modules.get(CurrencyModule.class);
+        final FitnessModule fitnessModule   = modules.get(FitnessModule.class);
+        final BankingModule bankingModule   = modules.get(BankingModule.class);
 
-        message = message
-                .replace("<player>", BalaclavaUtils.isWearingBalaclava(player) ? "<obf>Balaclava</obf><reset>" : player.getName())
-                .replace("<level_color>", minetopiaPlayer.getActiveColor(OwnableColorType.LEVEL).color())
-                .replace("<level>", minetopiaPlayer.getLevel() + "")
-                .replace("<calculated_level>", minetopiaPlayer.getCalculatedLevel() + "")
+        boolean balaclava = BalaclavaUtils.isWearingBalaclava(player);
+        String displayName = balaclava ? "<obf>Balaclava</obf><reset>" : stripMiniMessage(player.displayName());
+        String namePlain   = balaclava ? "<obf>Balaclava</obf><reset>" : player.getName();
+
+        int levelUps = mtp.getCalculatedLevel() - mtp.getLevel();
+
+        String msg = template;
+
+        // vaste placeholders
+        msg = msg
+                .replace("<player>", namePlain)
+                .replace("<level_color>", mtp.getActiveColor(OwnableColorType.LEVEL).color())
+                .replace("<level>", Integer.toString(mtp.getLevel()))
+                .replace("<calculated_level>", Integer.toString(mtp.getCalculatedLevel()))
                 .replace("<levelups>", levelUps == 0 ? "<gold>0" : (levelUps > 0 ? "<green>+" + levelUps : "<red>" + levelUps))
-                .replace("<prefix_color>", minetopiaPlayer.getActiveColor(OwnableColorType.PREFIX).color())
-                .replace("<prefix>", minetopiaPlayer.getActivePrefix().getPrefix())
-                .replace("<name_color>", minetopiaPlayer.getActiveColor(OwnableColorType.NAME).color())
-                .replace("<display_name>", BalaclavaUtils.isWearingBalaclava(player) ? "<obf>Balaclava</obf><reset>" : ChatUtils.stripMiniMessage(player.displayName()))
-                .replace("<chat_color>", minetopiaPlayer.getActiveColor(OwnableColorType.CHAT).color())
-                .replace("<date>", dateFormat.format(new Date()))
-                .replace("<time>", timeFormat.format(new Date()))
+                .replace("<prefix_color>", mtp.getActiveColor(OwnableColorType.PREFIX).color())
+                .replace("<prefix>", mtp.getActivePrefix().getPrefix())
+                .replace("<name_color>", mtp.getActiveColor(OwnableColorType.NAME).color())
+                .replace("<display_name>", displayName)
+                .replace("<chat_color>", mtp.getActiveColor(OwnableColorType.CHAT).color())
+                .replace("<date>", nowDate())
+                .replace("<time>", nowTime())
                 .replace("<new_line>", "\n");
 
-        CurrencyModule currencyModule = OpenMinetopia.getModuleManager().get(CurrencyModule.class);
-        for (CurrencyModel currencyModel : currencyModule.getCurrencyModels().get(player.getUniqueId())) {
-            message = message.replace("<currency_" + currencyModel.getName() + ">", String.valueOf(currencyModel.getBalance()));
+        // currencies (null-safe)
+        var list = currencyModule.getCurrencyModels().get(player.getUniqueId());
+        if (list != null) {
+            for (CurrencyModel c : list) {
+                msg = msg.replace("<currency_" + c.getName() + ">", String.valueOf(c.getBalance()));
+            }
         }
 
-        if (minetopiaPlayer.isInPlace()) {
-            message = message
-                    .replace("<world_title>", minetopiaPlayer.getWorld().getTitle())
-                    .replace("<world_loadingname>", minetopiaPlayer.getWorld().getLoadingName())
-                    .replace("<world_name>", minetopiaPlayer.getWorld().getName())
-                    .replace("<world_color>", minetopiaPlayer.getWorld().getColor())
-                    .replace("<city_title>", minetopiaPlayer.getPlace().getTitle()) // Defaults to the world name if the player is not in a city
-                    .replace("<city_loadingname>", minetopiaPlayer.getPlace().getLoadingName()) // Defaults to the world loading name if the player is not in a city
-                    .replace("<city_name>", minetopiaPlayer.getPlace().getName()) // Defaults to the world name if the player is not in a city
-                    .replace("<temperature>", minetopiaPlayer.getPlace().getTemperature() + "") // Defaults to the world temperature if the player is not in a city
-                    .replace("<city_color>", minetopiaPlayer.getPlace().getColor()); // Defaults to the world color if the player is not in a city
+        // place/world (alleen als inPlace)
+        if (mtp.isInPlace()) {
+            var w = mtp.getWorld();
+            var p = mtp.getPlace();
+            msg = msg
+                    .replace("<world_title>", w.getTitle())
+                    .replace("<world_loadingname>", w.getLoadingName())
+                    .replace("<world_name>", w.getName())
+                    .replace("<world_color>", w.getColor())
+                    .replace("<city_title>", p.getTitle())
+                    .replace("<city_loadingname>", p.getLoadingName())
+                    .replace("<city_name>", p.getName())
+                    .replace("<temperature>", Double.toString(p.getTemperature()))
+                    .replace("<city_color>", p.getColor());
         }
 
-        if (minetopiaPlayer.getFitness().getStatistics() != null && !minetopiaPlayer.getFitness().getStatistics().isEmpty()) {
-            FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
-            message = message
-                    .replace("<fitness>", minetopiaPlayer.getFitness().getTotalFitness() + "")
-                    .replace("<max_fitness>", fitnessModule.getConfiguration().getMaxFitnessLevel() + "");
+        // fitness
+        var stats = mtp.getFitness().getStatistics();
+        if (stats != null && !stats.isEmpty()) {
+            msg = msg
+                    .replace("<fitness>", Integer.toString(mtp.getFitness().getTotalFitness()))
+                    .replace("<max_fitness>", Integer.toString(fitnessModule.getConfiguration().getMaxFitnessLevel()));
         }
 
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
-        BankAccountModel accountModel = bankingModule.getAccountById(player.getUniqueId());
-        if (accountModel != null) {
-            message = message.replace("<balance_formatted>", bankingModule.format(accountModel.getBalance())
-                    .replace("<balance>", String.valueOf(accountModel.getBalance())));
+        // banking
+        var account = bankingModule.getAccountById(player.getUniqueId());
+        if (account != null) {
+            String formatted = bankingModule.format(account.getBalance());
+            msg = msg
+                    .replace("<balance_formatted>", formatted)
+                    .replace("<balance>", String.valueOf(account.getBalance()));
         }
 
-        if (OpenMinetopia.getInstance().getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            message = PlaceholderAPI.setPlaceholders(player, message);
+        // PlaceholderAPI alleen indien aanwezig en nodig
+        if (hasPlaceholderAPI() && msg.indexOf('%') >= 0) {
+            msg = PlaceholderAPI.setPlaceholders(player, msg);
         }
 
-        return color(message);
+        return color(msg); // gebruikt MM (single) en snelle stripSectionCodes
+    }
+
+
+    private static boolean hasPlaceholderAPI() {
+        return OpenMinetopia.getInstance().getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 
     public void sendMessage(Player player, String message) {
@@ -114,11 +159,11 @@ public class ChatUtils {
     }
 
     public String stripMiniMessage(Component component) {
-        return MiniMessage.miniMessage().serialize(component);
+        return MM.serialize(component);
     }
 
     public String stripMiniMessage(String message) {
-        return MiniMessage.miniMessage().stripTags(message);
+        return MM.stripTags(message);
     }
 
     public String rawMiniMessage(Component component) {

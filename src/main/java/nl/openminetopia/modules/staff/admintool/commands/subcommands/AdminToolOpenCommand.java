@@ -40,7 +40,7 @@ public class AdminToolOpenCommand extends BaseCommand {
             }
 
             if (minetopiaPlayer == null) return;
-            if (!offlinePlayer.isOnline()) minetopiaPlayer.getFitness().getRunnable().forceRun();
+            if (!offlinePlayer.isOnline()) minetopiaPlayer.getFitness().getFitnessModule().getFitnessRunnable().forceMarkDirty(offlinePlayer.getUniqueId());
 
             BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
             BankAccountModel bankAccountModel = bankingModule.getAccountByIdAsync(offlinePlayer.getUniqueId()).join();

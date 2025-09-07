@@ -50,9 +50,9 @@ public class FitnessStatisticsVerticle extends BaseVerticle {
                     JSONObject statisticsObject = new JSONObject();
 
                     if (player.isOnline()) {
-                        minetopiaPlayer.getFitness().getRunnable().run();
+                        minetopiaPlayer.getFitness().getFitnessModule().getFitnessRunnable().forceMarkDirty(playerUuid);
                     } else {
-                        minetopiaPlayer.getFitness().getRunnable().forceRun();
+                        minetopiaPlayer.getFitness().getFitnessModule().getFitnessRunnable().forceMarkDirty(playerUuid);
                     }
 
                     minetopiaPlayer.getFitness().getStatistics().forEach(statistic -> {

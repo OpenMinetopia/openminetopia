@@ -1,24 +1,30 @@
 package nl.openminetopia.modules.fitness.runnables;
 
+import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.framework.runnables.AbstractDirtyRunnable;
 import nl.openminetopia.modules.fitness.utils.FitnessUtils;
-import org.bukkit.scheduler.BukkitRunnable;
+import nl.openminetopia.modules.player.utils.PlaytimeUtil;
 
-public class HealthStatisticRunnable extends BukkitRunnable {
 
-    private final MinetopiaPlayer minetopiaPlayer;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
 
-    public HealthStatisticRunnable(MinetopiaPlayer minetopiaPlayer) {
-        this.minetopiaPlayer = minetopiaPlayer;
+public class HealthStatisticRunnable extends AbstractDirtyRunnable<UUID> {
+
+    private final PlayerManager playerManager;
+
+    public HealthStatisticRunnable(PlayerManager playerManager, long minIntervalMs, int batch, long heartbeatMs, Supplier<List<UUID>> allKeysSupplier) {
+        super(minIntervalMs, batch, heartbeatMs, allKeysSupplier);
+        this.playerManager = playerManager;
     }
 
     @Override
-    public void run() {
-        if (minetopiaPlayer == null || !minetopiaPlayer.getBukkit().isOnline()) {
-            cancel();
-            return;
-        }
-        // check if playtime is a multiple of 3600
-        if (minetopiaPlayer.getPlaytime() % 3600 == 0) FitnessUtils.performHealthCheck(minetopiaPlayer);
+    protected void process(UUID key) {
+        MinetopiaPlayer minetopiaPlayer = playerManager.getOnlinePlayers().get(key);
+        if (minetopiaPlayer == null) return;
+        if (PlaytimeUtil.minutes(minetopiaPlayer.getPlaytime()) % 60 == 0) FitnessUtils.performHealthCheck(minetopiaPlayer);
     }
+
 }

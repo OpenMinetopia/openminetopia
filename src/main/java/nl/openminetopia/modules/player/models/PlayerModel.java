@@ -28,7 +28,10 @@ public class PlayerModel extends StormModel {
     private Integer level;
 
     @Column(name = "playtime", defaultValue = "0")
-    private Integer playtime;
+    private Long playtime;
+
+    @Column(name = "wage_time", defaultValue = "0")
+    private Long wageTime;
 
     @Column(
             type = ColumnType.ONE_TO_MANY,

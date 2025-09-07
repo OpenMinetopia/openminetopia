@@ -1,34 +1,37 @@
 package nl.openminetopia.modules.player.runnables;
 
-import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.framework.runnables.AbstractDirtyRunnable;
 import nl.openminetopia.modules.player.PlayerModule;
 import nl.openminetopia.modules.player.configuration.LevelCheckConfiguration;
 import nl.openminetopia.modules.player.events.PlayerLevelChangeEvent;
 import nl.openminetopia.modules.player.utils.LevelUtil;
 import nl.openminetopia.utils.events.EventUtils;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class LevelCalculateRunnable extends BukkitRunnable {
 
-    private final MinetopiaPlayer minetopiaPlayer;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
 
-    public LevelCalculateRunnable(MinetopiaPlayer minetopiaPlayer) {
-        this.minetopiaPlayer = minetopiaPlayer;
+public class LevelCalculateRunnable extends AbstractDirtyRunnable<UUID> {
+
+    private final PlayerManager playerManager;
+    private final PlayerModule playerModule;
+
+    public LevelCalculateRunnable(PlayerModule playerModule, PlayerManager playerManager, long minIntervalMs, int batch, long heartbeatMs, Supplier<List<UUID>> allKeysSupplier) {
+        super(minIntervalMs, batch, heartbeatMs, allKeysSupplier);
+        this.playerModule = playerModule;
+        this.playerManager = playerManager;
     }
 
     @Override
-    public void run() {
-        if (minetopiaPlayer == null || !minetopiaPlayer.getBukkit().isOnline()) {
-            cancel();
-            return;
-        }
+    protected void process(UUID key) {
+        MinetopiaPlayer minetopiaPlayer = playerManager.getOnlinePlayers().get(key);
+        if (minetopiaPlayer == null) return;
 
         int oldLevel = minetopiaPlayer.getLevel();
-
-        PlayerModule playerModule = OpenMinetopia.getModuleManager().get(PlayerModule.class);
         LevelCheckConfiguration configuration = playerModule.getConfiguration();
-        if (!minetopiaPlayer.isInPlace()) return;
         int calculatedLevel = LevelUtil.calculateLevel(minetopiaPlayer);
         if (configuration.isAutoLevelUp()) {
             PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(minetopiaPlayer.getBukkit().getPlayer(), oldLevel, calculatedLevel);

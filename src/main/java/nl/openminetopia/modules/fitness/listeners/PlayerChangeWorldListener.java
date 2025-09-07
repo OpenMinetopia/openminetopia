@@ -16,6 +16,6 @@ public class PlayerChangeWorldListener implements Listener {
         if (placesModule.getWorld(event.getFrom().getSpawnLocation()) != null) return;
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(event.getPlayer());
         if (minetopiaPlayer == null) return;
-        minetopiaPlayer.getFitness().getRunnable().run();
+        minetopiaPlayer.getFitness().getFitnessModule().getFitnessRunnable().forceMarkDirty(event.getPlayer().getUniqueId());
     }
 }

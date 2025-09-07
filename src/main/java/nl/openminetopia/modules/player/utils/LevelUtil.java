@@ -42,7 +42,7 @@ public class LevelUtil {
         points += (double) (fitness.getTotalFitness() / 20) * configuration.getPointsPer20Fitness();
 
         // Points per 1 hour playtime
-        points += (double) (minetopiaPlayer.getPlaytime() / 3600) * configuration.getPointsPerHourPlayed();
+        points += (double) (minetopiaPlayer.getPlaytime() / 1000 / 3600) * configuration.getPointsPerHourPlayed();
 
         // Points per plot
         Player player = minetopiaPlayer.getBukkit().getPlayer();

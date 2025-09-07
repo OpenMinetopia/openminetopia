@@ -45,7 +45,7 @@ public class OpenMinetopiaExpansion extends PlaceholderExpansion {
 
         if (minetopiaPlayer == null) return null;
 
-        long playtimeInSeconds = minetopiaPlayer.getPlaytime();
+        long playtimeInSeconds = minetopiaPlayer.getPlaytime() / 1000;
         long days = playtimeInSeconds / 86400;
         long hours = (playtimeInSeconds % 86400) / 3600;
         long minutes = ((playtimeInSeconds % 86400) % 3600) / 60;
