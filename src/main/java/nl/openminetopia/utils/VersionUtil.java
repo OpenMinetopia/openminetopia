@@ -9,7 +9,6 @@ public class VersionUtil {
     // Checks if the current server version is compatible with the given minimum version.
     public boolean isCompatible(String minVersion) {
         String currentVersion = Bukkit.getMinecraftVersion();
-        System.out.println("Current version: " + currentVersion + ", Minimum required version: " + minVersion);
         if (minVersion == null) return false;
         if (minVersion.isEmpty()) return true;
         if (currentVersion.isEmpty()) return false;
