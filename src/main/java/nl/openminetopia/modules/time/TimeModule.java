@@ -6,6 +6,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.places.PlacesModule;
 import nl.openminetopia.modules.time.tasks.TimeSyncRunnable;
+import nl.openminetopia.utils.FeatureUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -20,6 +21,12 @@ public class TimeModule extends SpigotModule<@NotNull OpenMinetopia> {
     @Override
     public void onEnable() {
         if (!OpenMinetopia.getDefaultConfiguration().isSyncTime()) return;
+
+        // Check if time feature is enabled
+        if (FeatureUtils.isFeatureDisabled("time")) {
+            getLogger().info("Time feature is disabled in config.yml");
+            return;
+        }
 
         PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
         placesModule.worldModels.forEach(worldModel -> {

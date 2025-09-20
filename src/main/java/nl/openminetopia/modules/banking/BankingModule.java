@@ -22,6 +22,7 @@ import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.data.utils.StormUtils;
 import nl.openminetopia.modules.transactions.TransactionsModule;
+import nl.openminetopia.utils.FeatureUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.jetbrains.annotations.NotNull;
@@ -49,6 +50,12 @@ public class BankingModule extends SpigotModule<@NotNull OpenMinetopia> {
     public void onEnable() {
         configuration = new BankingConfiguration(OpenMinetopia.getInstance().getDataFolder());
         configuration.saveConfiguration();
+
+        // Check if banking feature is enabled
+        if (FeatureUtils.isFeatureDisabled("banking")) {
+            getLogger().info("Banking feature is disabled in config.yml");
+            return;
+        }
 
         decimalFormat = new DecimalFormat(configuration.getEconomyFormat());
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.GERMAN));

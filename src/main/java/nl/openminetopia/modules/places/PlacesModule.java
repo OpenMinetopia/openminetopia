@@ -22,6 +22,7 @@ import nl.openminetopia.modules.places.listeners.PlayerMoveListener;
 import nl.openminetopia.modules.places.listeners.PlayerTeleportListener;
 import nl.openminetopia.modules.places.models.CityModel;
 import nl.openminetopia.modules.places.models.WorldModel;
+import nl.openminetopia.utils.FeatureUtils;
 import nl.openminetopia.utils.WorldGuardUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,6 +45,12 @@ public class PlacesModule extends SpigotModule<@NotNull OpenMinetopia> {
 
     @Override
     public void onEnable() {
+        // Check if places feature is enabled
+        if (FeatureUtils.isFeatureDisabled("places")) {
+            getLogger().info("Places feature is disabled in config.yml");
+            return;
+        }
+
         registerComponent(new MTWorldCommand());
         registerComponent(new MTWorldCreateCommand());
         registerComponent(new MTWorldRemoveCommand());

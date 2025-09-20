@@ -1,3 +1,42 @@
+features:
+  pvp: true
+  plotcalculate: true
+  fitness: true
+  levelcheck: true
+  wage: true
+  costs: true
+  books: true
+  fine: true
+  receipt: true
+  identification: true
+  kvk: true
+  plotregistration: true
+  driverslicense: true
+  colors: true
+  labymod: true
+  currencies: true
+  transactions: true
+  time: true
+  teleporter: true
+  staff: true
+  skript: true
+  scoreboard: true
+  restapi: true
+  prefix: true
+  portal: true
+  police: true
+  plots: true
+  player: true
+  places: true
+  misc: true
+  lock: true
+  items: true
+  detectiongates: true
+  data: true
+  core: true
+  chat: true
+  banking: true
+
 pvp:
   enabled: true
   items:
