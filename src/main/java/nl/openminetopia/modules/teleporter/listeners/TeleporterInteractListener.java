@@ -34,9 +34,15 @@ public class TeleporterInteractListener implements Listener {
         // Check if player already has an active teleporter task
         TeleporterTaskManager taskManager = TeleporterTaskManager.getInstance();
         if (taskManager.hasActiveTask(player)) {
-            Component activeTaskMessage = Component.text("Je hebt al een teleportatie bezig!")
-                    .color(NamedTextColor.RED);
-            player.sendMessage(activeTaskMessage);
+            // Don't show message if player is already on the same teleporter block
+            TeleporterCountdownTask activeTask = taskManager.getActiveTask(player);
+            if (activeTask != null && !activeTask.isOnSameTeleporterBlock(block)) {
+                Component activeTaskMessage = Component.text("Je hebt al een teleportatie bezig!")
+                        .color(NamedTextColor.RED);
+                player.sendMessage(activeTaskMessage);
+                return;
+            }
+            // If on same block, just return without message
             return;
         }
         
@@ -56,9 +62,9 @@ public class TeleporterInteractListener implements Listener {
         // Get cooldown configuration
         int cooldownSeconds = OpenMinetopia.getDefaultConfiguration().getTeleporterCooldownSeconds();
         
-        // Start countdown task with player's current location for movement tracking
-        Location startLocation = player.getLocation();
-        TeleporterCountdownTask countdownTask = new TeleporterCountdownTask(player, location, startLocation, cooldownSeconds);
+        // Start countdown task with teleporter block location for movement tracking
+        Location teleporterBlockLocation = block.getLocation();
+        TeleporterCountdownTask countdownTask = new TeleporterCountdownTask(player, location, teleporterBlockLocation, cooldownSeconds);
         countdownTask.start();
     }
 

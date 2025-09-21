@@ -19,6 +19,7 @@ public class TeleporterCountdownTask extends BukkitRunnable {
     private final Player player;
     private final Location destination;
     private final Location startLocation;
+    private final Location teleporterBlockLocation;
     private final int cooldownSeconds;
     private int currentCountdown;
     
@@ -26,6 +27,7 @@ public class TeleporterCountdownTask extends BukkitRunnable {
         this.player = player;
         this.destination = destination;
         this.startLocation = startLocation;
+        this.teleporterBlockLocation = startLocation.getBlock().getLocation();
         this.cooldownSeconds = cooldownSeconds;
         this.currentCountdown = cooldownSeconds;
     }
@@ -39,11 +41,9 @@ public class TeleporterCountdownTask extends BukkitRunnable {
             return;
         }
         
-        // Check if player moved away from the teleporter
-        if (hasPlayerMoved()) {
-            Component cancelMessage = Component.text("Teleportatie geannuleerd - je bent te ver weg!")
-                    .color(NamedTextColor.RED);
-            player.sendMessage(cancelMessage);
+        // Check if player is still on the teleporter block
+        if (!isPlayerOnTeleporterBlock()) {
+            // Cancel silently without message
             TeleporterTaskManager.getInstance().cancelTask(player);
             this.cancel();
             return;
@@ -93,12 +93,22 @@ public class TeleporterCountdownTask extends BukkitRunnable {
     }
     
     /**
-     * Check if the player has moved away from the teleporter
-     * @return true if the player has moved too far, false otherwise
+     * Check if the player is still on the teleporter block
+     * @return true if the player is on the teleporter block, false otherwise
      */
-    private boolean hasPlayerMoved() {
+    private boolean isPlayerOnTeleporterBlock() {
         Location currentLocation = player.getLocation();
-        return currentLocation.distance(startLocation) > 2.0; // Allow 2 blocks of movement
+        Location currentBlockLocation = currentLocation.getBlock().getLocation();
+        return currentBlockLocation.equals(teleporterBlockLocation);
+    }
+    
+    /**
+     * Check if the player is on the same teleporter block as this task
+     * @param block The block to check
+     * @return true if the player is on the same teleporter block
+     */
+    public boolean isOnSameTeleporterBlock(org.bukkit.block.Block block) {
+        return block.getLocation().equals(teleporterBlockLocation);
     }
     
     /**
