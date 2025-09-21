@@ -1,7 +1,7 @@
 package nl.openminetopia.modules.labymod.configuration;
 
 import lombok.Getter;
-import nl.openminetopia.utils.ConfigurateConfig;
+import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.io.File;

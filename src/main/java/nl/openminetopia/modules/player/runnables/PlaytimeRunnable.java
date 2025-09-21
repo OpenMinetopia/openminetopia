@@ -73,6 +73,3 @@ public class PlaytimeRunnable extends BukkitRunnable {
                 .replace("<amount>", String.valueOf(wage)));
     }
 }
-
-
-

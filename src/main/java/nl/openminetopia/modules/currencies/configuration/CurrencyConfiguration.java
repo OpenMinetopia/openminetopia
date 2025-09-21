@@ -3,7 +3,7 @@ package nl.openminetopia.modules.currencies.configuration;
 import lombok.Getter;
 import nl.openminetopia.modules.currencies.CurrencyModule;
 import nl.openminetopia.modules.currencies.objects.RegisteredCurrency;
-import nl.openminetopia.utils.ConfigurateConfig;
+import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 

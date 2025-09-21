@@ -3,7 +3,7 @@ package nl.openminetopia.modules.color.configuration;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.color.configuration.components.ColorComponent;
 import nl.openminetopia.modules.color.objects.OwnableColor;
-import nl.openminetopia.utils.ConfigurateConfig;
+import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 

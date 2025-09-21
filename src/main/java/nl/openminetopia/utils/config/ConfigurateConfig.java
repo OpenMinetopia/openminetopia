@@ -1,4 +1,4 @@
-package nl.openminetopia.utils;
+package nl.openminetopia.utils.config;
 
 import lombok.Getter;
 import lombok.SneakyThrows;

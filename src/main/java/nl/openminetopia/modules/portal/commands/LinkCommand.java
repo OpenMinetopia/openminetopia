@@ -33,25 +33,23 @@ public class LinkCommand extends BaseCommand {
         webClient.postAbs(portalModule.getPortalApiUrl() + "/minecraft/verify")
                 .putHeader("Content-Type", "application/json")
                 .putHeader("X-API-Key", OpenMinetopia.getDefaultConfiguration().getPortalToken())
-                .sendBuffer(Buffer.buffer(requestBody.toString()), ar -> {
-                    if (ar.failed()) {
-                        // Handle failure case
-                        ChatUtils.sendMessage(player, "<red>Er is iets fout gegaan bij het verifiëren van je account.");
-                        ar.cause().printStackTrace();
-                        return;
-                    }
-
-                    HttpResponse<Buffer> response = ar.result();
+                .sendBuffer(Buffer.buffer(requestBody.toString()))
+                .onSuccess(response -> {
                     if (response.statusCode() != 200) {
-                        // Handle non-200 status codes
                         ChatUtils.sendMessage(player, "<red>Er is iets fout gegaan bij het verifiëren van je account.");
-                        OpenMinetopia.getInstance().getLogger().warning("Response code " + response.statusCode() + " " + response.statusMessage()
-                                + " while trying to verify player " + player.getName());
+                        OpenMinetopia.getInstance().getLogger().warning(
+                                "Response code " + response.statusCode() + " " + response.statusMessage()
+                                        + " while trying to verify player " + player.getName()
+                        );
                         return;
                     }
-
-                    // Successful verification
                     ChatUtils.sendMessage(player, "<green>Je account is succesvol gekoppeld!");
+                })
+                .onFailure(err -> {
+                    ChatUtils.sendMessage(player, "<red>Er is iets fout gegaan bij het verifiëren van je account.");
+                    OpenMinetopia.getInstance().getLogger().severe(
+                            "An error occurred while trying to verify player " + player.getName() + ": " + err.getMessage()
+                    );
                 });
     }
 }

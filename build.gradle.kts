@@ -79,15 +79,16 @@ dependencies {
     compileOnly("com.github.SkriptLang:Skript:2.10.2")
 
     /* Rest API & Portal dependencies */
-    compileOnly("io.vertx:vertx-core:4.5.13")
-    compileOnly("io.vertx:vertx-web:4.5.13")
-    compileOnly("io.vertx:vertx-web-client:4.5.13")
+    val vertxVersion = "5.0.4"
+    compileOnly("io.vertx:vertx-core:$vertxVersion")
+    compileOnly("io.vertx:vertx-web:$vertxVersion")
+    compileOnly("io.vertx:vertx-web-client:$vertxVersion")
 
     compileOnly("net.objecthunter:exp4j:0.4.8")
 
     /* Npcs */
     compileOnly("net.citizensnpcs:citizensapi:2.0.38-SNAPSHOT")
-    compileOnly("de.oliver:FancyNpcs:2.4.4")
+    compileOnly("de.oliver:FancyNpcs:2.6.0")
 
     /* Labymod */
     compileOnly("net.labymod.serverapi:server-bukkit:1.0.6")

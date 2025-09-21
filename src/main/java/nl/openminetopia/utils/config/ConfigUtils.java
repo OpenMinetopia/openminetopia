@@ -1,10 +1,10 @@
-package nl.openminetopia.utils;
+package nl.openminetopia.utils.config;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.utils.VersionUtil;
 import nl.openminetopia.utils.item.ItemBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;

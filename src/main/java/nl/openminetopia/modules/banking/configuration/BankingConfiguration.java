@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.banking.menus.BankContentsMenu;
-import nl.openminetopia.utils.ConfigurateConfig;
+import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.bukkit.Material;
 
 import java.io.File;

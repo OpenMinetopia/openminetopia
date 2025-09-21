@@ -5,7 +5,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.items.ItemsModule;
 import nl.openminetopia.modules.items.configuration.objects.CustomItem;
 import nl.openminetopia.modules.items.configuration.objects.ItemCategory;
-import nl.openminetopia.utils.ConfigurateConfig;
+import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.EquipmentSlot;

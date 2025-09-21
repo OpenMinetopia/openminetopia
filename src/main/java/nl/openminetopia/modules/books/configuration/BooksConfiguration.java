@@ -2,7 +2,7 @@ package nl.openminetopia.modules.books.configuration;
 
 import lombok.Getter;
 import nl.openminetopia.modules.books.objects.CustomBook;
-import nl.openminetopia.utils.ConfigurateConfig;
+import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.bukkit.Material;
 
 import java.io.File;

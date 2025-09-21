@@ -2,7 +2,7 @@ package nl.openminetopia.modules.plots.configuration;
 
 import lombok.Getter;
 import nl.openminetopia.OpenMinetopia;
-import nl.openminetopia.utils.ConfigurateConfig;
+import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.bukkit.Material;
 
 import java.io.File;
