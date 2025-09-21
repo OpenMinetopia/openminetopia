@@ -1,10 +1,16 @@
 package nl.openminetopia.modules.teleporter.listeners;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.teleporter.events.PlayerUseTeleporterEvent;
+import nl.openminetopia.modules.teleporter.tasks.TeleporterCountdownTask;
+import nl.openminetopia.modules.teleporter.utils.TeleporterCooldownManager;
 import nl.openminetopia.modules.teleporter.utils.TeleporterUtil;
 import nl.openminetopia.utils.events.EventUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -22,10 +28,27 @@ public class TeleporterInteractListener implements Listener {
         Location location = TeleporterUtil.blockLocation(block);
         if (location == null) return;
 
-        PlayerUseTeleporterEvent playerUseTeleporterEvent = new PlayerUseTeleporterEvent(event.getPlayer(), location);
+        Player player = event.getPlayer();
+        
+        // Check if player is already on cooldown
+        TeleporterCooldownManager cooldownManager = TeleporterCooldownManager.getInstance();
+        if (cooldownManager.isOnCooldown(player)) {
+            int remainingSeconds = cooldownManager.getRemainingCooldown(player);
+            Component cooldownMessage = Component.text("Je moet nog " + remainingSeconds + " seconden wachten voordat je opnieuw kunt teleporteren!")
+                    .color(NamedTextColor.RED);
+            player.sendMessage(cooldownMessage);
+            return;
+        }
+
+        PlayerUseTeleporterEvent playerUseTeleporterEvent = new PlayerUseTeleporterEvent(player, location);
         if (EventUtils.callCancellable(playerUseTeleporterEvent)) return;
 
-        event.getPlayer().teleport(location);
+        // Get cooldown configuration
+        int cooldownSeconds = OpenMinetopia.getDefaultConfiguration().getTeleporterCooldownSeconds();
+        
+        // Start countdown task
+        TeleporterCountdownTask countdownTask = new TeleporterCountdownTask(player, location, cooldownSeconds);
+        countdownTask.start();
     }
 
 }
