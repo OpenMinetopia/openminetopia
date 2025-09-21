@@ -6,6 +6,7 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.teleporter.events.PlayerUseTeleporterEvent;
 import nl.openminetopia.modules.teleporter.tasks.TeleporterCountdownTask;
 import nl.openminetopia.modules.teleporter.utils.TeleporterCooldownManager;
+import nl.openminetopia.modules.teleporter.utils.TeleporterTaskManager;
 import nl.openminetopia.modules.teleporter.utils.TeleporterUtil;
 import nl.openminetopia.utils.events.EventUtils;
 import org.bukkit.Location;
@@ -30,6 +31,15 @@ public class TeleporterInteractListener implements Listener {
 
         Player player = event.getPlayer();
         
+        // Check if player already has an active teleporter task
+        TeleporterTaskManager taskManager = TeleporterTaskManager.getInstance();
+        if (taskManager.hasActiveTask(player)) {
+            Component activeTaskMessage = Component.text("Je hebt al een teleportatie bezig!")
+                    .color(NamedTextColor.RED);
+            player.sendMessage(activeTaskMessage);
+            return;
+        }
+        
         // Check if player is already on cooldown
         TeleporterCooldownManager cooldownManager = TeleporterCooldownManager.getInstance();
         if (cooldownManager.isOnCooldown(player)) {
@@ -46,8 +56,9 @@ public class TeleporterInteractListener implements Listener {
         // Get cooldown configuration
         int cooldownSeconds = OpenMinetopia.getDefaultConfiguration().getTeleporterCooldownSeconds();
         
-        // Start countdown task
-        TeleporterCountdownTask countdownTask = new TeleporterCountdownTask(player, location, cooldownSeconds);
+        // Start countdown task with player's current location for movement tracking
+        Location startLocation = player.getLocation();
+        TeleporterCountdownTask countdownTask = new TeleporterCountdownTask(player, location, startLocation, cooldownSeconds);
         countdownTask.start();
     }
 
