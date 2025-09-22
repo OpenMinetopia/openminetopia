@@ -74,7 +74,6 @@ public class BootEffectSelectionMenu extends Menu {
                     .name(ChatUtils.color("<gold>" + effect.getDisplayName()))
                     .lore(ChatUtils.color("<gray>" + effect.getDescription()))
                     .asGuiItem(event -> {
-                        event.setCancelled(true); // Prevent item giving
                         Player player = (Player) event.getWhoClicked();
                         new BootMultiplierSelectionMenu(bootType, effect).open(player);
                     }));
