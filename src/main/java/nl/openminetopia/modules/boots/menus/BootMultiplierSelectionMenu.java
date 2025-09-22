@@ -15,6 +15,9 @@ public class BootMultiplierSelectionMenu extends Menu {
     public BootMultiplierSelectionMenu(BootType bootType, BootEffect effect) {
         super("<gold>Boots Multiplier - " + bootType.getDisplayName() + " (" + effect.getDisplayName() + ")", 3);
         
+        // Disable all interactions to prevent items from being taken
+        gui.disableAllInteractions();
+        
         // Fill borders with red stained glass panes
         fillBorders();
         
@@ -29,8 +32,8 @@ public class BootMultiplierSelectionMenu extends Menu {
     }
     
     private void addSpeedMultipliers(BootType bootType, BootEffect effect) {
-        double[] multipliers = {0.01, 0.02, 0.03, 0.04, 0.05};
-        int[] slots = {10, 12, 14, 16, 18};
+        double[] multipliers = {0.1, 0.2, 0.3, 0.4, 0.5};
+        int[] slots = {9, 11, 13, 15, 17};
         
         for (int i = 0; i < multipliers.length; i++) {
             double multiplier = multipliers[i];
@@ -43,7 +46,10 @@ public class BootMultiplierSelectionMenu extends Menu {
                         Player player = (Player) event.getWhoClicked();
                         CustomBoots customBoots = new CustomBoots(bootType, effect, multiplier);
                         player.getInventory().addItem(customBoots.createBoots());
-                        player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        
+                        // Create proper message with boot type and multiplier
+                        String bootTypeName = "Speedboots " + multiplier;
+                        player.sendMessage(ChatUtils.color("<green>Je hebt " + bootTypeName + " ontvangen!"));
                         player.closeInventory();
                     }));
         }
@@ -51,7 +57,7 @@ public class BootMultiplierSelectionMenu extends Menu {
     
     private void addIceMultipliers(BootType bootType, BootEffect effect) {
         int[] levels = {1, 2};
-        int[] slots = {12, 14};
+        int[] slots = {11, 13};
         
         for (int i = 0; i < levels.length; i++) {
             int level = levels[i];
@@ -64,7 +70,10 @@ public class BootMultiplierSelectionMenu extends Menu {
                         Player player = (Player) event.getWhoClicked();
                         CustomBoots customBoots = new CustomBoots(bootType, effect, level);
                         player.getInventory().addItem(customBoots.createBoots());
-                        player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        
+                        // Create proper message with boot type and multiplier
+                        String bootTypeName = "Ice Boots " + level;
+                        player.sendMessage(ChatUtils.color("<green>Je hebt " + bootTypeName + " ontvangen!"));
                         player.closeInventory();
                     }));
         }
@@ -72,8 +81,8 @@ public class BootMultiplierSelectionMenu extends Menu {
     
     private void addBlubMultipliers(BootType bootType, BootEffect effect) {
         // For blub boots, we'll use the same speed multipliers but with different description
-        double[] multipliers = {0.01, 0.02, 0.03, 0.04, 0.05};
-        int[] slots = {10, 12, 14, 16, 18};
+        double[] multipliers = {0.1, 0.2, 0.3, 0.4, 0.5};
+        int[] slots = {9, 11, 13, 15, 17};
         
         for (int i = 0; i < multipliers.length; i++) {
             double multiplier = multipliers[i];
@@ -86,7 +95,10 @@ public class BootMultiplierSelectionMenu extends Menu {
                         Player player = (Player) event.getWhoClicked();
                         CustomBoots customBoots = new CustomBoots(bootType, effect, multiplier);
                         player.getInventory().addItem(customBoots.createBoots());
-                        player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        
+                        // Create proper message with boot type and multiplier
+                        String bootTypeName = "Blubboots " + multiplier;
+                        player.sendMessage(ChatUtils.color("<green>Je hebt " + bootTypeName + " ontvangen!"));
                         player.closeInventory();
                     }));
         }

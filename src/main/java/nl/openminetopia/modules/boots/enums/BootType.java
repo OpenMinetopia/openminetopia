@@ -4,6 +4,7 @@ import org.bukkit.Material;
 
 public enum BootType {
     LEATHER(Material.LEATHER_BOOTS, "Leather Boots"),
+    CHAINMAIL(Material.CHAINMAIL_BOOTS, "Chainmail Boots"),
     IRON(Material.IRON_BOOTS, "Iron Boots"),
     GOLD(Material.GOLDEN_BOOTS, "Gold Boots"),
     DIAMOND(Material.DIAMOND_BOOTS, "Diamond Boots");
