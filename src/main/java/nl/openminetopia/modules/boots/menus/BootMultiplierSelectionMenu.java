@@ -43,7 +43,15 @@ public class BootMultiplierSelectionMenu extends Menu {
                         Player player = (Player) event.getWhoClicked();
                         CustomBoots customBoots = new CustomBoots(bootType, effect, multiplier);
                         player.getInventory().addItem(customBoots.createBoots());
-                        player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        String bootName = customBoots.getBootType().getDisplayName();
+                        if (effect == BootEffect.SPEED) {
+                            bootName = "Speed Boots!";
+                        } else if (effect == BootEffect.ICE) {
+                            bootName = "Ice Boots!";
+                        } else if (effect == BootEffect.BLUB) {
+                            bootName = "Blub Boots!";
+                        }
+                        player.sendMessage(ChatUtils.color("<green>Je hebt " + bootName + " ontvangen!"));
                         player.closeInventory();
                     }));
         }
@@ -64,7 +72,15 @@ public class BootMultiplierSelectionMenu extends Menu {
                         Player player = (Player) event.getWhoClicked();
                         CustomBoots customBoots = new CustomBoots(bootType, effect, level);
                         player.getInventory().addItem(customBoots.createBoots());
-                        player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        String bootName = customBoots.getBootType().getDisplayName();
+                        if (effect == BootEffect.SPEED) {
+                            bootName = "Speed Boots!";
+                        } else if (effect == BootEffect.ICE) {
+                            bootName = "Ice Boots!";
+                        } else if (effect == BootEffect.BLUB) {
+                            bootName = "Blub Boots!";
+                        }
+                        player.sendMessage(ChatUtils.color("<green>Je hebt " + bootName + " ontvangen!"));
                         player.closeInventory();
                     }));
         }
@@ -86,7 +102,15 @@ public class BootMultiplierSelectionMenu extends Menu {
                         Player player = (Player) event.getWhoClicked();
                         CustomBoots customBoots = new CustomBoots(bootType, effect, multiplier);
                         player.getInventory().addItem(customBoots.createBoots());
-                        player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        String bootName = customBoots.getBootType().getDisplayName();
+                        if (effect == BootEffect.SPEED) {
+                            bootName = "Speed Boots!";
+                        } else if (effect == BootEffect.ICE) {
+                            bootName = "Ice Boots!";
+                        } else if (effect == BootEffect.BLUB) {
+                            bootName = "Blub Boots!";
+                        }
+                        player.sendMessage(ChatUtils.color("<green>Je hebt " + bootName + " ontvangen!"));
                         player.closeInventory();
                     }));
         }

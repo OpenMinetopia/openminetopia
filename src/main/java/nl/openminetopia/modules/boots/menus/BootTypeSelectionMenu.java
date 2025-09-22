@@ -18,7 +18,7 @@ public class BootTypeSelectionMenu extends Menu {
         
         // Layout: Red stained -> Leather -> Red stained -> Chainmail -> Red stained -> Iron -> Red stained -> Gold -> Red stained -> Diamond
         int[] slots = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19}; // All middle row positions
-        Material[] materials = {Material.RED_STAINED_GLASS_PANE, Material.LEATHER_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.CHAINMAIL_BOOTS,
+        Material[] materials = {Material.LEATHER_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.CHAINMAIL_BOOTS,
                                Material.RED_STAINED_GLASS_PANE, Material.IRON_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.GOLDEN_BOOTS, 
                                Material.RED_STAINED_GLASS_PANE, Material.DIAMOND_BOOTS};
         BootType[] bootTypes = {null, BootType.LEATHER, null, null, null, BootType.IRON, null, BootType.GOLD, null, BootType.DIAMOND};
@@ -34,6 +34,7 @@ public class BootTypeSelectionMenu extends Menu {
                         .name(ChatUtils.color("<gold>" + bootType.getDisplayName()))
                         .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
                         .asGuiItem(event -> {
+                            event.setCancelled(true); // Prevent item giving
                             Player player = (Player) event.getWhoClicked();
                             new BootEffectSelectionMenu(bootType).open(player);
                         }));
