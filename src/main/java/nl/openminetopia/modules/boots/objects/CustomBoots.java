@@ -30,8 +30,18 @@ public class CustomBoots {
         ItemMeta meta = boots.getItemMeta();
         
         if (meta != null) {
-            // Set display name
-            meta.displayName(ChatUtils.color("<gold>" + bootType.getDisplayName() + " (" + effect.getDisplayName() + ")"));
+            // Set display name based on effect
+            String displayName;
+            if (effect == BootEffect.SPEED) {
+                displayName = "Speed Boots!";
+            } else if (effect == BootEffect.ICE) {
+                displayName = "Ice Boots!";
+            } else if (effect == BootEffect.BLUB) {
+                displayName = "Blub Boots!";
+            } else {
+                displayName = bootType.getDisplayName() + " (" + effect.getDisplayName() + ")";
+            }
+            meta.displayName(ChatUtils.color("<gold>" + displayName));
             
             // No lore - attributes will show the effects
             

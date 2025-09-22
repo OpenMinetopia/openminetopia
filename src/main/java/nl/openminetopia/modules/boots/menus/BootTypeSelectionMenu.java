@@ -16,12 +16,12 @@ public class BootTypeSelectionMenu extends Menu {
         // Fill borders with red stained glass panes
         fillBorders();
         
-        // Layout: Leather -> Red stained -> Chainmail -> Red stained -> Iron -> Red stained -> Gold -> Red stained -> Diamond
-        int[] slots = {10, 11, 12, 13, 14, 15, 16, 17, 18}; // All middle row positions
-        Material[] materials = {Material.LEATHER_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.CHAINMAIL_BOOTS, 
-                               Material.RED_STAINED_GLASS_PANE, Material.IRON_BOOTS, Material.RED_STAINED_GLASS_PANE, 
-                               Material.GOLDEN_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.DIAMOND_BOOTS};
-        BootType[] bootTypes = {BootType.LEATHER, null, null, null, BootType.IRON, null, BootType.GOLD, null, BootType.DIAMOND};
+        // Layout: Red stained -> Leather -> Red stained -> Chainmail -> Red stained -> Iron -> Red stained -> Gold -> Red stained -> Diamond
+        int[] slots = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19}; // All middle row positions
+        Material[] materials = {Material.RED_STAINED_GLASS_PANE, Material.LEATHER_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.CHAINMAIL_BOOTS,
+                               Material.RED_STAINED_GLASS_PANE, Material.IRON_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.GOLDEN_BOOTS, 
+                               Material.RED_STAINED_GLASS_PANE, Material.DIAMOND_BOOTS};
+        BootType[] bootTypes = {null, BootType.LEATHER, null, null, null, BootType.IRON, null, BootType.GOLD, null, BootType.DIAMOND};
         
         for (int i = 0; i < slots.length; i++) {
             Material material = materials[i];
@@ -53,14 +53,22 @@ public class BootTypeSelectionMenu extends Menu {
         
         // Fill all border slots
         for (int i = 0; i < 9; i++) {
-            gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem()); // Top row
-            gui.setItem(i + 18, PaperItemBuilder.from(redPane).asGuiItem()); // Bottom row
+            gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem(event -> {
+                // Do nothing - prevent item giving
+            })); // Top row
+            gui.setItem(i + 18, PaperItemBuilder.from(redPane).asGuiItem(event -> {
+                // Do nothing - prevent item giving
+            })); // Bottom row
         }
         
         // Fill left and right columns
         for (int i = 9; i < 18; i += 9) {
-            gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem()); // Left column
-            gui.setItem(i + 8, PaperItemBuilder.from(redPane).asGuiItem()); // Right column
+            gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem(event -> {
+                // Do nothing - prevent item giving
+            })); // Left column
+            gui.setItem(i + 8, PaperItemBuilder.from(redPane).asGuiItem(event -> {
+                // Do nothing - prevent item giving
+            })); // Right column
         }
     }
 }

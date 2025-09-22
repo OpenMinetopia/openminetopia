@@ -97,14 +97,22 @@ public class BootMultiplierSelectionMenu extends Menu {
         
         // Fill all border slots
         for (int i = 0; i < 9; i++) {
-            gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem()); // Top row
-            gui.setItem(i + 18, PaperItemBuilder.from(redPane).asGuiItem()); // Bottom row
+            gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem(event -> {
+                // Do nothing - prevent item giving
+            })); // Top row
+            gui.setItem(i + 18, PaperItemBuilder.from(redPane).asGuiItem(event -> {
+                // Do nothing - prevent item giving
+            })); // Bottom row
         }
         
         // Fill left and right columns
         for (int i = 9; i < 18; i += 9) {
-            gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem()); // Left column
-            gui.setItem(i + 8, PaperItemBuilder.from(redPane).asGuiItem()); // Right column
+            gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem(event -> {
+                // Do nothing - prevent item giving
+            })); // Left column
+            gui.setItem(i + 8, PaperItemBuilder.from(redPane).asGuiItem(event -> {
+                // Do nothing - prevent item giving
+            })); // Right column
         }
     }
 }
