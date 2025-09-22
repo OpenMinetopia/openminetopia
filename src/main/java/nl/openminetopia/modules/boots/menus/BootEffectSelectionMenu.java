@@ -22,6 +22,7 @@ public class BootEffectSelectionMenu extends Menu {
         
         // Layout: 9-10: Red stained, 11: Potion of swiftness, 12: Glass, 13: Ice, 14: Glass, 15: Water bucket, 16-17: Glass
         
+<<<<<<< HEAD
         // Slots 9-10: Red Stained Glass Panes
         gui.setItem(9, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
                 .name(ChatUtils.color("<red>Glass"))
@@ -88,6 +89,20 @@ public class BootEffectSelectionMenu extends Menu {
                 .asGuiItem(event -> {
                     // Do nothing - just prevent item giving
                 }));
+=======
+        for (int i = 0; i < effects.length; i++) {
+            BootEffect effect = effects[i];
+            
+            gui.setItem(slots[i], PaperItemBuilder.from(effect.getIcon())
+                    .name(ChatUtils.color("<gold>" + effect.getDisplayName()))
+                    .lore(ChatUtils.color("<gray>" + effect.getDescription()))
+                    .asGuiItem(event -> {
+                        event.setCancelled(true); // Prevent item giving
+                        Player player = (Player) event.getWhoClicked();
+                        new BootMultiplierSelectionMenu(bootType, effect).open(player);
+                    }));
+        }
+>>>>>>> 23d6a40815afcbbc56c90fa98611da7f4a76ed74
     }
     
     private void fillBorders() {

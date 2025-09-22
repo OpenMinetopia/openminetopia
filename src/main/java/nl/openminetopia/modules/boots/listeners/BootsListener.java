@@ -69,7 +69,7 @@ public class BootsListener implements Listener {
                         // Blub is handled by depth strider enchantment
                         break;
                     case ICE:
-                        // Frost Walker is handled by enchantments
+                        applyFrostWalkerEffect(player, multiplier);
                         break;
                 }
             }
@@ -125,6 +125,27 @@ public class BootsListener implements Listener {
         return multiplier != null ? multiplier : 0.0;
     }
     
+    
+    private void applyFrostWalkerEffect(Player player, double multiplier) {
+        // Apply frost walker effect by converting water to ice
+        int frostLevel = (int) multiplier;
+        if (frostLevel > 0) {
+            // Get blocks around player's feet
+            org.bukkit.Location loc = player.getLocation();
+            int radius = frostLevel + 1; // Level 1 = radius 2, Level 2 = radius 3
+            
+            for (int x = -radius; x <= radius; x++) {
+                for (int z = -radius; z <= radius; z++) {
+                    if (x * x + z * z <= radius * radius) {
+                        org.bukkit.Location blockLoc = loc.clone().add(x, -1, z);
+                        if (blockLoc.getBlock().getType() == org.bukkit.Material.WATER) {
+                            blockLoc.getBlock().setType(org.bukkit.Material.ICE);
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     private void applySwimEffect(Player player, double multiplier) {
         // Apply dolphin's grace for swimming speed

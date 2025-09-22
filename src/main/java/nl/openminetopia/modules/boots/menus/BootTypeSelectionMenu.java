@@ -19,82 +19,36 @@ public class BootTypeSelectionMenu extends Menu {
         // Fill borders with red stained glass panes
         fillBorders();
         
-        // Layout: Leather -> Glass -> Chainmail -> Glass -> Iron -> Glass -> Gold -> Glass -> Diamond
-        // Middle row positions (row 2, slots 9-17)
+        // Layout: Red stained -> Leather -> Red stained -> Chainmail -> Red stained -> Iron -> Red stained -> Gold -> Red stained -> Diamond
+        int[] slots = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19}; // All middle row positions
+        Material[] materials = {Material.RED_STAINED_GLASS_PANE, Material.LEATHER_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.CHAINMAIL_BOOTS,
+                               Material.RED_STAINED_GLASS_PANE, Material.IRON_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.GOLDEN_BOOTS, 
+                               Material.RED_STAINED_GLASS_PANE, Material.DIAMOND_BOOTS};
+        BootType[] bootTypes = {null, BootType.LEATHER, null, null, null, BootType.IRON, null, BootType.GOLD, null, BootType.DIAMOND};
         
-        // Set up the middle row items
-        // Slot 9: Leather Boots
-        gui.setItem(9, PaperItemBuilder.from(new ItemStack(Material.LEATHER_BOOTS))
-                .name(ChatUtils.color("<gold>" + BootType.LEATHER.getDisplayName()))
-                .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
-                .asGuiItem(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    new BootEffectSelectionMenu(BootType.LEATHER).open(player);
-                }));
-        
-        // Slot 10: Red Stained Glass Pane
-        gui.setItem(10, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
-                .name(ChatUtils.color("<red>Glass"))
-                .asGuiItem(event -> {
-                    // Do nothing - just prevent item giving
-                }));
-        
-        // Slot 11: Chainmail Boots
-        gui.setItem(11, PaperItemBuilder.from(new ItemStack(Material.CHAINMAIL_BOOTS))
-                .name(ChatUtils.color("<gold>" + BootType.CHAINMAIL.getDisplayName()))
-                .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
-                .asGuiItem(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    new BootEffectSelectionMenu(BootType.CHAINMAIL).open(player);
-                }));
-        
-        // Slot 12: Red Stained Glass Pane
-        gui.setItem(12, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
-                .name(ChatUtils.color("<red>Glass"))
-                .asGuiItem(event -> {
-                    // Do nothing - just prevent item giving
-                }));
-        
-        // Slot 13: Iron Boots
-        gui.setItem(13, PaperItemBuilder.from(new ItemStack(Material.IRON_BOOTS))
-                .name(ChatUtils.color("<gold>" + BootType.IRON.getDisplayName()))
-                .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
-                .asGuiItem(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    new BootEffectSelectionMenu(BootType.IRON).open(player);
-                }));
-        
-        // Slot 14: Red Stained Glass Pane
-        gui.setItem(14, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
-                .name(ChatUtils.color("<red>Glass"))
-                .asGuiItem(event -> {
-                    // Do nothing - just prevent item giving
-                }));
-        
-        // Slot 15: Gold Boots
-        gui.setItem(15, PaperItemBuilder.from(new ItemStack(Material.GOLDEN_BOOTS))
-                .name(ChatUtils.color("<gold>" + BootType.GOLD.getDisplayName()))
-                .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
-                .asGuiItem(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    new BootEffectSelectionMenu(BootType.GOLD).open(player);
-                }));
-        
-        // Slot 16: Red Stained Glass Pane
-        gui.setItem(16, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
-                .name(ChatUtils.color("<red>Glass"))
-                .asGuiItem(event -> {
-                    // Do nothing - just prevent item giving
-                }));
-        
-        // Slot 17: Diamond Boots
-        gui.setItem(17, PaperItemBuilder.from(new ItemStack(Material.DIAMOND_BOOTS))
-                .name(ChatUtils.color("<gold>" + BootType.DIAMOND.getDisplayName()))
-                .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
-                .asGuiItem(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    new BootEffectSelectionMenu(BootType.DIAMOND).open(player);
-                }));
+        for (int i = 0; i < slots.length; i++) {
+            Material material = materials[i];
+            BootType bootType = bootTypes[i];
+            
+            if (bootType != null) {
+                // This is a selectable boot type
+                ItemStack bootItem = new ItemStack(material);
+                gui.setItem(slots[i], PaperItemBuilder.from(bootItem)
+                        .name(ChatUtils.color("<gold>" + bootType.getDisplayName()))
+                        .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
+                        .asGuiItem(event -> {
+                            Player player = (Player) event.getWhoClicked();
+                            new BootEffectSelectionMenu(bootType).open(player);
+                        }));
+            } else {
+                // This is a red stained glass pane
+                gui.setItem(slots[i], PaperItemBuilder.from(new ItemStack(material))
+                        .name(ChatUtils.color("<red>"))
+                        .asGuiItem(event -> {
+                            // Do nothing - just prevent item giving
+                        }));
+            }
+        }
     }
     
     private void fillBorders() {
