@@ -16,15 +16,25 @@ public class BootTypeSelectionMenu extends Menu {
         // Fill borders with red stained glass panes
         fillBorders();
         
-        // Add boot types in the middle row
-        int[] slots = {10, 12, 14, 16}; // Middle row positions
+        // Add boot types in the middle row with red stained glass panes between them
+        // Layout: Leather boots -> Red stained -> Iron boots -> Red stained -> Gold boots -> Red stained -> Diamond Boots
+        int[] bootSlots = {10, 12, 14, 16}; // Middle row positions for boots
+        int[] redPaneSlots = {11, 13, 15}; // Positions for red stained glass panes between boots
         BootType[] bootTypes = {BootType.LEATHER, BootType.IRON, BootType.GOLD, BootType.DIAMOND};
         
+        // Add red stained glass panes between boots
+        for (int redPaneSlot : redPaneSlots) {
+            gui.setItem(redPaneSlot, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
+                    .name(ChatUtils.color("<red>"))
+                    .asGuiItem());
+        }
+        
+        // Add boot types
         for (int i = 0; i < bootTypes.length; i++) {
             BootType bootType = bootTypes[i];
             ItemStack bootItem = new ItemStack(bootType.getMaterial());
             
-            gui.setItem(slots[i], PaperItemBuilder.from(bootItem)
+            gui.setItem(bootSlots[i], PaperItemBuilder.from(bootItem)
                     .name(ChatUtils.color("<gold>" + bootType.getDisplayName()))
                     .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
                     .asGuiItem(event -> {

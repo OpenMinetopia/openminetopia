@@ -44,6 +44,7 @@ public class BootMultiplierSelectionMenu extends Menu {
                         CustomBoots customBoots = new CustomBoots(bootType, effect, multiplier);
                         player.getInventory().addItem(customBoots.createBoots());
                         player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        player.closeInventory();
                     }));
         }
     }
@@ -64,6 +65,7 @@ public class BootMultiplierSelectionMenu extends Menu {
                         CustomBoots customBoots = new CustomBoots(bootType, effect, level);
                         player.getInventory().addItem(customBoots.createBoots());
                         player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        player.closeInventory();
                     }));
         }
     }
@@ -85,6 +87,7 @@ public class BootMultiplierSelectionMenu extends Menu {
                         CustomBoots customBoots = new CustomBoots(bootType, effect, multiplier);
                         player.getInventory().addItem(customBoots.createBoots());
                         player.sendMessage(ChatUtils.color("<green>Je hebt custom boots ontvangen!"));
+                        player.closeInventory();
                     }));
         }
     }
