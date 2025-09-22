@@ -22,7 +22,10 @@ public class BootEffectSelectionMenu extends Menu {
         
         // Layout: 9-10: Red stained, 11: Potion of swiftness, 12: Glass, 13: Ice, 14: Glass, 15: Water bucket, 16-17: Glass
         
-<<<<<<< HEAD
+        // Define the effects and their corresponding slots
+        BootEffect[] effects = {BootEffect.SPEED, BootEffect.ICE, BootEffect.BLUB};
+        int[] slots = {11, 13, 15};
+        
         // Slots 9-10: Red Stained Glass Panes
         gui.setItem(9, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
                 .name(ChatUtils.color("<red>Glass"))
@@ -36,15 +39,6 @@ public class BootEffectSelectionMenu extends Menu {
                     // Do nothing - just prevent item giving
                 }));
         
-        // Slot 11: Potion of Swiftness (Speed effect)
-        gui.setItem(11, PaperItemBuilder.from(BootEffect.SPEED.getIcon())
-                .name(ChatUtils.color("<gold>" + BootEffect.SPEED.getDisplayName()))
-                .lore(ChatUtils.color("<gray>" + BootEffect.SPEED.getDescription()))
-                .asGuiItem(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    new BootMultiplierSelectionMenu(bootType, BootEffect.SPEED).open(player);
-                }));
-        
         // Slot 12: Red Stained Glass Pane
         gui.setItem(12, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
                 .name(ChatUtils.color("<red>Glass"))
@@ -52,29 +46,11 @@ public class BootEffectSelectionMenu extends Menu {
                     // Do nothing - just prevent item giving
                 }));
         
-        // Slot 13: Ice (Ice effect)
-        gui.setItem(13, PaperItemBuilder.from(BootEffect.ICE.getIcon())
-                .name(ChatUtils.color("<gold>" + BootEffect.ICE.getDisplayName()))
-                .lore(ChatUtils.color("<gray>" + BootEffect.ICE.getDescription()))
-                .asGuiItem(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    new BootMultiplierSelectionMenu(bootType, BootEffect.ICE).open(player);
-                }));
-        
         // Slot 14: Red Stained Glass Pane
         gui.setItem(14, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
                 .name(ChatUtils.color("<red>Glass"))
                 .asGuiItem(event -> {
                     // Do nothing - just prevent item giving
-                }));
-        
-        // Slot 15: Water Bucket (Blub effect)
-        gui.setItem(15, PaperItemBuilder.from(BootEffect.BLUB.getIcon())
-                .name(ChatUtils.color("<gold>" + BootEffect.BLUB.getDisplayName()))
-                .lore(ChatUtils.color("<gray>" + BootEffect.BLUB.getDescription()))
-                .asGuiItem(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    new BootMultiplierSelectionMenu(bootType, BootEffect.BLUB).open(player);
                 }));
         
         // Slots 16-17: Red Stained Glass Panes
@@ -89,7 +65,8 @@ public class BootEffectSelectionMenu extends Menu {
                 .asGuiItem(event -> {
                     // Do nothing - just prevent item giving
                 }));
-=======
+        
+        // Add the boot effects dynamically
         for (int i = 0; i < effects.length; i++) {
             BootEffect effect = effects[i];
             
@@ -102,7 +79,6 @@ public class BootEffectSelectionMenu extends Menu {
                         new BootMultiplierSelectionMenu(bootType, effect).open(player);
                     }));
         }
->>>>>>> 23d6a40815afcbbc56c90fa98611da7f4a76ed74
     }
     
     private void fillBorders() {
