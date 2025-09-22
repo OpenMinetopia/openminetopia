@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 public class BootTypeSelectionMenu extends Menu {
 
     public BootTypeSelectionMenu() {
-        super("<gold>Boots Type Selectie", 3);
+        super("<red>Hey sukkel, kies je bootstype <3", 3);
         
         // Disable all interactions to prevent items from being taken
         gui.disableAllInteractions();
@@ -20,8 +20,8 @@ public class BootTypeSelectionMenu extends Menu {
         fillBorders();
         
         // Layout: Red stained -> Leather -> Red stained -> Chainmail -> Red stained -> Iron -> Red stained -> Gold -> Red stained -> Diamond
-        int[] slots = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19}; // All middle row positions
-        Material[] materials = {Material.RED_STAINED_GLASS_PANE, Material.LEATHER_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.CHAINMAIL_BOOTS,
+        int[] slots = {9, 10, 11, 12, 13, 14, 15, 16, 17}; // All middle row positions
+        Material[] materials = {Material.LEATHER_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.CHAINMAIL_BOOTS,
                                Material.RED_STAINED_GLASS_PANE, Material.IRON_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.GOLDEN_BOOTS, 
                                Material.RED_STAINED_GLASS_PANE, Material.DIAMOND_BOOTS};
         BootType[] bootTypes = {null, BootType.LEATHER, null, null, null, BootType.IRON, null, BootType.GOLD, null, BootType.DIAMOND};
@@ -35,7 +35,7 @@ public class BootTypeSelectionMenu extends Menu {
                 ItemStack bootItem = new ItemStack(material);
                 gui.setItem(slots[i], PaperItemBuilder.from(bootItem)
                         .name(ChatUtils.color("<gold>" + bootType.getDisplayName()))
-                        .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
+                        .lore(ChatUtils.color("<gray>Klik hier voor deze boots."))
                         .asGuiItem(event -> {
                             Player player = (Player) event.getWhoClicked();
                             new BootEffectSelectionMenu(bootType).open(player);
@@ -45,7 +45,6 @@ public class BootTypeSelectionMenu extends Menu {
                 gui.setItem(slots[i], PaperItemBuilder.from(new ItemStack(material))
                         .name(ChatUtils.color("<red>"))
                         .asGuiItem(event -> {
-                            // Do nothing - just prevent item giving
                         }));
             }
         }
@@ -64,14 +63,11 @@ public class BootTypeSelectionMenu extends Menu {
             })); // Bottom row
         }
         
-        // Fill left and right columns
         for (int i = 9; i < 18; i += 9) {
             gui.setItem(i, PaperItemBuilder.from(redPane).asGuiItem(event -> {
-                // Do nothing - prevent item giving
-            })); // Left column
+            })); 
             gui.setItem(i + 8, PaperItemBuilder.from(redPane).asGuiItem(event -> {
-                // Do nothing - prevent item giving
-            })); // Right column
+            })); 
         }
     }
 }
