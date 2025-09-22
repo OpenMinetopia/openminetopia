@@ -16,31 +16,35 @@ public class BootTypeSelectionMenu extends Menu {
         // Fill borders with red stained glass panes
         fillBorders();
         
-        // Add boot types in the middle row with red stained glass panes between them
-        // Layout: Leather boots -> Red stained -> Iron boots -> Red stained -> Gold boots -> Red stained -> Diamond Boots
-        int[] bootSlots = {10, 12, 14, 16}; // Middle row positions for boots
-        int[] redPaneSlots = {11, 13, 15}; // Positions for red stained glass panes between boots
-        BootType[] bootTypes = {BootType.LEATHER, BootType.IRON, BootType.GOLD, BootType.DIAMOND};
+        // Layout: Leather -> Red stained -> Chainmail -> Red stained -> Iron -> Red stained -> Gold -> Red stained -> Diamond
+        int[] slots = {10, 11, 12, 13, 14, 15, 16, 17, 18}; // All middle row positions
+        Material[] materials = {Material.LEATHER_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.CHAINMAIL_BOOTS, 
+                               Material.RED_STAINED_GLASS_PANE, Material.IRON_BOOTS, Material.RED_STAINED_GLASS_PANE, 
+                               Material.GOLDEN_BOOTS, Material.RED_STAINED_GLASS_PANE, Material.DIAMOND_BOOTS};
+        BootType[] bootTypes = {BootType.LEATHER, null, null, null, BootType.IRON, null, BootType.GOLD, null, BootType.DIAMOND};
         
-        // Add red stained glass panes between boots
-        for (int redPaneSlot : redPaneSlots) {
-            gui.setItem(redPaneSlot, PaperItemBuilder.from(new ItemStack(Material.RED_STAINED_GLASS_PANE))
-                    .name(ChatUtils.color("<red>"))
-                    .asGuiItem());
-        }
-        
-        // Add boot types
-        for (int i = 0; i < bootTypes.length; i++) {
+        for (int i = 0; i < slots.length; i++) {
+            Material material = materials[i];
             BootType bootType = bootTypes[i];
-            ItemStack bootItem = new ItemStack(bootType.getMaterial());
             
-            gui.setItem(bootSlots[i], PaperItemBuilder.from(bootItem)
-                    .name(ChatUtils.color("<gold>" + bootType.getDisplayName()))
-                    .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
-                    .asGuiItem(event -> {
-                        Player player = (Player) event.getWhoClicked();
-                        new BootEffectSelectionMenu(bootType).open(player);
-                    }));
+            if (bootType != null) {
+                // This is a selectable boot type
+                ItemStack bootItem = new ItemStack(material);
+                gui.setItem(slots[i], PaperItemBuilder.from(bootItem)
+                        .name(ChatUtils.color("<gold>" + bootType.getDisplayName()))
+                        .lore(ChatUtils.color("<gray>Klik om dit bootstype te selecteren"))
+                        .asGuiItem(event -> {
+                            Player player = (Player) event.getWhoClicked();
+                            new BootEffectSelectionMenu(bootType).open(player);
+                        }));
+            } else {
+                // This is a red stained glass pane
+                gui.setItem(slots[i], PaperItemBuilder.from(new ItemStack(material))
+                        .name(ChatUtils.color("<red>"))
+                        .asGuiItem(event -> {
+                            // Do nothing - just prevent item giving
+                        }));
+            }
         }
     }
     

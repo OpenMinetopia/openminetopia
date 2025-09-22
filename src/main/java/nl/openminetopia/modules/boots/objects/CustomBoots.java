@@ -33,24 +33,26 @@ public class CustomBoots {
             // Set display name
             meta.displayName(ChatUtils.color("<gold>" + bootType.getDisplayName() + " (" + effect.getDisplayName() + ")"));
             
-            // Set lore
-            List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-            lore.add(ChatUtils.color("<gray>Custom Boots"));
-            lore.add(ChatUtils.color("<gray>Effect: " + effect.getDisplayName()));
+            // No lore - attributes will show the effects
             
-            if (effect == BootEffect.SPEED) {
-                lore.add(ChatUtils.color("<gray>Speed Multiplier: " + multiplier));
-            } else if (effect == BootEffect.ICE) {
-                lore.add(ChatUtils.color("<gray>Frost Walker Level: " + (int) multiplier));
-            } else if (effect == BootEffect.BLUB) {
-                lore.add(ChatUtils.color("<gray>Swim Speed Multiplier: " + multiplier));
-            }
-            
-            meta.lore(lore);
-            
-            // Add enchantments based on effect
+            // Add enchantments and attributes based on effect
             if (effect == BootEffect.ICE) {
                 meta.addEnchant(Enchantment.FROST_WALKER, (int) multiplier, true);
+            } else if (effect == BootEffect.SPEED) {
+                // Add speed attribute modifier
+                meta.addAttributeModifier(
+                    org.bukkit.attribute.Attribute.MOVEMENT_SPEED,
+                    new org.bukkit.attribute.AttributeModifier(
+                        java.util.UUID.randomUUID(),
+                        "speed_boost",
+                        multiplier,
+                        org.bukkit.attribute.AttributeModifier.Operation.ADD_SCALAR,
+                        org.bukkit.inventory.EquipmentSlot.FEET
+                    )
+                );
+            } else if (effect == BootEffect.BLUB) {
+                // Blub boots get depth strider enchantment
+                meta.addEnchant(Enchantment.DEPTH_STRIDER, Math.min(3, (int) (multiplier * 100)), true);
             }
             
             // Add custom data

@@ -63,10 +63,10 @@ public class BootsListener implements Listener {
                 
                 switch (effect) {
                     case SPEED:
-                        applySpeedEffect(player, multiplier);
+                        // Speed is handled by attribute modifiers on the item itself
                         break;
                     case BLUB:
-                        applySwimEffect(player, multiplier);
+                        // Blub is handled by depth strider enchantment
                         break;
                     case ICE:
                         // Frost Walker is handled by enchantments
@@ -125,13 +125,6 @@ public class BootsListener implements Listener {
         return multiplier != null ? multiplier : 0.0;
     }
     
-    private void applySpeedEffect(Player player, double multiplier) {
-        // Convert multiplier to speed level (multiplier * 10 for reasonable speed boost)
-        int speedLevel = (int) (multiplier * 10);
-        if (speedLevel > 0) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, speedLevel - 1, false, false));
-        }
-    }
     
     private void applySwimEffect(Player player, double multiplier) {
         // Apply dolphin's grace for swimming speed
