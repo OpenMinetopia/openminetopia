@@ -90,8 +90,19 @@ public class BankContentsMenu extends Menu {
             if (event.getCurrentItem().getType() == Material.AIR) return;
             ItemStack item = event.getCurrentItem();
 
-            if (!PersistentDataUtil.contains(item, "bank_note_value")) return;
-            if (PersistentDataUtil.getDouble(item, "bank_note_value") == null) return;
+            // Try to get value from NBT first (original behavior)
+            Double noteValue = null;
+            if (PersistentDataUtil.contains(item, "bank_note_value")) {
+                noteValue = PersistentDataUtil.getDouble(item, "bank_note_value");
+            }
+            
+            // If no NBT value found, try to match by material (flexible approach)
+            if (noteValue == null) {
+                noteValue = getBankNoteValueByMaterial(item.getType());
+            }
+            
+            // If still no value found, this is not a valid bank note
+            if (noteValue == null) return;
 
             MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
 
@@ -100,7 +111,6 @@ public class BankContentsMenu extends Menu {
                 return;
             }
 
-            double noteValue = PersistentDataUtil.getDouble(item, "bank_note_value");
             double totalValue = noteValue * item.getAmount();
 
             TransactionUpdateEvent transactionUpdateEvent = new TransactionUpdateEvent(player.getUniqueId(), player.getName(), TransactionType.DEPOSIT, totalValue, accountModel, "Deposited via ATM.", System.currentTimeMillis());
@@ -152,6 +162,19 @@ public class BankContentsMenu extends Menu {
         transactionsModule.createTransactionLog(System.currentTimeMillis(), player.getUniqueId(), player.getName(), TransactionType.WITHDRAW, totalValue, accountModel.getUniqueId(), "Withdrawn in ATM.");
 
         new BankContentsMenu(player, accountModel, isAsAdmin()).open(player);
+    }
+
+    /**
+     * Gets the bank note value for a given material by checking against configured bank notes
+     * This allows flexible validation of money items even without proper NBT data
+     */
+    private Double getBankNoteValueByMaterial(Material material) {
+        for (BankNote bankNote : bankingModule.getConfiguration().getBankNotes()) {
+            if (bankNote.getMaterial() == material) {
+                return bankNote.getValue();
+            }
+        }
+        return null;
     }
 
     @Getter
