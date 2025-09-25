@@ -86,45 +86,44 @@ public class BankContentsMenu extends Menu {
 
         gui.setDefaultClickAction(event -> {
             event.setCancelled(true);
-            if (event.getCurrentItem() == null) return;
-            if (event.getCurrentItem().getType() == Material.AIR) return;
-            ItemStack item = event.getCurrentItem();
-
-            // Try to get value from NBT first (original behavior)
-            Double noteValue = null;
-            if (PersistentDataUtil.contains(item, "bank_note_value")) {
-                noteValue = PersistentDataUtil.getDouble(item, "bank_note_value");
-            }
             
-            // If no NBT value found, try to match by material (flexible approach)
-            if (noteValue == null) {
-                noteValue = getBankNoteValueByMaterial(item.getType());
+            // Only handle deposits from player inventory (bottom 27 slots)
+            // Do NOT handle GUI clicks - let withdraw buttons work normally
+            if (event.getClickedInventory() != null && event.getClickedInventory().equals(player.getInventory())) {
+                if (event.getCurrentItem() == null) return;
+                if (event.getCurrentItem().getType() == Material.AIR) return;
+
+                ItemStack item = event.getCurrentItem();
+
+                // Require official bank note NBT; do not accept material-only matches
+                if (!PersistentDataUtil.contains(item, "bank_note_value")) return;
+                double noteValue = PersistentDataUtil.getDouble(item, "bank_note_value");
+
+                MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
+
+                if (!isAsAdmin() && !accountModel.hasPermission(player.getUniqueId(), AccountPermission.DEPOSIT)) {
+                    ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("banking_no_deposit_permission"));
+                    return;
+                }
+
+                int amount = item.getAmount();
+                double totalValue = noteValue * amount;
+
+                TransactionUpdateEvent transactionUpdateEvent = new TransactionUpdateEvent(player.getUniqueId(), player.getName(), TransactionType.DEPOSIT, totalValue, accountModel, "Deposited via ATM.", System.currentTimeMillis());
+                if (EventUtils.callCancellable(transactionUpdateEvent)) return;
+
+                // Consume from the player's inventory slot directly
+                item.setAmount(0);
+                accountModel.setBalance(accountModel.getBalance() + totalValue);
+                ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("banking_deposit_message")
+                        .replace("<deposit_value>", bankingModule.format(totalValue)));
+
+                TransactionsModule transactionsModule = OpenMinetopia.getModuleManager().get(TransactionsModule.class);
+                transactionsModule.createTransactionLog(System.currentTimeMillis(), player.getUniqueId(), player.getName(), TransactionType.DEPOSIT, totalValue, accountModel.getUniqueId(), "Deposited from ATM.");
+
+                new BankContentsMenu(player, accountModel, isAsAdmin()).open(player);
             }
-            
-            // If still no value found, this is not a valid bank note
-            if (noteValue == null) return;
-
-            MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
-
-            if (!isAsAdmin() && !accountModel.hasPermission(player.getUniqueId(), AccountPermission.DEPOSIT)) {
-                ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("banking_no_deposit_permission"));
-                return;
-            }
-
-            double totalValue = noteValue * item.getAmount();
-
-            TransactionUpdateEvent transactionUpdateEvent = new TransactionUpdateEvent(player.getUniqueId(), player.getName(), TransactionType.DEPOSIT, totalValue, accountModel, "Deposited via ATM.", System.currentTimeMillis());
-            if (EventUtils.callCancellable(transactionUpdateEvent)) return;
-
-            item.setAmount(0);
-            accountModel.setBalance(accountModel.getBalance() + totalValue);
-            ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("banking_deposit_message")
-                    .replace("<deposit_value>", bankingModule.format(totalValue)));
-
-            TransactionsModule transactionsModule = OpenMinetopia.getModuleManager().get(TransactionsModule.class);
-            transactionsModule.createTransactionLog(System.currentTimeMillis(), player.getUniqueId(), player.getName(), TransactionType.DEPOSIT, totalValue, accountModel.getUniqueId(), "Deposited from ATM.");
-
-            new BankContentsMenu(player, accountModel, isAsAdmin()).open(player);
+            // For GUI clicks (withdraw buttons), do nothing - they have their own handlers
         });
 
         gui.setCloseGuiAction(event -> {
@@ -164,18 +163,7 @@ public class BankContentsMenu extends Menu {
         new BankContentsMenu(player, accountModel, isAsAdmin()).open(player);
     }
 
-    /**
-     * Gets the bank note value for a given material by checking against configured bank notes
-     * This allows flexible validation of money items even without proper NBT data
-     */
-    private Double getBankNoteValueByMaterial(Material material) {
-        for (BankNote bankNote : bankingModule.getConfiguration().getBankNotes()) {
-            if (bankNote.getMaterial() == material) {
-                return bankNote.getValue();
-            }
-        }
-        return null;
-    }
+    // Removed material-based value fallback to prevent depositing arbitrary items as valid money
 
     @Getter
     @RequiredArgsConstructor
