@@ -79,7 +79,7 @@ dependencies {
     compileOnly("com.github.SkriptLang:Skript:2.10.2")
 
     /* Rest API & Portal dependencies */
-    val vertxVersion = "5.0.4"
+    val vertxVersion = "5.0.5"
     compileOnly("io.vertx:vertx-core:$vertxVersion")
     compileOnly("io.vertx:vertx-web:$vertxVersion")
     compileOnly("io.vertx:vertx-web-client:$vertxVersion")
