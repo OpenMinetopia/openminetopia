@@ -11,6 +11,8 @@ import nl.openminetopia.configuration.DefaultConfiguration;
 import nl.openminetopia.modules.color.ColorModule;
 import nl.openminetopia.modules.color.enums.OwnableColorType;
 import nl.openminetopia.modules.color.objects.*;
+import nl.openminetopia.modules.currencies.CurrencyModule;
+import nl.openminetopia.modules.currencies.models.CurrencyModel;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.fitness.FitnessModule;
 import nl.openminetopia.modules.places.PlacesModule;
@@ -70,6 +72,7 @@ public class MinetopiaPlayer {
     private final @Getter(AccessLevel.PRIVATE) PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
     private final @Getter(AccessLevel.PRIVATE) FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
     private final @Getter(AccessLevel.PRIVATE) PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
+    private final @Getter(AccessLevel.PRIVATE) CurrencyModule currencyModule = OpenMinetopia.getModuleManager().get(CurrencyModule.class);
 
     public MinetopiaPlayer(UUID uuid, PlayerModel playerModel) {
         this.uuid = uuid;
@@ -216,7 +219,6 @@ public class MinetopiaPlayer {
         this.playerModel.setActivePrefixId(prefix.getId());
     }
 
-
     public Prefix getActivePrefix() {
         DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
         if (activePrefix == null) {
@@ -340,5 +342,36 @@ public class MinetopiaPlayer {
         long since = sinceStart();
         this.startTime = System.currentTimeMillis();
         return since;
+    }
+
+    /* ---------- Currencies ---------- */
+
+    // TODO: Fix for offline players
+    public double getCurrencyBalance(String currencyId) {
+        CurrencyModel model = currencyModule.getCurrencyModels().get(this.playerModel.getUniqueId()).stream()
+                .filter(currencyModel -> currencyModel.getName().equalsIgnoreCase(currencyId))
+                .findFirst().orElse(null);
+        if (model == null) return 0;
+        return model.getBalance();
+    }
+
+    // TODO: Fix for offline players
+    public void setCurrencyBalance(String currencyId, double amount) {
+        CurrencyModel model = currencyModule.getCurrencyModels().get(this.playerModel.getUniqueId()).stream()
+                .filter(currencyModel -> currencyModel.getName().equalsIgnoreCase(currencyId))
+                .findFirst().orElse(null);
+        if (model == null) return;
+        model.setBalance(amount);
+        StormDatabase.getInstance().saveStormModel(model);
+    }
+
+    // TODO: Fix for offline players
+    public void addCurrencyBalance(String currencyId, double amount) {
+        CurrencyModel model = currencyModule.getCurrencyModels().get(this.playerModel.getUniqueId()).stream()
+                .filter(currencyModel -> currencyModel.getName().equalsIgnoreCase(currencyId))
+                .findFirst().orElse(null);
+        if (model == null) return;
+        model.setBalance(model.getBalance() + amount);
+        StormDatabase.getInstance().saveStormModel(model);
     }
 }
