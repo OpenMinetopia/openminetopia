@@ -12,10 +12,11 @@ import nl.openminetopia.modules.fitness.models.FitnessStatisticModel;
 import nl.openminetopia.modules.staff.admintool.menus.AdminToolInfoMenu;
 import nl.openminetopia.utils.item.ItemBuilder;
 import nl.openminetopia.utils.menu.Menu;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class AdminToolFitnessMenu extends Menu {
@@ -77,18 +78,26 @@ public class AdminToolFitnessMenu extends Menu {
                 .addLoreLine("<gold>Luxe eten genuttigd: <yellow>" + eatingStatistic.getTertiaryPoints().intValue())
                 .addLoreLine("<gold>Goedkoop eten genuttigd: <yellow>" + eatingStatistic.getSecondaryPoints().intValue())
                 .addLoreLine(" ")
-                .addLoreLine("<dark_purple>Luxe eten:")
-                .addLoreLine("<light_purple>" + configuration.getLuxuryFood()
-                        .stream().map(fitnessFood -> fitnessFood.getMaterial().name())
-                        .toString().replace("[", "").replace("]", ""))
+                .addLoreLine("<dark_purple>Luxe eten:");
+        this.splitLoreLines(configuration.getLuxuryFood().stream()
+                        .map(fitnessFood -> fitnessFood.getMaterial().name())
+                        .collect(Collectors.toList()), "<light_purple>")
+                .forEach(foodItemBuilder::addLoreLine);
+
+        foodItemBuilder
                 .addLoreLine(" ")
-                .addLoreLine("<dark_purple>Goedkoop eten:")
-                .addLoreLine("<light_purple>" + configuration.getCheapFood()
-                        .stream().map(fitnessFood -> fitnessFood.getMaterial().name())
-                        .toString().replace("[", "").replace("]", ""))
+                .addLoreLine("<dark_purple>Goedkoop eten:");
+        this.splitLoreLines(configuration.getCheapFood().stream()
+                        .map(fitnessFood -> fitnessFood.getMaterial().name())
+                        .collect(Collectors.toList()), "<light_purple>")
+                .forEach(foodItemBuilder::addLoreLine);
+
+        foodItemBuilder
                 .addLoreLine(" ")
-                .addLoreLine("<dark_purple>Spelers krijgen <light_purple>" + configuration.getPointsAbove9Hearts() + " <dark_purple>voor het eten van luxe voedsel.")
-                .addLoreLine("<dark_purple>Spelers krijgen <light_purple>" + configuration.getPointsBelow5Hearts() + " <dark_purple>voor het eten van goedkoop voedsel.")
+                .addLoreLine("<dark_purple>Spelers krijgen <light_purple>" + configuration.getPointsAbove9Hearts() +
+                        " <dark_purple>voor het eten van luxe voedsel.")
+                .addLoreLine("<dark_purple>Spelers krijgen <light_purple>" + configuration.getPointsBelow5Hearts() +
+                        " <dark_purple>voor het eten van goedkoop voedsel.")
                 .addLoreLine(" ");
 
         GuiItem targetFoodItem = new GuiItem(foodItemBuilder.toItemStack());
@@ -179,5 +188,15 @@ public class AdminToolFitnessMenu extends Menu {
             new AdminToolInfoMenu(player, offlinePlayer, minetopiaPlayer, bankAccountModel).open((Player) event.getWhoClicked());
         });
         gui.setItem(22, backItem);
+    }
+
+    private List<String> splitLoreLines(List<String> items, String color) {
+        List<String> lines = new ArrayList<>();
+        for (int i = 0; i < items.size(); i += 5) {
+            int end = Math.min(i + 5, items.size());
+            String line = color + String.join("<gray>, " + color, items.subList(i, end));
+            lines.add(line);
+        }
+        return lines;
     }
 }
