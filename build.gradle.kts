@@ -157,17 +157,9 @@ tasks {
     }
 }
 
-tasks.register<Jar>("apiJar") {
-    archiveClassifier.set("api")
-    from(sourceSets.main.get().output) {
-        include("nl/openminetopia/api/**")
-    }
-}
-
 publishing {
     publications {
         create<MavenPublication>("api") {
-            artifact(tasks["apiJar"])
             groupId = "nl.openminetopia"
             artifactId = "api"
             version = version.toString()
