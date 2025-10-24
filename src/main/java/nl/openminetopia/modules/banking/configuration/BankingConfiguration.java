@@ -19,6 +19,7 @@ public class BankingConfiguration extends ConfigurateConfig {
 
     private final String economyFormat;
     private final List<Material> atmMaterials;
+    private final List<Material> pinTerminalMaterials;
 
     private final double startingBalance;
 
@@ -44,6 +45,18 @@ public class BankingConfiguration extends ConfigurateConfig {
                 return;
             }
             this.atmMaterials.add(material);
+        });
+
+        this.pinTerminalMaterials = new ArrayList<>();
+        rootNode.node("banking", "pin-terminal-materials").getList(String.class, List.of(
+                "PURPUR_STAIRS"
+        )).forEach(materialString -> {
+            Material material = Material.matchMaterial(materialString);
+            if (material == null) {
+                OpenMinetopia.getInstance().getLogger().warning("Invalid material in pin-terminal-materials: " + materialString);
+                return;
+            }
+            this.pinTerminalMaterials.add(material);
         });
 
         this.startingBalance = rootNode.node("banking", "starting-balance").getDouble(0);

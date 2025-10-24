@@ -1,6 +1,8 @@
 package nl.openminetopia.modules.banking;
 
 import com.craftmend.storm.api.enums.Where;
+import nl.openminetopia.modules.banking.listeners.PinTerminalInteractionListener;
+import nl.openminetopia.modules.banking.manager.PinTerminalManager;
 import nl.openminetopia.utils.modules.ExtendedSpigotModule;
 import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import lombok.Getter;
@@ -45,9 +47,9 @@ public class BankingModule extends ExtendedSpigotModule {
 
     private DecimalFormat decimalFormat;
     private Collection<BankAccountModel> bankAccountModels;
-    @Getter @Setter
-    private BankingConfiguration configuration;
+    private @Getter @Setter BankingConfiguration configuration;
     private WagePaymentTask wagePaymentTask;
+    private PinTerminalManager pinTerminalManager;
 
     @Override
     public void onEnable() {
@@ -106,9 +108,12 @@ public class BankingModule extends ExtendedSpigotModule {
 
         registerComponent(new PlayerLoginListener());
         registerComponent(new BankingInteractionListener());
+        registerComponent(new PinTerminalInteractionListener());
 
         wagePaymentTask = new WagePaymentTask(OpenMinetopia.getModuleManager().get(PlayerModule.class)::getConfiguration, PlayerManager.getInstance(), 5000L, 50, 30 * 1000L, () -> new ArrayList<>(PlayerManager.getInstance().getOnlinePlayers().keySet()));
         OpenMinetopia.getInstance().registerDirtyPlayerRunnable(wagePaymentTask, 20L);
+
+        pinTerminalManager = new PinTerminalManager();
 
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             Bukkit.getServicesManager().register(Economy.class, new VaultEconomyHandler(), OpenMinetopia.getInstance(), ServicePriority.Normal);
