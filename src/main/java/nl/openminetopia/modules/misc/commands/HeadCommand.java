@@ -15,7 +15,7 @@ public class HeadCommand extends BaseCommand {
 
     @Default
     public void head(Player player) {
-        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemStack item = player.getInventory().getItemInMainHand().clone();
 
         if (item.getType() == Material.AIR || !MiscUtils.isValidHeadItem(item)) {
             player.sendMessage(ChatUtils.color("<red>Je kan dit item niet op je hoofd dragen!"));
