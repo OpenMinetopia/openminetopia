@@ -55,7 +55,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     /* WorldGuard */
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14-SNAPSHOT")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15-SNAPSHOT")
 
     /* Module Manager */
     implementation("com.github.Jazzkuh.ModuleManager:spigot:0b399761d5")
