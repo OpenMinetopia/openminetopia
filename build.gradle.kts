@@ -61,7 +61,7 @@ dependencies {
     implementation("com.github.duranaaron.ModuleManager:spigot:287350ddac")
 
     /* PersistentData addons */
-    implementation("com.jeff-media:custom-block-data:2.2.4")
+    implementation("com.jeff-media:custom-block-data:2.2.5")
     implementation("com.jeff-media:MorePersistentDataTypes:2.4.0")
 
     /* TriumphGUI */
