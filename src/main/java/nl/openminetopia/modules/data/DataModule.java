@@ -27,4 +27,9 @@ public class DataModule extends ExtendedSpigotModule {
         adapter = AdapterUtil.getAdapter(type);
         adapter.connect();
     }
+
+    @Override
+    public void onDisable() {
+        if (adapter != null) adapter.disconnect();
+    }
 }

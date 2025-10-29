@@ -59,6 +59,11 @@ public class MySQLAdapter implements DatabaseAdapter {
         }
     }
 
+    @Override
+    public void disconnect() {
+        StormDatabase.getInstance().getStorm().getDriver().close();
+    }
+
     public void registerStormModels() {
         TypeRegistry.registerAdapter(AccountType.class, new AccountTypeAdapter());
         TypeRegistry.registerAdapter(AccountPermission.class, new AccountPermissionAdapter());

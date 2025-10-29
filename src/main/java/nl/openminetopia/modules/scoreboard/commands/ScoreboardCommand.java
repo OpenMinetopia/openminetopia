@@ -3,7 +3,9 @@ package nl.openminetopia.modules.scoreboard.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
+import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.ScoreboardManager;
+import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.modules.scoreboard.ScoreboardModule;
 import org.bukkit.entity.Player;
 

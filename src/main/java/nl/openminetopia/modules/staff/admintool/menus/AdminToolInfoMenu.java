@@ -108,18 +108,20 @@ public class AdminToolInfoMenu extends Menu {
         /* -------- Fitness -------- */
 
         FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
-        Fitness fitness = minetopiaPlayer.getFitness();
-        ItemBuilder fitnessItemBuilder = new ItemBuilder(Material.MUSHROOM_STEW)
-                .setName("<gold>Fitheid")
-                .addLoreLine("<gold>Fitheid: " + fitness.getTotalFitness() + " / "
-                        + fitnessModule.getConfiguration().getMaxFitnessLevel())
-                .addLoreLine("")
-                .addLoreLine("<gold>Klik <yellow>hier <gold>om de <yellow>fitheid <gold>van de speler te bekijken.");
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) {
+            Fitness fitness = minetopiaPlayer.getFitness();
+            ItemBuilder fitnessItemBuilder = new ItemBuilder(Material.MUSHROOM_STEW)
+                    .setName("<gold>Fitheid")
+                    .addLoreLine("<gold>Fitheid: " + fitness.getTotalFitness() + " / "
+                            + fitnessModule.getConfiguration().getMaxFitnessLevel())
+                    .addLoreLine("")
+                    .addLoreLine("<gold>Klik <yellow>hier <gold>om de <yellow>fitheid <gold>van de speler te bekijken.");
 
-        GuiItem targetFitnessItem = new GuiItem(fitnessItemBuilder.toItemStack(), event -> {
-            new AdminToolFitnessMenu(player, offlinePlayer, minetopiaPlayer, bankAccountModel).open(player);
-        });
-        gui.setItem(14, targetFitnessItem);
+            GuiItem targetFitnessItem = new GuiItem(fitnessItemBuilder.toItemStack(), event -> {
+                new AdminToolFitnessMenu(player, offlinePlayer, minetopiaPlayer, bankAccountModel).open(player);
+            });
+            gui.setItem(14, targetFitnessItem);
+        }
 
         /* -------- Banking -------- */
 

@@ -37,6 +37,7 @@ public class FitnessModule extends ExtendedSpigotModule {
     @Getter @Setter
     private FitnessConfiguration configuration;
 
+    @Override
     public void onEnable() {
         configuration = new FitnessConfiguration(OpenMinetopia.getInstance().getDataFolder());
         configuration.saveConfiguration();
@@ -58,7 +59,13 @@ public class FitnessModule extends ExtendedSpigotModule {
         OpenMinetopia.getInstance().registerDirtyPlayerRunnable(fitnessRunnable, 20L * 2);
     }
 
+    @Override
     public void onDisable() {
-        OpenMinetopia.getInstance().unregisterDirtyPlayerRunnable(healthStatisticRunnable);
+        if (healthStatisticRunnable != null) {
+            OpenMinetopia.getInstance().unregisterDirtyPlayerRunnable(healthStatisticRunnable);
+        }
+        if (fitnessRunnable != null) {
+            OpenMinetopia.getInstance().unregisterDirtyPlayerRunnable(fitnessRunnable);
+        }
     }
 }

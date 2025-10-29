@@ -65,10 +65,10 @@ public class PlayerModule extends ExtendedSpigotModule {
     @Override
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getMinetopiaPlayer(player).join();
+            MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
             if (minetopiaPlayer == null) continue;
             minetopiaPlayer.updatePlaytime();
-            minetopiaPlayer.save().join();
+            minetopiaPlayer.save();
         }
         OpenMinetopia.getInstance().unregisterDirtyPlayerRunnable(levelCalculateRunnable);
         OpenMinetopia.getInstance().unregisterDirtyPlayerRunnable(minetopiaPlayerSaveRunnable);

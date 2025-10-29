@@ -533,7 +533,7 @@ public class DefaultConfiguration extends ConfigurateConfig {
     }
 
     public boolean isModuleDisabled(Class<? extends ExtendedSpigotModule> moduleClass) {
-        String packageName = moduleClass.getPackageName();
+        String packageName = moduleClass.getPackageName().substring(moduleClass.getPackageName().lastIndexOf('.') + 1);
 
         return disabledModules.stream().anyMatch(disabledModule -> switch (disabledModule.toLowerCase()) {
             case "player", "data" -> false;

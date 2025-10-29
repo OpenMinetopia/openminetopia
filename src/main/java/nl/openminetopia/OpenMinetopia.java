@@ -67,7 +67,7 @@ public final class OpenMinetopia extends JavaPlugin {
     @Override
     public void onEnable() {
         commandManager = new PaperCommandManager(this);
-        moduleManager.setDebug(false);
+        moduleManager.debug(false);
 
         messageConfiguration = new MessageConfiguration(getDataFolder());
         messageConfiguration.saveConfiguration();

@@ -15,6 +15,10 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
 
         PlayerManager.getInstance().getMinetopiaPlayer(player).whenComplete((minetopiaPlayer, throwable) -> {
+            if (throwable != null) {
+                player.kick(ChatUtils.color("<red>Er is een fout opgetreden bij het laden van je gegevens! Probeer het later opnieuw."));
+                return;
+            }
             if (minetopiaPlayer == null) {
                 player.kick(ChatUtils.color("<red>Er is een fout opgetreden bij het laden van je gegevens! Probeer het later opnieuw."));
                 return;

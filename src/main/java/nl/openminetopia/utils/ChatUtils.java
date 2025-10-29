@@ -10,7 +10,6 @@ import net.kyori.adventure.title.Title;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.modules.banking.BankingModule;
-import nl.openminetopia.modules.banking.models.BankAccountModel;
 import nl.openminetopia.modules.color.enums.OwnableColorType;
 import nl.openminetopia.modules.currencies.CurrencyModule;
 import nl.openminetopia.modules.currencies.models.CurrencyModel;
@@ -19,11 +18,9 @@ import nl.openminetopia.modules.police.utils.BalaclavaUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @UtilityClass
 public class ChatUtils {
@@ -57,8 +54,11 @@ public class ChatUtils {
 
         final var modules = OpenMinetopia.getModuleManager();
         final CurrencyModule currencyModule = modules.get(CurrencyModule.class);
-        final FitnessModule fitnessModule   = modules.get(FitnessModule.class);
-        final BankingModule bankingModule   = modules.get(BankingModule.class);
+
+        FitnessModule fitnessModule = null;
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) fitnessModule = modules.get(FitnessModule.class);
+
+        final BankingModule bankingModule = modules.get(BankingModule.class);
 
         boolean balaclava = BalaclavaUtils.isWearingBalaclava(player);
         String displayName = balaclava ? "<obf>Balaclava</obf><reset>" : stripMiniMessage(player.displayName());
@@ -109,11 +109,13 @@ public class ChatUtils {
         }
 
         // fitness
-        var stats = mtp.getFitness().getStatistics();
-        if (stats != null && !stats.isEmpty()) {
-            msg = msg
-                    .replace("<fitness>", Integer.toString(mtp.getFitness().getTotalFitness()))
-                    .replace("<max_fitness>", Integer.toString(fitnessModule.getConfiguration().getMaxFitnessLevel()));
+        if (fitnessModule != null) {
+            var stats = mtp.getFitness().getStatistics();
+            if (stats != null && !stats.isEmpty()) {
+                msg = msg
+                        .replace("<fitness>", Integer.toString(mtp.getFitness().getTotalFitness()))
+                        .replace("<max_fitness>", Integer.toString(fitnessModule.getConfiguration().getMaxFitnessLevel()));
+            }
         }
 
         // banking

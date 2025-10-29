@@ -8,6 +8,7 @@ import nl.openminetopia.api.player.fitness.Fitness;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.modules.banking.BankingModule;
 import nl.openminetopia.modules.banking.models.BankAccountModel;
+import nl.openminetopia.modules.fitness.FitnessModule;
 import nl.openminetopia.modules.player.PlayerModule;
 import nl.openminetopia.modules.player.configuration.LevelCheckConfiguration;
 import nl.openminetopia.modules.player.events.PlayerLevelCalculateEvent;
@@ -37,9 +38,11 @@ public class LevelUtil {
         }
 
         // Points per 20 fitness
-        Fitness fitness = minetopiaPlayer.getFitness();
-        if (fitness == null) return 0;
-        points += (double) (fitness.getTotalFitness() / 20) * configuration.getPointsPer20Fitness();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) {
+            Fitness fitness = minetopiaPlayer.getFitness();
+            if (fitness == null) return 0;
+            points += (double) (fitness.getTotalFitness() / 20) * configuration.getPointsPer20Fitness();
+        }
 
         // Points per 1 hour playtime
         points += (double) (minetopiaPlayer.getPlaytime() / 1000 / 3600) * configuration.getPointsPerHourPlayed();

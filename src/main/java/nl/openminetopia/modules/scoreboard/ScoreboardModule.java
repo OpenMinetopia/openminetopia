@@ -46,7 +46,12 @@ public class ScoreboardModule extends ExtendedSpigotModule {
             scoreboardLibrary = new NoopScoreboardLibrary();
             OpenMinetopia.getInstance().getLogger().info("No scoreboard packet adapter available!");
         }
-        scoreboardUpdateRunnable = new ScoreboardUpdateRunnable(ScoreboardManager.getInstance(), PlayerManager.getInstance(),5000L, 50, 30 * 1000L, () -> new ArrayList<>(ScoreboardManager.getInstance().getScoreboards().keySet()));
+        scoreboardUpdateRunnable = new ScoreboardUpdateRunnable(
+                ScoreboardManager.getInstance(),
+                PlayerManager.getInstance(),
+                5000L, 50, 30 * 1000L,
+                () -> new ArrayList<>(ScoreboardManager.getInstance().getScoreboards().keySet())
+        );
         OpenMinetopia.getInstance().registerDirtyPlayerRunnable(scoreboardUpdateRunnable, 20L);
     }
 

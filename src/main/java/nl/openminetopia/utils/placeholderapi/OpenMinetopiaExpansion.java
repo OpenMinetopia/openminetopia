@@ -84,8 +84,15 @@ public class OpenMinetopiaExpansion extends PlaceholderExpansion {
                 }
                 yield null;
             }
-            case "fitness" -> String.valueOf(minetopiaPlayer.getFitness().getTotalFitness());
-            case "max_fitness" -> String.valueOf(fitnessModule.getConfiguration().getMaxFitnessLevel());
+            case "fitness" -> {
+                if (OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) yield "0";
+                if (minetopiaPlayer.getFitness() == null) yield "0";
+                yield String.valueOf(minetopiaPlayer.getFitness().getTotalFitness());
+            }
+            case "max_fitness" -> {
+                if (OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) yield "0";
+                yield String.valueOf(fitnessModule.getConfiguration().getMaxFitnessLevel());
+            }
             case "playtime_total" -> String.valueOf(playtimeInSeconds);
             case "playtime_days" -> String.valueOf(days);
             case "playtime_hours" -> String.valueOf(hours);

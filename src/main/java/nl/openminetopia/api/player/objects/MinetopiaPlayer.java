@@ -19,7 +19,6 @@ import nl.openminetopia.modules.places.PlacesModule;
 import nl.openminetopia.modules.places.models.WorldModel;
 import nl.openminetopia.modules.player.PlayerModule;
 import nl.openminetopia.modules.player.models.PlayerModel;
-import nl.openminetopia.modules.player.runnables.LevelCalculateRunnable;
 import nl.openminetopia.modules.police.PoliceModule;
 import nl.openminetopia.modules.police.models.CriminalRecordModel;
 import nl.openminetopia.modules.prefix.PrefixModule;
@@ -70,7 +69,7 @@ public class MinetopiaPlayer {
     private final @Getter(AccessLevel.PRIVATE) PrefixModule prefixModule = OpenMinetopia.getModuleManager().get(PrefixModule.class);
     private final @Getter(AccessLevel.PRIVATE) ColorModule colorModule = OpenMinetopia.getModuleManager().get(ColorModule.class);
     private final @Getter(AccessLevel.PRIVATE) PlacesModule placesModule = OpenMinetopia.getModuleManager().get(PlacesModule.class);
-    private final @Getter(AccessLevel.PRIVATE) FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
+    //private final @Getter(AccessLevel.PRIVATE) FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
     private final @Getter(AccessLevel.PRIVATE) PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
     private final @Getter(AccessLevel.PRIVATE) CurrencyModule currencyModule = OpenMinetopia.getModuleManager().get(CurrencyModule.class);
 
@@ -87,7 +86,9 @@ public class MinetopiaPlayer {
         if (this.getBukkit().getPlayer() != null && this.getBukkit().isOnline())
             this.getBukkit().getPlayer().sendMessage(ChatUtils.color("<red>Je data wordt geladen..."));
 
-        this.fitness = new Fitness(this);
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) {
+            this.fitness = new Fitness(this);
+        }
 
         this.playtime = this.playerModel.getPlaytime();
         this.wageTime = this.playerModel.getWageTime();
@@ -123,7 +124,7 @@ public class MinetopiaPlayer {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         StormDatabase.getInstance().saveStormModel(this.playerModel);
-        this.fitness.save();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) this.fitness.save();
 
         future.complete(null);
         return future;
