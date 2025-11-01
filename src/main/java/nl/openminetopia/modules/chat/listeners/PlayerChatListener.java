@@ -64,10 +64,8 @@ public class PlayerChatListener implements Listener {
             recipients.addAll(Bukkit.getOnlinePlayers());
         }
 
-        // Format the message
         String formattedMessage = configuration.getChatFormat();
 
-        // Check if the player is wearing a balaclava and replace placeholders with default values
         if (BalaclavaUtils.isBalaclavaItem(source.getInventory().getHelmet())) {
             formattedMessage = formattedMessage
                     .replace("<level>", configuration.getDefaultLevel() + "")
@@ -78,21 +76,46 @@ public class PlayerChatListener implements Listener {
                     .replace("<chat_color>", configuration.getDefaultChatColor());
         }
 
-        Component formattedComponent = ChatUtils.format(minetopiaPlayer, formattedMessage).replaceText(
-                builder -> builder.matchLiteral("<message>").replacement(event.message())
+        int messageIndex = formattedMessage.indexOf("<message>");
+        String formatBeforeMessage = messageIndex >= 0 
+            ? formattedMessage.substring(0, messageIndex + "<message>".length())
+            : formattedMessage;
+        String formatAfterMessage = messageIndex >= 0 && messageIndex + "<message>".length() < formattedMessage.length()
+            ? formattedMessage.substring(messageIndex + "<message>".length())
+            : "";
+        
+        Component baseComponent = ChatUtils.format(minetopiaPlayer, formatBeforeMessage).replaceText(
+                builder -> builder.matchLiteral("<message>").replacement(Component.empty())
         );
-        Bukkit.getConsoleSender().sendMessage(formattedComponent); // Log the message without potential scrambled name
+        
+        Component afterMessageComponent = !formatAfterMessage.isEmpty()
+            ? ChatUtils.format(minetopiaPlayer, formatAfterMessage)
+            : Component.empty();
+        
+        String chatColor = minetopiaPlayer.getActiveChatColor().color();
+        
+        String messageString = ChatUtils.stripMiniMessage(event.message());
+        messageString = chatColor + messageString;
+        Component defaultMessageComponent = ChatUtils.color(messageString);
+        
+        Bukkit.getConsoleSender().sendMessage(baseComponent.append(defaultMessageComponent).append(afterMessageComponent)); // Log the message without potential scrambled name
 
         for (Player target : recipients) {
-            Component finalMessage = formattedComponent;
+            Component messageComponent = defaultMessageComponent;
+            
             if (originalMessage.contains(target.getName())) {
-                finalMessage = formattedComponent.replaceText(builder -> {
-                    builder.matchLiteral(target.getName())
-                           .replacement("<green>" + target.getName() + minetopiaPlayer.getActiveChatColor().color());
-                });
+                String highlightedMessageString = ChatUtils.stripMiniMessage(defaultMessageComponent);
+                
+                String highlightedMessage = highlightedMessageString.replace(
+                    target.getName(),
+                    "<green>" + target.getName() + "</green>" + chatColor
+                );
+                
+                messageComponent = ChatUtils.color(highlightedMessage);
                 target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
 
+            Component finalMessage = baseComponent.append(messageComponent).append(afterMessageComponent);
             target.sendMessage(finalMessage);
         }
     }

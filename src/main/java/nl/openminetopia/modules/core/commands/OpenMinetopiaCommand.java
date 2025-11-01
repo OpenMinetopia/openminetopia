@@ -48,32 +48,46 @@ public class OpenMinetopiaCommand extends BaseCommand {
         playerModule.setConfiguration(new LevelCheckConfiguration(dataFolder));
         playerModule.getConfiguration().saveConfiguration();
 
-        ColorModule colorModule = OpenMinetopia.getModuleManager().get(ColorModule.class);
-        colorModule.setConfiguration(new ColorsConfiguration(dataFolder));
-        colorModule.getConfiguration().saveConfiguration();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(ColorModule.class)) {
+            ColorModule colorModule = OpenMinetopia.getModuleManager().get(ColorModule.class);
+            colorModule.setConfiguration(new ColorsConfiguration(dataFolder));
+            colorModule.getConfiguration().saveConfiguration();
+        }
 
-        FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
-        fitnessModule.setConfiguration(new FitnessConfiguration(dataFolder));
-        fitnessModule.getConfiguration().saveConfiguration();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) {
+            FitnessModule fitnessModule = OpenMinetopia.getModuleManager().get(FitnessModule.class);
+            fitnessModule.setConfiguration(new FitnessConfiguration(dataFolder));
+            fitnessModule.getConfiguration().saveConfiguration();
+        }
 
-        BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
-        bankingModule.setConfiguration(new BankingConfiguration(dataFolder));
-        bankingModule.getConfiguration().saveConfiguration();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(BankingModule.class)) {
+            BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
+            bankingModule.setConfiguration(new BankingConfiguration(dataFolder));
+            bankingModule.getConfiguration().saveConfiguration();
+        }
 
-        PlotModule plotModule = OpenMinetopia.getModuleManager().get(PlotModule.class);
-        plotModule.setCalculateConfiguration(new PlotCalculateConfiguration(dataFolder));
-        plotModule.getCalculateConfiguration().saveConfiguration();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(PlotModule.class)) {
+            PlotModule plotModule = OpenMinetopia.getModuleManager().get(PlotModule.class);
+            plotModule.setCalculateConfiguration(new PlotCalculateConfiguration(dataFolder));
+            plotModule.getCalculateConfiguration().saveConfiguration();
+        }
 
-        BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
-        booksModule.setConfiguration(new BooksConfiguration(dataFolder));
-        booksModule.getConfiguration().saveConfiguration();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(BooksModule.class)) {
+            BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
+            booksModule.setConfiguration(new BooksConfiguration(dataFolder));
+            booksModule.getConfiguration().saveConfiguration();
+        }
 
-        LabymodModule labymodModule = OpenMinetopia.getModuleManager().get(LabymodModule.class);
-        labymodModule.setConfiguration(new LabymodConfiguration(dataFolder));
-        labymodModule.getConfiguration().saveConfiguration();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(LabymodModule.class)) {
+            LabymodModule labymodModule = OpenMinetopia.getModuleManager().get(LabymodModule.class);
+            labymodModule.setConfiguration(new LabymodConfiguration(dataFolder));
+            labymodModule.getConfiguration().saveConfiguration();
+        }
 
-        ItemsModule module = OpenMinetopia.getModuleManager().get(ItemsModule.class);
-        module.reload();
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(ItemsModule.class)) {
+            ItemsModule module = OpenMinetopia.getModuleManager().get(ItemsModule.class);
+            module.reload();
+        }
 
         sender.sendMessage(ChatUtils.color("<gold>De configuratiebestanden zijn succesvol herladen!"));
     }
@@ -81,8 +95,8 @@ public class OpenMinetopiaCommand extends BaseCommand {
     @Default
     public void onCommand(Player player) {
         player.sendMessage(ChatUtils.color(" "));
-        player.sendMessage(ChatUtils.color("<gold>Deze server maakt gebruik van <yellow>OpenMinetopia <gold>versie <yellow>" + OpenMinetopia.getInstance().getDescription().getVersion()));
-        player.sendMessage(ChatUtils.color("<gold>Auteurs: <yellow>" + OpenMinetopia.getInstance().getDescription().getAuthors().toString().replace("[", "").replace("]", "")));
+        player.sendMessage(ChatUtils.color("<gold>Deze server maakt gebruik van <yellow>OpenMinetopia <gold>versie <yellow>" + OpenMinetopia.getInstance().getPluginMeta().getVersion()));
+        player.sendMessage(ChatUtils.color("<gold>Auteurs: <yellow>" + OpenMinetopia.getInstance().getPluginMeta().getAuthors().toString().replace("[", "").replace("]", "")));
         player.sendMessage(ChatUtils.color(" "));
     }
 
