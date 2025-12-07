@@ -26,7 +26,7 @@ public class LevelcheckNpcListener implements Listener {
     @EventHandler
     public void clickNpc(final CustomNpcClickEvent event) {
         if (event.getClickType() != CustomNpcClickEvent.ClickType.RIGHT_CLICK) return;
-        if (!event.getNpcName().contains("Levelcheck")) return;
+        if (!event.getNpcName().toLowerCase().contains("levelcheck")) return;
 
         event.setCancelled(true);
 
