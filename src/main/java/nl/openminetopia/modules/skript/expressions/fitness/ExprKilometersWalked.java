@@ -47,8 +47,9 @@ public class ExprKilometersWalked extends SimpleExpression<Integer> {
     @Nullable
     protected Integer[] get(Event event) {
         Player p = player.getSingle(event);
+        if (p == null) return new Integer[0];
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
-        if (minetopiaPlayer == null) return null;
+        if (minetopiaPlayer == null) return new Integer[0];
         return new Integer[] {(minetopiaPlayer.getBukkit().getStatistic(Statistic.WALK_ONE_CM) / 1000)};
     }
 }

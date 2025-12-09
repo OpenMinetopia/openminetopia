@@ -49,8 +49,9 @@ public class ExprGetCriminalRecords extends SimpleExpression<Integer> {
     @Nullable
     protected Integer[] get(Event event) {
         Player player = exprPlayer.getSingle(event);
+        if (player == null) return new Integer[0];
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
-        if (minetopiaPlayer == null) return null;
+        if (minetopiaPlayer == null) return new Integer[0];
 
         List<CriminalRecordModel> criminalRecords = minetopiaPlayer.getCriminalRecords();
         return criminalRecords.stream()

@@ -48,8 +48,9 @@ public class ExprDrinkingPoints extends SimpleExpression<Integer> {
     @Nullable
     protected Integer[] get(Event event) {
         Player p = player.getSingle(event);
+        if (p == null) return new Integer[0];
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
-        if (minetopiaPlayer == null) return null;
+        if (minetopiaPlayer == null) return new Integer[0];
         FitnessStatisticModel drinkingStatistic = minetopiaPlayer.getFitness().getStatistic(FitnessStatisticType.DRINKING);
         return new Integer[] {drinkingStatistic.getFitnessGained()};
     }

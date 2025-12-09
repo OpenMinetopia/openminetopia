@@ -46,10 +46,9 @@ public class ExprPlaytime extends SimpleExpression<Long> {
     @Nullable
     protected Long[] get(Event event) {
         Player p = player.getSingle(event);
+        if (p == null) return new Long[0];
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
-        if (minetopiaPlayer != null) return null;
+        if (minetopiaPlayer == null) return new Long[0];
         return new Long[] {minetopiaPlayer.getPlaytime()};
-
-
     }
 }

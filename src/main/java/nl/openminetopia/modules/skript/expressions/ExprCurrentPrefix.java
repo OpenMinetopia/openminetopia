@@ -46,6 +46,7 @@ public class ExprCurrentPrefix extends SimpleExpression<String> {
     @Nullable
     protected String[] get(Event event) {
         Player p = player.getSingle(event);
+        if (p == null) return new String[0];
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
         if (minetopiaPlayer == null) return new String[0];
         return new String[] {minetopiaPlayer.getActivePrefix().getPrefix()};
