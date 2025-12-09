@@ -15,7 +15,6 @@ import nl.openminetopia.utils.events.EventUtils;
 import nl.openminetopia.utils.item.ItemBuilder;
 import nl.openminetopia.utils.menu.Menu;
 import nl.openminetopia.utils.wrappers.CustomNpcClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -90,7 +89,7 @@ public class LevelcheckNpcListener implements Listener {
                 ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("levelcheck_success")
                         .replace("<level>", String.valueOf(newLevel)));
                 minetopiaPlayer.save();
-                gui.close((Player) event.getWhoClicked());
+                gui.close(event.getWhoClicked());
             });
             gui.setItem(11, acceptItem);
 
@@ -100,7 +99,7 @@ public class LevelcheckNpcListener implements Listener {
                     .addLoreLine(" ")
                     .addLoreLine("<dark_red>Klik om deze actie te <red>annuleren</red>.")
                     .toItemStack());
-            cancelItem.setAction(event -> gui.close((Player) event.getWhoClicked()));
+            cancelItem.setAction(event -> gui.close(event.getWhoClicked()));
             gui.setItem(15, cancelItem);
         }
     }
