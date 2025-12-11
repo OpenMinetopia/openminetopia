@@ -1,5 +1,5 @@
 # ✨ OpenMinetopia ✨
-[![](https://dcbadge.limes.pink/api/server/Tz6MebCjrw)](https://discord.gg/Tz6MebCjrw) [![Modrinth](https://img.shields.io/badge/Modrinth-1D1F23?style=for-the-badge&logo=Modrinth&link=https://modrinth.com/plugin/openminetopia)](https://modrinth.com/plugin/openminetopia) [![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white&link=https://ko-fi.com/openminetopia)](https://ko-fi.com/aaronduran)![JitPack](https://img.shields.io/jitpack/version/nl.openminetopia/openminetopia)
+[![](https://dcbadge.limes.pink/api/server/Tz6MebCjrw)](https://discord.gg/Tz6MebCjrw) [![Modrinth](https://img.shields.io/badge/Modrinth-1D1F23?style=for-the-badge&logo=Modrinth&link=https://modrinth.com/plugin/openminetopia)](https://modrinth.com/plugin/openminetopia) [![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white&link=https://ko-fi.com/openminetopia)](https://ko-fi.com/openminetopia)![JitPack](https://img.shields.io/jitpack/version/nl.openminetopia/openminetopia)
 
 
 
