@@ -31,8 +31,8 @@ Dit project is gelicentieerd onder de [GNU General Public License 3.0](LICENSE).
       </p>
     </td>
     <td align="center" width="50%">
-      <a href="https://gameunit.pro">
-        <img src="https://github.com/user-attachments/assets/60ba675c-78a7-42b4-a3cb-276ced5f4987" alt="GameUnit" width="300">
+      <a href="https://cloudito.cloud">
+        <img width="1920" height="768" alt="Cloudito Banner" src="https://github.com/user-attachments/assets/6d77126a-b5aa-4e8c-8271-76ffe241435c" />
       </a>
     </td>
   </tr>
