@@ -1,5 +1,6 @@
 package nl.openminetopia.modules.misc.listeners;
 
+import me.zombie_striker.qg.api.QualityArmory;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.places.MTPlaceManager;
 import nl.openminetopia.api.player.PlayerManager;
@@ -9,6 +10,7 @@ import nl.openminetopia.modules.misc.objects.PvPItem;
 import nl.openminetopia.modules.misc.utils.MiscUtils;
 import nl.openminetopia.modules.police.handcuff.HandcuffManager;
 import nl.openminetopia.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
@@ -25,6 +27,14 @@ public class PlayerAttackListener implements Listener {
     public void damagePlayer(final EntityDamageByEntityEvent event) {
         if (MTPlaceManager.getInstance().getPlace(event.getDamager().getLocation()) == null) return;
         if (!OpenMinetopia.getDefaultConfiguration().isPvpEnabled()) return;
+
+        if (Bukkit.getPluginManager().isPluginEnabled("QualityArmory")) {
+            if (event.getDamager() instanceof Player player) {
+                if (QualityArmory.isGun(player.getInventory().getItemInMainHand())) return;
+            }
+        }
+
+        System.out.println("Damage event: " + event.getDamager().getType() + " -> " + event.getEntity().getType());
 
         // Anti-armorstand shooting
         if (event.getEntity() instanceof ArmorStand && event.getDamager() instanceof Arrow) {

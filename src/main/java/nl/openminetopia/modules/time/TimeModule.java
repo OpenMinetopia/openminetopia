@@ -7,7 +7,7 @@ import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.places.PlacesModule;
 import nl.openminetopia.modules.time.tasks.TimeSyncRunnable;
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +26,7 @@ public class TimeModule extends ExtendedSpigotModule {
             World bukkitWorld = Bukkit.getWorld(worldModel.getName());
             if (bukkitWorld == null) return;
 
-            bukkitWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            bukkitWorld.setGameRule(GameRules.ADVANCE_TIME, false);
         });
 
         TimeSyncRunnable runnable = new TimeSyncRunnable();

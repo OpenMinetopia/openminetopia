@@ -29,3 +29,6 @@ dependencies:
     LabyModServerAPI:
       load: BEFORE
       required: false
+    QualityArmory:
+      load: BEFORE
+      required: false

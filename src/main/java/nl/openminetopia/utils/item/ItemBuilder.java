@@ -410,7 +410,7 @@ public class ItemBuilder {
     public ItemBuilder setSkinURL(String url) {
         try {
             GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "skull");
-            PropertyMap properties = gameProfile.getProperties();
+            PropertyMap properties = gameProfile.properties();
             if (properties == null) {
                 return this;
             }

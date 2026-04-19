@@ -10,8 +10,6 @@ plugins {
 group = "nl.openminetopia"
 version = "1.5.0"
 
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
-
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
@@ -25,11 +23,12 @@ repositories {
     maven("https://repo.fancyplugins.de/releases")
     maven("https://dist.labymod.net/api/v1/maven/release/")
     maven("https://repo.triumphteam.dev/snapshots/")
+    maven("https://repo.codemc.io/repository/maven-public/")
 }
 
 dependencies {
     /* Paper */
-    paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 
     /* Configuration */
     compileOnly("org.spongepowered:configurate-yaml:4.2.0")
@@ -46,7 +45,7 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
     /* Scoreboard */
-    val scoreboardLibraryVersion = "2.4.3"
+    val scoreboardLibraryVersion = "2.6.0"
     implementation("net.megavex:scoreboard-library-api:$scoreboardLibraryVersion")
     runtimeOnly("net.megavex:scoreboard-library-implementation:$scoreboardLibraryVersion")
     runtimeOnly("net.megavex:scoreboard-library-modern:$scoreboardLibraryVersion:mojmap")
@@ -55,7 +54,11 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     /* WorldGuard */
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15-SNAPSHOT")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15") {
+        exclude("com.google.guava", "guava")
+        exclude("com.google.code.gson", "gson")
+        exclude("it.unimi.dsi", "fastutil")
+    }
 
     /* Module Manager */
     implementation("com.github.duranaaron.ModuleManager:spigot:287350ddac")
@@ -92,6 +95,9 @@ dependencies {
 
     /* Labymod */
     compileOnly("net.labymod.serverapi:server-bukkit:1.0.6")
+
+    /* QualityArmory Compatibility */
+    compileOnly("me.zombie_striker:QualityArmory:2.1.2")
 }
 
 val targetJavaVersion = 21
@@ -109,13 +115,14 @@ java {
 
 tasks {
     runServer {
-        minecraftVersion("1.21.8")
+        minecraftVersion("1.21.11")
         jvmArgs("-Dcom.mojang.eula.agree=true", "-Dfile.encoding=UTF-8")
         downloadPlugins {
             github("MilkBowl", "Vault", "1.7.3", "Vault.jar")
             hangar("PlaceholderAPI", "2.11.6")
-            modrinth("WorldGuard", "7.0.13")
-            hangar("WorldEdit", "7.3.14")
+            modrinth("WorldGuard", "7.0.16-beta-01")
+            modrinth("WorldEdit", "CkT32vix")
+            modrinth("qualityarmory", "2.1.2") // dev
         }
     }
 
