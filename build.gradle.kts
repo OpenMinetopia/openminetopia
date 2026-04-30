@@ -1,10 +1,10 @@
 plugins {
     java
-    id("io.freefair.lombok") version "8.13.1"
-    id("com.gradleup.shadow") version "8.3.6"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
+    id("io.freefair.lombok") version "9.5.0"
+    id("com.gradleup.shadow") version "9.4.1"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
     id("maven-publish")
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 group = "nl.openminetopia"
@@ -39,7 +39,9 @@ dependencies {
     compileOnly("mysql:mysql-connector-java:8.0.33")
     compileOnly("org.mariadb.jdbc:mariadb-java-client:3.5.3")
     compileOnly("org.xerial:sqlite-jdbc:3.49.1.0")
-    implementation("com.github.Mindgamesnl:storm:e1f961b480")
+    implementation("com.github.Mindgamesnl:storm:e1f961b480") {
+        exclude(group = "org.projectlombok", module = "lombok-maven")
+    }
 
     /* Command Framework */
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
@@ -100,7 +102,7 @@ dependencies {
     compileOnly("me.zombie_striker:QualityArmory:2.1.2")
 }
 
-val targetJavaVersion = 21
+val targetJavaVersion = 25
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -115,7 +117,7 @@ java {
 
 tasks {
     runServer {
-        minecraftVersion("1.21.11")
+        minecraftVersion("26.1.2")
         jvmArgs("-Dcom.mojang.eula.agree=true", "-Dfile.encoding=UTF-8")
         downloadPlugins {
             github("MilkBowl", "Vault", "1.7.3", "Vault.jar")
