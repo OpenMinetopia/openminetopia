@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     /* Paper */
-    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.1.2.build.+")
 
     /* Configuration */
     compileOnly("org.spongepowered:configurate-yaml:4.2.0")
