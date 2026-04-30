@@ -5,17 +5,22 @@ import nl.openminetopia.modules.backpack.item.BackpackItem;
 import nl.openminetopia.modules.backpack.BackpackModule;
 import nl.openminetopia.modules.backpack.session.BackpackSession;
 import nl.openminetopia.modules.backpack.session.BackpackSessionManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.UUID;
 
@@ -28,43 +33,63 @@ public class BackpackSessionListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
-
         BackpackSessionManager mgr = manager();
         if (mgr == null) return;
 
-        BackpackSession session = mgr.getSessionByViewer(player.getUniqueId());
-        if (session == null) return;
-
-        UUID openId = session.getBackpackId();
-
-        if (matchesOpenBackpack(event.getCurrentItem(), openId) || matchesOpenBackpack(event.getCursor(), openId)) {
+        // Don't let anyone move a bag that's currently open.
+        if (matchesAnyOpen(event.getCurrentItem(), mgr) || matchesAnyOpen(event.getCursor(), mgr)) {
             event.setCancelled(true);
             return;
         }
 
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+
+        // Block 1-9 hotbar swaps that would yoink an open bag out of its slot.
         if (event.getAction() == InventoryAction.HOTBAR_SWAP || event.getClick().isKeyboardClick()) {
             int hotbar = event.getHotbarButton();
             if (hotbar >= 0) {
                 ItemStack swapping = player.getInventory().getItem(hotbar);
-                if (matchesOpenBackpack(swapping, openId)) {
+                if (matchesAnyOpen(swapping, mgr)) {
                     event.setCancelled(true);
                 }
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onDrag(InventoryDragEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
+    // Right-click a backpack inside another player's inventory (e.g. during /bodysearch) to open it.
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onSearchClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player viewer)) return;
+
+        Inventory clicked = event.getClickedInventory();
+        if (!(clicked instanceof PlayerInventory pi)) return;
+
+        HumanEntity holder = pi.getHolder();
+        if (holder == null || holder.getUniqueId().equals(viewer.getUniqueId())) return;
+
+        ClickType click = event.getClick();
+        if (click != ClickType.RIGHT && click != ClickType.SHIFT_RIGHT) return;
+
+        ItemStack item = event.getCurrentItem();
+        if (!BackpackItem.isBackpack(item)) return;
+
+        event.setCancelled(true);
 
         BackpackSessionManager mgr = manager();
         if (mgr == null) return;
 
-        BackpackSession session = mgr.getSessionByViewer(player.getUniqueId());
-        if (session == null) return;
+        Bukkit.getScheduler().runTask(OpenMinetopia.getInstance(), () -> {
+            viewer.closeInventory();
+            mgr.open(viewer, item);
+        });
+    }
 
-        if (matchesOpenBackpack(event.getOldCursor(), session.getBackpackId())) {
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onDrag(InventoryDragEvent event) {
+        BackpackSessionManager mgr = manager();
+        if (mgr == null) return;
+
+        if (matchesAnyOpen(event.getOldCursor(), mgr)) {
             event.setCancelled(true);
         }
     }
@@ -108,9 +133,9 @@ public class BackpackSessionListener implements Listener {
         mgr.close(session);
     }
 
-    private boolean matchesOpenBackpack(ItemStack stack, UUID openId) {
+    private boolean matchesAnyOpen(ItemStack stack, BackpackSessionManager mgr) {
         if (stack == null) return false;
         UUID id = BackpackItem.getId(stack);
-        return openId.equals(id);
+        return id != null && mgr.isOpen(id);
     }
 }

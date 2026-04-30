@@ -191,6 +191,7 @@ police_bodysearch_self: "<red>Je kunt jezelf <dark_red>niet <red>fouilleren!"
 police_bodysearch_too_far: "<red>Deze speler is te ver weg om te kunnen <dark_red>fouilleren<red>!"
 police_bodysearch_executor: "<gold>Je bent <yellow><player> <gold>aan het fouilleren."
 police_bodysearch_target: "<gold>Je wordt gefouilleerd door <yellow><player><gold>."
+police_bodysearch_backpack_hint: "<gray>Tip: rechtermuisklik op een rugzak om de inhoud te bekijken."
 
 # Walkie-talkie
 police_walkietalkie_type_your_message: "<gold>Typ nu jouw bericht om naar <yellow><player> <gold>te verzenden."

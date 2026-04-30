@@ -46,6 +46,12 @@ public class BodysearchCommand extends BaseCommand {
                         .replace("<player>", player.getName()));
 
             player.openInventory(target.getInventory());
+
+            // Tell the officer they can right-click backpacks to inspect them.
+            String hint = MessageConfiguration.message("police_bodysearch_backpack_hint");
+            if (!hint.isEmpty()) {
+                ChatUtils.sendFormattedMessage(minetopiaPlayer, hint);
+            }
         });
     }
 }

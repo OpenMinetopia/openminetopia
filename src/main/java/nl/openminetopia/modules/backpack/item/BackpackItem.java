@@ -23,7 +23,7 @@ public class BackpackItem {
         if (stack == null) return false;
         ItemMeta meta = stack.getItemMeta();
         if (meta == null) return false;
-        // The rows tag is stamped at creation, the id tag is minted lazily on first open.
+        // rows is set at creation, id is set on first open.
         return meta.getPersistentDataContainer().has(BackpackKeys.rows(), PersistentDataType.INTEGER);
     }
 

@@ -35,12 +35,9 @@ public class BackpackSessionManager {
         boolean freshlyMinted = false;
 
         if (id == null) {
-            // First time this template backpack is being opened — mint its identity now.
             id = BackpackItem.assignFreshId(stack);
             freshlyMinted = true;
         } else if (sessionsByBackpack.containsKey(id)) {
-            // Another player already has a backpack with this id open. The held stack
-            // is a duplicate (e.g. a creative copy) — give it its own identity.
             id = BackpackItem.assignFreshId(stack);
             freshlyMinted = true;
         }
