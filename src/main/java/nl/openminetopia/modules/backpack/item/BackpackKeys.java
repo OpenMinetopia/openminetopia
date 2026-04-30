@@ -18,4 +18,8 @@ public class BackpackKeys {
     public static NamespacedKey contents() {
         return new NamespacedKey(OpenMinetopia.getInstance(), "backpack_contents");
     }
+
+    public static NamespacedKey title() {
+        return new NamespacedKey(OpenMinetopia.getInstance(), "backpack_title");
+    }
 }

@@ -23,7 +23,8 @@ public class BackpackItem {
         if (stack == null) return false;
         ItemMeta meta = stack.getItemMeta();
         if (meta == null) return false;
-        return meta.getPersistentDataContainer().has(BackpackKeys.id(), PersistentDataType.STRING);
+        // The rows tag is stamped at creation, the id tag is minted lazily on first open.
+        return meta.getPersistentDataContainer().has(BackpackKeys.rows(), PersistentDataType.INTEGER);
     }
 
     @Nullable
@@ -37,6 +38,25 @@ public class BackpackItem {
         } catch (IllegalArgumentException ex) {
             return null;
         }
+    }
+
+    @Nullable
+    public static String getTitle(ItemStack stack) {
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null) return null;
+        return meta.getPersistentDataContainer().get(BackpackKeys.title(), PersistentDataType.STRING);
+    }
+
+    public static void setTitle(ItemStack stack, String title) {
+        ItemMeta meta = stack.getItemMeta();
+        meta.getPersistentDataContainer().set(BackpackKeys.title(), PersistentDataType.STRING, title);
+        stack.setItemMeta(meta);
+    }
+
+    public static void clearTitle(ItemStack stack) {
+        ItemMeta meta = stack.getItemMeta();
+        meta.getPersistentDataContainer().remove(BackpackKeys.title());
+        stack.setItemMeta(meta);
     }
 
     public static int getRows(ItemStack stack) {
@@ -104,11 +124,13 @@ public class BackpackItem {
 
     public static ItemStack create(CustomItem source, int rows) {
         ItemStack stack = source.build();
-        UUID id = UUID.randomUUID();
+        markAsBackpack(stack, rows);
+        return stack;
+    }
 
+    public static void markAsBackpack(ItemStack stack, int rows) {
         ItemMeta meta = stack.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(BackpackKeys.id(), PersistentDataType.STRING, id.toString());
         pdc.set(BackpackKeys.rows(), PersistentDataType.INTEGER, rows);
         stack.setItemMeta(meta);
 
@@ -116,6 +138,5 @@ public class BackpackItem {
         setContents(stack, empty);
 
         new ItemBuilder(stack).addLoreLine("<gray>Rugzak (<white>" + rows + " rijen<gray>)");
-        return stack;
     }
 }

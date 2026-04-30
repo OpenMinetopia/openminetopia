@@ -1,6 +1,7 @@
 package nl.openminetopia.modules.backpack.menus;
 
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.backpack.item.BackpackItem;
 import nl.openminetopia.modules.backpack.session.BackpackSession;
 import nl.openminetopia.modules.backpack.session.BackpackSessionManager;
@@ -16,7 +17,7 @@ public class BackpackMenu extends Menu {
     private final ItemStack[] initialContents;
 
     public BackpackMenu(BackpackSessionManager manager, BackpackSession session, ItemStack[] contents) {
-        super("<dark_gray>Rugzak", session.getRows());
+        super(resolveTitle(session), session.getRows());
         this.manager = manager;
         this.session = session;
         this.initialContents = contents;
@@ -61,5 +62,11 @@ public class BackpackMenu extends Menu {
                 gui.getInventory().setItem(i, stack);
             }
         });
+    }
+
+    private static String resolveTitle(BackpackSession session) {
+        String custom = BackpackItem.getTitle(session.getStackRef());
+        if (custom != null && !custom.isEmpty()) return custom;
+        return MessageConfiguration.message("backpack_menu_title");
     }
 }

@@ -1,12 +1,14 @@
 package nl.openminetopia.modules.backpack.session;
 
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.backpack.item.BackpackItem;
 import nl.openminetopia.modules.backpack.menus.BackpackMenu;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -23,27 +25,39 @@ public class BackpackSessionManager {
 
         if (sessionsByViewer.containsKey(player.getUniqueId())) return;
 
-        UUID id = BackpackItem.getId(stack);
-        if (id == null) {
-            ChatUtils.sendMessage(player, "<red>Deze rugzak is corrupt en kan niet geopend worden.");
-            return;
-        }
-
-        if (sessionsByBackpack.containsKey(id)) {
-            id = BackpackItem.assignFreshId(stack);
-        }
-
         int rows = BackpackItem.getRows(stack);
         if (rows < 1 || rows > 6) {
-            ChatUtils.sendMessage(player, "<red>Deze rugzak heeft een ongeldig aantal rijen.");
+            ChatUtils.sendMessage(player, MessageConfiguration.message("backpack_invalid_row_count"));
             return;
+        }
+
+        UUID id = BackpackItem.getId(stack);
+        boolean freshlyMinted = false;
+
+        if (id == null) {
+            // First time this template backpack is being opened — mint its identity now.
+            id = BackpackItem.assignFreshId(stack);
+            freshlyMinted = true;
+        } else if (sessionsByBackpack.containsKey(id)) {
+            // Another player already has a backpack with this id open. The held stack
+            // is a duplicate (e.g. a creative copy) — give it its own identity.
+            id = BackpackItem.assignFreshId(stack);
+            freshlyMinted = true;
+        }
+
+        if (!freshlyMinted) {
+            int removed = removeInventoryDuplicates(player, id);
+            if (removed > 0) {
+                ChatUtils.sendMessage(player, MessageConfiguration.message("backpack_duplicates_removed")
+                        .replace("<count>", String.valueOf(removed)));
+            }
         }
 
         ItemStack[] contents;
         try {
             contents = BackpackItem.getContents(stack, rows);
         } catch (IllegalStateException ex) {
-            ChatUtils.sendMessage(player, "<red>Kon de inhoud van deze rugzak niet laden.");
+            ChatUtils.sendMessage(player, MessageConfiguration.message("backpack_load_failed"));
             OpenMinetopia.getInstance().getLogger().warning("Failed to deserialize backpack " + id + ": " + ex.getMessage());
             return;
         }
@@ -92,6 +106,30 @@ public class BackpackSessionManager {
                 saveSnapshot(session);
             }
         });
+    }
+
+    private int removeInventoryDuplicates(Player player, UUID id) {
+        PlayerInventory inv = player.getInventory();
+        int heldSlot = inv.getHeldItemSlot();
+        int removed = 0;
+
+        for (int i = 0; i < 36; i++) {
+            if (i == heldSlot) continue;
+            ItemStack item = inv.getItem(i);
+            if (item == null) continue;
+            if (id.equals(BackpackItem.getId(item))) {
+                inv.setItem(i, null);
+                removed++;
+            }
+        }
+
+        ItemStack offhand = inv.getItemInOffHand();
+        if (id.equals(BackpackItem.getId(offhand))) {
+            inv.setItemInOffHand(null);
+            removed++;
+        }
+
+        return removed;
     }
 
     public void closeAll() {
