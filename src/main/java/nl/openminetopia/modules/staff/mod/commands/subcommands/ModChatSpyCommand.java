@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.entity.Player;
 
@@ -21,6 +22,9 @@ public class ModChatSpyCommand extends BaseCommand {
         if (minetopiaPlayer == null) return;
 
         minetopiaPlayer.setChatSpyEnabled(!minetopiaPlayer.isChatSpyEnabled());
-        player.sendMessage(ChatUtils.color("<gold>Je hebt <yellow>ChatSpy <gold>" + (minetopiaPlayer.isChatSpyEnabled() ? "aangezet" : "uitgezet") + "!"));
+        String state = MessageConfiguration.message(minetopiaPlayer.isChatSpyEnabled()
+                ? "mod_chatspy_state_enabled" : "mod_chatspy_state_disabled");
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("mod_chatspy_toggled")
+                .replace("<state>", state)));
     }
 }

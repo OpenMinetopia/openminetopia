@@ -8,6 +8,7 @@ import nl.openminetopia.api.places.MTPlaceManager;
 import nl.openminetopia.api.places.objects.MTPlace;
 import nl.openminetopia.api.player.fitness.Fitness;
 import nl.openminetopia.configuration.DefaultConfiguration;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.color.ColorModule;
 import nl.openminetopia.modules.color.enums.OwnableColorType;
 import nl.openminetopia.modules.color.objects.*;
@@ -84,7 +85,7 @@ public class MinetopiaPlayer {
         DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
 
         if (this.getBukkit().getPlayer() != null && this.getBukkit().isOnline())
-            this.getBukkit().getPlayer().sendMessage(ChatUtils.color("<red>Je data wordt geladen..."));
+            this.getBukkit().getPlayer().sendMessage(MessageConfiguration.component("player_data_loading"));
 
         if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(FitnessModule.class)) {
             this.fitness = new Fitness(this);
@@ -229,7 +230,8 @@ public class MinetopiaPlayer {
         if (activePrefix.isExpired()) {
             Player player = this.getBukkit().getPlayer();
             if (player != null && player.isOnline()) {
-                player.sendMessage(ChatUtils.color("<red>Je prefix <dark_red>" + activePrefix.getPrefix() + " <red>is verlopen!"));
+                player.sendMessage(ChatUtils.color(MessageConfiguration.message("player_prefix_expired")
+                        .replace("<prefix>", activePrefix.getPrefix())));
             }
 
             this.removePrefix(activePrefix);
@@ -302,7 +304,9 @@ public class MinetopiaPlayer {
         if (color.isExpired()) {
             Player player = this.getBukkit().getPlayer();
             if (player != null && player.isOnline())
-                player.sendMessage(ChatUtils.color("<red>Je " + type.name().toLowerCase() + " kleur <dark_red>" + color.getColorId() + " is verlopen!"));
+                player.sendMessage(ChatUtils.color(MessageConfiguration.message("player_color_expired")
+                        .replace("<type>", type.name().toLowerCase())
+                        .replace("<color_id>", color.getColorId())));
             removeColor(color);
             setActiveColor(type.defaultColor(), type);
         }

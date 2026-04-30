@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Subcommand;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.books.BooksModule;
 import nl.openminetopia.modules.books.objects.CustomBook;
 import nl.openminetopia.utils.ChatUtils;
@@ -25,7 +26,7 @@ public class BooksCommand extends BaseCommand {
         BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
 
         if (!player.hasPermission("openminetopia.books." + book)) {
-            player.sendMessage(ChatUtils.color("<red>Je hebt geen toestemming om dit boek te krijgen."));
+            player.sendMessage(MessageConfiguration.component("books_no_permission"));
             return;
         }
 
@@ -34,7 +35,7 @@ public class BooksCommand extends BaseCommand {
                 .findFirst()
                 .ifPresentOrElse(customBook -> {
                     askForVariables(player, customBook, 0);
-                }, () -> player.sendMessage(ChatUtils.color("<red>Dit boek bestaat niet.")));
+                }, () -> player.sendMessage(MessageConfiguration.component("books_not_found")));
     }
 
     private void askForVariables(Player player, CustomBook book, int index) {
@@ -51,7 +52,8 @@ public class BooksCommand extends BaseCommand {
                 player.getInventory().addItem(book.getBookItem(booksModule.getVariableResponses().get(player.getUniqueId()), player, false));
             });
 
-            player.sendMessage(ChatUtils.format(minetopiaPlayer, "<gold>Je hebt het boek <yellow>" + book.getName() + " <gold>ontvangen!"));
+            player.sendMessage(ChatUtils.format(minetopiaPlayer, MessageConfiguration.message("books_received")
+                    .replace("<book>", book.getName())));
             return;
         }
 

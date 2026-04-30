@@ -3,6 +3,7 @@ package nl.openminetopia.modules.police.listeners;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.police.utils.PeppersprayUtils;
 import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.PersistentDataUtil;
@@ -37,7 +38,7 @@ public class PlayerPeppersprayListener implements Listener {
 
             Integer currentUsages = PersistentDataUtil.getInteger(itemStack, "openmt.usages");
             if (currentUsages == null || currentUsages <= 0) {
-                source.sendMessage(ChatUtils.color("<red>Jouw pepperspray is <dark_red>leeg<red>!"));
+                source.sendMessage(MessageConfiguration.component("police_pepperspray_empty"));
                 return;
             }
 
@@ -45,12 +46,13 @@ public class PlayerPeppersprayListener implements Listener {
             source.getInventory().setItemInMainHand(finalItemStack);
         }
 
-        source.sendMessage(ChatUtils.color("<red>Je hebt <dark_red>" + target.getName() + " <red>gepeppersprayed."));
+        source.sendMessage(ChatUtils.color(MessageConfiguration.message("police_pepperspray_used")
+                .replace("<player>", target.getName())));
 
         MinetopiaPlayer sourceMinetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(source);
         if (sourceMinetopiaPlayer == null) return;
 
-        target.sendMessage(ChatUtils.format(sourceMinetopiaPlayer, "<red>Je bent gepeppersprayed!"));
+        target.sendMessage(ChatUtils.format(sourceMinetopiaPlayer, MessageConfiguration.message("police_pepperspray_target")));
         PeppersprayUtils.applyPeppersprayEffects(target);
     }
 }

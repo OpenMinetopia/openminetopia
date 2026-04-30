@@ -1,9 +1,9 @@
 yes: "<green>Ja"
 no: "<red>Nee"
 geen: "Geen."
-go_back: "Terug"
-next_page: "Volgende Pagina"
-previous_page: "Vorige Pagina"
+go_back: "<gold>Terug"
+next_page: "<gold>Volgende pagina"
+previous_page: "<gold>Vorige pagina"
 no_player_provided: "<red>Je moet een speler opgeven."
 time_format: "<yellow><days> dagen, <yellow><hours> uur, <yellow><minutes> <gold>minuten en <yellow><seconds> <gold>seconden"
 
@@ -43,6 +43,17 @@ banking_no_withdraw_permission: "<red>Je hebt geen recht om geld op te nemen van
 banking_withdraw_message: "<gold>Je hebt <red><withdraw_value></red> <gold>opgenomen van je rekening."
 banking_no_deposit_permission: "<red>Je hebt geen recht om geld te storten op deze rekening."
 banking_deposit_message: "<gold>Je hebt <red><deposit_value></red> <gold>gestort naar je rekening."
+banking_pin_request_received: "<dark_green>Je hebt een pinverzoek ontvangen van <green><player></green> voor een bedrag van <green><amount></green>."
+banking_pin_request_instructions: "<dark_green><green>Rechter-muis</green> op de pin-terminal om te accepteren, <green>linker-muis</green> om te weigeren."
+banking_pin_request_sent: "<dark_green>Je hebt een pinverzoek verzonden naar <green><player></green> voor een bedrag van <green><amount></green>."
+banking_pin_cancelled: "<red>De pintransactie is geannuleerd."
+banking_pin_sent: "<dark_green>Je hebt succesvol <green><amount></green> verzonden via pin naar <green><player></green>."
+banking_pin_received: "<dark_green>Je hebt succesvol <green><amount></green> ontvangen via pin van <green><player></green>."
+banking_pin_insufficient_balance: "<red>Je hebt niet genoeg saldo op je rekening om deze pintransactie te voltooien."
+banking_pin_already_in_progress: "<red>Je hebt al een lopende pintransactie. Voltooi deze eerst voordat je een nieuwe start."
+banking_pin_no_business_accounts: "<red>Je hebt geen zakelijke rekeningen om een pintransactie mee te doen."
+banking_transaction_cancelled_by_plugin: "<red>De transactie is geannuleerd door een plugin."
+banking_balance_set: "<gold>De balans van <red><account_name> <gold>is nu ingesteld op <red><balance><gold>."
 
 # Chat
 chat_no_players_in_range: "<red>Er zijn geen spelers in de buurt om je bericht te horen!"
@@ -110,6 +121,16 @@ fitness_reset_disabled: "<gold>Succesvol de fitheidreset van <yellow><player> <g
 fitness_reset: "<gold>Jouw fitheid is succesvol <yellow>gereset<gold>."
 
 # Places
+places_world_not_found: "<red>De wereld <white><world></white> <red>bestaat niet!"
+places_world_color_changed: "<gold>De kleur van wereld <yellow><world> <gold>is gewijzigd naar <yellow><new_color><gold>."
+places_world_temperature_changed: "<gold>De temperatuur van wereld <yellow><world> <gold>is gewijzigd."
+places_world_loadingname_changed: "<gold>De laadnaam van wereld <yellow><world> <gold>is gewijzigd."
+places_world_title_changed: "<gold>De titel van wereld <yellow><world> <gold>is gewijzigd."
+places_city_not_found: "<red>De stad <white><city></white> <red>bestaat niet!"
+places_city_color_changed: "<gold>De kleur van stad <yellow><city> <gold>is gewijzigd naar <yellow><new_color><gold>."
+places_city_temperature_changed: "<gold>De temperatuur van stad <yellow><city> <gold>is gewijzigd."
+places_city_loadingname_changed: "<gold>De laadnaam van stad <yellow><city> <gold>is gewijzigd."
+places_city_title_changed: "<gold>De titel van stad <yellow><city> <gold>is gewijzigd."
 
 # Player
 player_not_found: "<red>Deze speler bestaat niet."
@@ -184,6 +205,21 @@ police_walkietalkie_emergency_format: "<dark_red>[<red>NOODKNOP<dark_red>] <gray
 police_handcuff_on: "<red>Je bent in de boeien geslagen!"
 police_handcuff_off: "<green>Je bent uit de boeien gehaald!"
 police_handcuff_cant_pvp: "<red>Je kunt niet vechten als je in de <dark_red>handboeien<red> zit."
+police_handcuff_applied: "<red>Je hebt <dark_red><player> <red>in de boeien geslagen!"
+police_handcuff_removed: "<red>Je hebt <dark_red><player> <red>uit de boeien gehaald!"
+police_handcuff_already_handcuffing: "<red>Je bent al iemand aan het boeien!"
+police_handcuff_title: "<red>Je bent in de boeien geslagen!"
+police_handcuff_subtitle: "<red>Je kan niet bewegen!"
+
+# Taser
+police_taser_cooldown: "<red>Je moet wachten tot jouw taser <dark_red>afgekoeld <red>is!"
+police_taser_empty: "<red>Jouw taser is <dark_red>leeg<red>!"
+police_taser_hit: "<red>Je hebt <dark_red><player> <red>geraakt met jouw taser!"
+
+# Pepperspray
+police_pepperspray_empty: "<red>Jouw pepperspray is <dark_red>leeg<red>!"
+police_pepperspray_used: "<red>Je hebt <dark_red><player> <red>gepeppersprayed."
+police_pepperspray_target: "<red>Je bent gepeppersprayed!"
 
 # Staffchat
 staff_chat_format: "<dark_gray>[<gold><b>Staff</b><dark_gray>] <dark_gray>(<red><b><world_name></b><dark_gray>) <green><player><white>: <message>"
@@ -213,3 +249,57 @@ currency_show_other: "<red><target> <gold>heeft momenteel <red><amount> <display
 currency_balance_set: "<gold>Je hebt <red><target> <gold>zijn <red><display_name> <gold>gezet naar <red><amount><gold>."
 currency_balance_add: "<gold>Je hebt <red><amount> <display_name> <gold>toegevoegd aan <red><target><gold>."
 currency_balance_remove: "<gold>Je hebt <red><amount> <display_name> <gold>verwijderd van <red><target><gold>."
+currency_purge_confirm: "<red>Weet je zeker dat je alle ongebruikte currencies uit de database wilt verwijderen? <dark_red>Deze actie kan niet ongedaan worden gemaakt.</dark_red> Typ het commando binnen de 20 seconden opnieuw om te bevestigen.</red>"
+currency_purge_started: "<red>Bezig met het verwijderen van alle ongebruikte currencies... Dit kan even duren.</red>"
+currency_purge_error: "<red>Er ging iets mis bij het verwijderen van currencies: <error></red>"
+currency_purge_success: "<green>Succesvol <amount> ongebruikte currencies uit de database verwijderd.</green>"
+
+# Lock
+lock_already_locked: "<red>Dit blok is al <dark_red>vergrendeld<red>!"
+lock_locked: "<gold>Je hebt dit blok <yellow>vergrendeld<gold>."
+lock_member_added: "<gold>Je hebt <dark_red><player> <red>toegevoegd als member van dit slot."
+lock_member_removed: "<red>Je hebt <dark_red><player> <red>verwijderd als member van dit slot."
+lock_group_added: "<gold>Je hebt de groep <yellow><group> <gold>toegevoegd aan dit slot."
+lock_group_removed: "<red>Je hebt de groep <dark_red><group> <red>verwijderd van dit slot."
+lock_not_looking_at_block: "<red>Je kijkt niet naar een blok!"
+lock_not_on_plot: "<red>Je staat niet op een plot!"
+lock_not_owner: "<red>Je bent geen eigenaar van dit plot!"
+lock_player_never_played: "<red>Deze speler heeft nog nooit gespeeld."
+lock_cannot_add_self: "<red>Je kan jezelf niet toevoegen als member!"
+
+# Head
+head_item_not_allowed: "<red>Je kan dit item niet op je hoofd dragen!"
+head_item_equipped: "<green>Je hebt het item op je hoofd gezet!"
+head_item_already_whitelisted: "<red>Dit item staat al op de head whitelist!"
+head_item_added_whitelist: "<green>Je hebt het item toegevoegd aan de head whitelist!"
+head_item_not_whitelisted: "<red>Dit item staat niet op de head whitelist!"
+head_item_removed_whitelist: "<green>Je hebt het item verwijderd van de head whitelist!"
+
+# Core
+core_config_reloaded: "<gold>De configuratiebestanden zijn succesvol herladen!"
+core_version_info: "<gold>Deze server maakt gebruik van <yellow>OpenMinetopia <gold>versie <yellow><version>"
+core_version_authors: "<gold>Auteurs: <yellow><authors>"
+core_help_header: "<gold>OpenMinetopia commando's <gray>(<yellow><page><gray>/<yellow><pages><gray>)<gold>:"
+core_help_invalid_page: "<red>Deze pagina bestaat niet."
+core_help_command_entry: "<gray>/<yellow><click:suggest_command:'/<command>'><command> <gray>- <description></click>"
+core_help_no_description: "Geen beschrijving"
+core_help_footer: "<gold>Gebruik <yellow>/openminetopia help <pagina> <gold>om naar een andere pagina te gaan."
+
+# Books
+books_no_permission: "<red>Je hebt geen toestemming om dit boek te krijgen."
+books_not_found: "<red>Dit boek bestaat niet."
+books_received: "<gold>Je hebt het boek <yellow><book> <gold>ontvangen!"
+
+# Mod / Staff
+mod_chatspy_toggled: "<gold>Je hebt <yellow>ChatSpy <gold><state>!"
+mod_chatspy_state_enabled: "aangezet"
+mod_chatspy_state_disabled: "uitgezet"
+
+# Portal
+portal_link_error: "<red>Er is iets fout gegaan bij het verifiëren van je account."
+portal_link_success: "<green>Je account is succesvol gekoppeld!"
+
+# MinetopiaPlayer
+player_data_loading: "<red>Je data wordt geladen..."
+player_prefix_expired: "<red>Je prefix <dark_red><prefix> <red>is verlopen!"
+player_color_expired: "<red>Je <type> kleur <dark_red><color_id> is verlopen!"

@@ -3,6 +3,7 @@ package nl.openminetopia.modules.police.listeners;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.police.PoliceModule;
 import nl.openminetopia.modules.police.utils.TaserUtils;
 import nl.openminetopia.utils.ChatUtils;
@@ -36,7 +37,7 @@ public class PlayerTaserListener implements Listener {
 
             if (cooldown == null) cooldown = 0L;
             if (cooldown > System.currentTimeMillis()) {
-                source.sendMessage(ChatUtils.color("<red>Je moet wachten tot jouw taser <dark_red>afgekoeld <red>is!"));
+                source.sendMessage(MessageConfiguration.component("police_taser_cooldown"));
                 return;
             }
 
@@ -55,7 +56,7 @@ public class PlayerTaserListener implements Listener {
 
             Integer currentUsages = PersistentDataUtil.getInteger(itemStack, "openmt.usages");
             if (currentUsages == null || currentUsages <= 0) {
-                source.sendMessage(ChatUtils.color("<red>Jouw taser is <dark_red>leeg<red>!"));
+                source.sendMessage(MessageConfiguration.component("police_taser_empty"));
                 return;
             }
 
@@ -63,7 +64,8 @@ public class PlayerTaserListener implements Listener {
             source.getInventory().setItemInMainHand(finalItemStack);
         }
 
-        source.sendMessage(ChatUtils.color("<red>Je hebt <dark_red>" + target.getName() + " <red>geraakt met jouw taser!"));
+        source.sendMessage(ChatUtils.color(MessageConfiguration.message("police_taser_hit")
+                .replace("<player>", target.getName())));
 
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(target);
         if (minetopiaPlayer == null) return;

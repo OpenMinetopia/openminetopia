@@ -1,13 +1,13 @@
 package nl.openminetopia.modules.banking.listeners;
 
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.banking.BankingModule;
 import nl.openminetopia.modules.banking.configuration.BankingConfiguration;
 import nl.openminetopia.modules.banking.enums.AccountType;
 import nl.openminetopia.modules.banking.menus.PinTerminalAccountsMenu;
 import nl.openminetopia.modules.banking.models.BankAccountModel;
 import nl.openminetopia.modules.banking.models.PinTransaction;
-import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -50,7 +50,7 @@ public class PinTerminalInteractionListener implements Listener {
                         .findFirst().orElse(null);
                 if (transaction == null) return;
                 if (senderAccount.getBalance() < amount) {
-                    player.sendMessage(ChatUtils.color("<red>Je hebt niet genoeg saldo op je rekening om deze pintransactie te voltooien."));
+                    player.sendMessage(MessageConfiguration.component("banking_pin_insufficient_balance"));
                     bankingModule.getPinTerminalManager().cancelTransaction(transaction);
                     return;
                 }
@@ -58,7 +58,7 @@ public class PinTerminalInteractionListener implements Listener {
                 return;
             }
             if (bankingModule.getPinTerminalManager().isRecipientInTransaction(player)) {
-                player.sendMessage(ChatUtils.color("<red>Je hebt al een lopende pintransactie. Voltooi deze eerst voordat je een nieuwe start."));
+                player.sendMessage(MessageConfiguration.component("banking_pin_already_in_progress"));
                 return;
             }
             List<BankAccountModel> accounts = bankingModule.getAccountsFromPlayer(player.getUniqueId())
@@ -66,7 +66,7 @@ public class PinTerminalInteractionListener implements Listener {
                     .filter(account -> account.getType() == AccountType.COMPANY || account.getType() == AccountType.GOVERNMENT)
                     .toList();
             if (accounts.isEmpty()) {
-                player.sendMessage(ChatUtils.color("<red>Je hebt geen zakelijke rekeningen om een pintransactie mee te doen."));
+                player.sendMessage(MessageConfiguration.component("banking_pin_no_business_accounts"));
                 return;
             }
             new PinTerminalAccountsMenu(player).open(player);

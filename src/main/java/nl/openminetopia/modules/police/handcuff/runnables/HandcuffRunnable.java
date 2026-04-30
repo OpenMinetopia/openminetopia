@@ -2,8 +2,8 @@ package nl.openminetopia.modules.police.handcuff.runnables;
 
 import net.kyori.adventure.title.Title;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.police.handcuff.objects.HandcuffedPlayer;
-import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -27,8 +27,8 @@ public class HandcuffRunnable extends BukkitRunnable {
         Player player = handcuffedPlayer.getPlayer();
 
         if (OpenMinetopia.getDefaultConfiguration().isHandcuffShowTitle()) {
-            Title title = Title.title(ChatUtils.color("<red>Je bent in de boeien geslagen!"),
-                    ChatUtils.color("<red>Je kan niet bewegen!"),
+            Title title = Title.title(MessageConfiguration.component("police_handcuff_title"),
+                    MessageConfiguration.component("police_handcuff_subtitle"),
                     Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(1), Duration.ofSeconds(1))
             );
             player.showTitle(title);

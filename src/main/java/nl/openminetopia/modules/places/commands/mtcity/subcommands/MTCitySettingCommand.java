@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.places.PlacesModule;
 import nl.openminetopia.modules.places.models.CityModel;
@@ -23,13 +24,16 @@ public class MTCitySettingCommand extends BaseCommand {
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {
-            player.sendMessage(ChatUtils.color("<red>City <white>" + cityName + " <red>does not exist!"));
+            player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_city_not_found")
+                    .replace("<city>", cityName)));
             return;
         }
 
         cityModel.setColor(color);
         StormDatabase.getInstance().saveStormModel(cityModel);
-        player.sendMessage(ChatUtils.color("<red>City color of " + color + cityName + " <red>has been changed!"));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_city_color_changed")
+                .replace("<city>", cityName)
+                .replace("<new_color>", color)));
     }
 
     @Subcommand("settemperature")
@@ -40,13 +44,15 @@ public class MTCitySettingCommand extends BaseCommand {
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {
-            player.sendMessage(ChatUtils.color("<red>City <white>" + cityName + " <red>does not exist!"));
+            player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_city_not_found")
+                    .replace("<city>", cityName)));
             return;
         }
 
         cityModel.setTemperature(temperature);
         StormDatabase.getInstance().saveStormModel(cityModel);
-        player.sendMessage(ChatUtils.color("<red>City temperatuur of " + cityName + " <red>has been changed!"));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_city_temperature_changed")
+                .replace("<city>", cityName)));
     }
 
     @Subcommand("setloadingname")
@@ -57,13 +63,15 @@ public class MTCitySettingCommand extends BaseCommand {
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {
-            player.sendMessage(ChatUtils.color("<red>City <white>" + cityName + " <red>does not exist!"));
+            player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_city_not_found")
+                    .replace("<city>", cityName)));
             return;
         }
 
         cityModel.setLoadingName(loadingName);
         StormDatabase.getInstance().saveStormModel(cityModel);
-        player.sendMessage(ChatUtils.color("<red>City loadingName of " + cityName + " <red>has been changed!"));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_city_loadingname_changed")
+                .replace("<city>", cityName)));
     }
 
     @Subcommand("settitle")
@@ -74,12 +82,14 @@ public class MTCitySettingCommand extends BaseCommand {
 
         CityModel cityModel = placesModule.getCity(cityName);
         if (cityModel == null) {
-            player.sendMessage(ChatUtils.color("<red>City <white>" + cityName + " <red>does not exist!"));
+            player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_city_not_found")
+                    .replace("<city>", cityName)));
             return;
         }
 
         cityModel.setTitle(title);
         StormDatabase.getInstance().saveStormModel(cityModel);
-        player.sendMessage(ChatUtils.color("<red>City title of " + cityName + " <red>has been changed!"));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_city_title_changed")
+                .replace("<city>", cityName)));
     }
 }

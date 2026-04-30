@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.places.PlacesModule;
 import nl.openminetopia.modules.places.models.WorldModel;
@@ -25,13 +26,16 @@ public class MTWorldSettingCommand extends BaseCommand {
                 .filter(worldModel1 -> worldModel1.getName().equalsIgnoreCase(worldName))
                 .findFirst().orElse(null);
         if (worldModel == null) {
-            player.sendMessage(ChatUtils.color("<red>World <white>" + worldName + " <red>does not exist!"));
+            player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_world_not_found")
+                    .replace("<world>", worldName)));
             return;
         }
 
         worldModel.setColor(color);
         StormDatabase.getInstance().saveStormModel(worldModel);
-        player.sendMessage(ChatUtils.color("<red>World color of " + color + worldName + " <red>has been changed!"));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_world_color_changed")
+                .replace("<world>", worldName)
+                .replace("<new_color>", color)));
     }
 
     @Subcommand("settemperature")
@@ -42,13 +46,15 @@ public class MTWorldSettingCommand extends BaseCommand {
                 .filter(worldModel1 -> worldModel1.getName().equalsIgnoreCase(worldName))
                 .findFirst().orElse(null);
         if (worldModel == null) {
-            player.sendMessage(ChatUtils.color("<red>World <white>" + worldName + " <red>does not exist!"));
+            player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_world_not_found")
+                    .replace("<world>", worldName)));
             return;
         }
 
         worldModel.setTemperature(temperature);
         StormDatabase.getInstance().saveStormModel(worldModel);
-        player.sendMessage(ChatUtils.color("<red>World temperatuur of " + worldName + " <red>has been changed!"));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_world_temperature_changed")
+                .replace("<world>", worldName)));
     }
 
     @Subcommand("setloadingname")
@@ -59,13 +65,15 @@ public class MTWorldSettingCommand extends BaseCommand {
                 .filter(worldModel1 -> worldModel1.getName().equalsIgnoreCase(worldName))
                 .findFirst().orElse(null);
         if (worldModel == null) {
-            player.sendMessage(ChatUtils.color("<red>World <white>" + worldName + " <red>does not exist!"));
+            player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_world_not_found")
+                    .replace("<world>", worldName)));
             return;
         }
 
         worldModel.setLoadingName(loadingName);
         StormDatabase.getInstance().saveStormModel(worldModel);
-        player.sendMessage(ChatUtils.color("<red>World loadingName of " + worldName + " <red>has been changed!"));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_world_loadingname_changed")
+                .replace("<world>", worldName)));
     }
 
     @Subcommand("settitle")
@@ -76,12 +84,14 @@ public class MTWorldSettingCommand extends BaseCommand {
                 .filter(worldModel1 -> worldModel1.getName().equalsIgnoreCase(worldName))
                 .findFirst().orElse(null);
         if (worldModel == null) {
-            player.sendMessage(ChatUtils.color("<red>World <white>" + worldName + " <red>does not exist!"));
+            player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_world_not_found")
+                    .replace("<world>", worldName)));
             return;
         }
 
         worldModel.setTitle(title);
         StormDatabase.getInstance().saveStormModel(worldModel);
-        player.sendMessage(ChatUtils.color("<red>World title of " + worldName + " <red>has been changed!"));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("places_world_title_changed")
+                .replace("<world>", worldName)));
     }
 }

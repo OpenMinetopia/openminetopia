@@ -2,7 +2,7 @@ package nl.openminetopia.modules.scoreboard.listeners;
 
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.ScoreboardManager;
-import nl.openminetopia.utils.ChatUtils;
+import nl.openminetopia.configuration.MessageConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,11 +16,11 @@ public class PlayerJoinListener implements Listener {
 
         PlayerManager.getInstance().getMinetopiaPlayer(player).whenComplete((minetopiaPlayer, throwable) -> {
             if (throwable != null) {
-                player.kick(ChatUtils.color("<red>Er is een fout opgetreden bij het laden van je gegevens! Probeer het later opnieuw."));
+                player.kick(MessageConfiguration.component("player_data_not_loaded"));
                 return;
             }
             if (minetopiaPlayer == null) {
-                player.kick(ChatUtils.color("<red>Er is een fout opgetreden bij het laden van je gegevens! Probeer het later opnieuw."));
+                player.kick(MessageConfiguration.component("player_data_not_loaded"));
                 return;
             }
 

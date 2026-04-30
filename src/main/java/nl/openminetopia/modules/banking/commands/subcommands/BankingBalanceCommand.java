@@ -38,7 +38,7 @@ public class BankingBalanceCommand extends BaseCommand {
 
             TransactionUpdateEvent event = new TransactionUpdateEvent(executorUuid, username, TransactionType.SET, balance, accountModel, "Set via '/account setbalance'", System.currentTimeMillis());
             if (EventUtils.callCancellable(event)) {
-                sender.sendMessage(ChatUtils.color("<red>De transactie is geannuleerd door een plugin."));
+                sender.sendMessage(MessageConfiguration.component("banking_transaction_cancelled_by_plugin"));
                 return;
             }
 
@@ -48,7 +48,9 @@ public class BankingBalanceCommand extends BaseCommand {
             TransactionsModule transactionsModule = OpenMinetopia.getModuleManager().get(TransactionsModule.class);
             transactionsModule.createTransactionLog(System.currentTimeMillis(), executorUuid, username, TransactionType.SET, balance, accountModel.getUniqueId(), "Set via '/account setbalance'");
 
-            sender.sendMessage(ChatUtils.color("<gold>De balans van <red>" + accountModel.getName() + " <gold>is nu ingesteld op <red>" + bankingModule.format(balance) + "<gold>."));
+            sender.sendMessage(ChatUtils.color(MessageConfiguration.message("banking_balance_set")
+                    .replace("<account_name>", accountModel.getName())
+                    .replace("<balance>", bankingModule.format(balance))));
         });
     }
 }

@@ -4,6 +4,7 @@ import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,13 +22,13 @@ public class PaginatedMenu {
     }
 
     public GuiItem nextPageItem() {
-        return PaperItemBuilder.from(Material.ARROW).name(ChatUtils.color("<gold>Volgende pagina")).asGuiItem(
+        return PaperItemBuilder.from(Material.ARROW).name(MessageConfiguration.component("next_page")).asGuiItem(
                 event -> gui.next()
         );
     }
 
     public GuiItem previousPageItem() {
-        return PaperItemBuilder.from(Material.ARROW).name(ChatUtils.color("<gold>Vorige pagina")).asGuiItem(
+        return PaperItemBuilder.from(Material.ARROW).name(MessageConfiguration.component("previous_page")).asGuiItem(
                 event -> gui.previous()
         );
     }

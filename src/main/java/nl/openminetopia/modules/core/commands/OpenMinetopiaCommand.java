@@ -89,14 +89,16 @@ public class OpenMinetopiaCommand extends BaseCommand {
             module.reload();
         }
 
-        sender.sendMessage(ChatUtils.color("<gold>De configuratiebestanden zijn succesvol herladen!"));
+        sender.sendMessage(MessageConfiguration.component("core_config_reloaded"));
     }
 
     @Default
     public void onCommand(Player player) {
         player.sendMessage(ChatUtils.color(" "));
-        player.sendMessage(ChatUtils.color("<gold>Deze server maakt gebruik van <yellow>OpenMinetopia <gold>versie <yellow>" + OpenMinetopia.getInstance().getPluginMeta().getVersion()));
-        player.sendMessage(ChatUtils.color("<gold>Auteurs: <yellow>" + OpenMinetopia.getInstance().getPluginMeta().getAuthors().toString().replace("[", "").replace("]", "")));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("core_version_info")
+                .replace("<version>", OpenMinetopia.getInstance().getPluginMeta().getVersion())));
+        player.sendMessage(ChatUtils.color(MessageConfiguration.message("core_version_authors")
+                .replace("<authors>", OpenMinetopia.getInstance().getPluginMeta().getAuthors().toString().replace("[", "").replace("]", ""))));
         player.sendMessage(ChatUtils.color(" "));
     }
 
@@ -112,22 +114,27 @@ public class OpenMinetopiaCommand extends BaseCommand {
         int currentPage = page == null ? 1 : page;
 
         ChatUtils.sendMessage(sender, " ");
-        ChatUtils.sendMessage(sender, "<gold>OpenMinetopia commando's" + " <gray>(<yellow>" + currentPage + "<gray>/<yellow>" + pages +  "<gray>)<gold>:");
+        ChatUtils.sendMessage(sender, MessageConfiguration.message("core_help_header")
+                .replace("<page>", String.valueOf(currentPage))
+                .replace("<pages>", String.valueOf(pages)));
 
         if (currentPage < 1 || currentPage > pages) {
-            ChatUtils.sendMessage(sender, "<red>Deze pagina bestaat niet.");
+            ChatUtils.sendMessage(sender, MessageConfiguration.message("core_help_invalid_page"));
             return;
         }
 
         int start = (currentPage - 1) * pageSize;
         int end = Math.min(start + pageSize, rootCommands.size());
 
+        String noDescription = MessageConfiguration.message("core_help_no_description");
         for (int i = start; i < end; i++) {
             RootCommand command = rootCommands.get(i);
-            ChatUtils.sendMessage(sender, "<gray>/<yellow><click:suggest_command:'/" + command.getCommandName() + "'>" + command.getCommandName() + " <gray>- " + (command.getDescription().isEmpty() ? "Geen beschrijving" : command.getDescription()) + "</click>");
+            ChatUtils.sendMessage(sender, MessageConfiguration.message("core_help_command_entry")
+                    .replace("<command>", command.getCommandName())
+                    .replace("<description>", command.getDescription().isEmpty() ? noDescription : command.getDescription()));
         }
 
         ChatUtils.sendMessage(sender, " ");
-        ChatUtils.sendMessage(sender, "<gold>Gebruik <yellow>/openminetopia help <pagina> <gold>om naar een andere pagina te gaan.");
+        ChatUtils.sendMessage(sender, MessageConfiguration.message("core_help_footer"));
     }
 }

@@ -7,6 +7,7 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.portal.PortalModule;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.entity.Player;
@@ -36,17 +37,17 @@ public class LinkCommand extends BaseCommand {
                 .sendBuffer(Buffer.buffer(requestBody.toString()))
                 .onSuccess(response -> {
                     if (response.statusCode() != 200) {
-                        ChatUtils.sendMessage(player, "<red>Er is iets fout gegaan bij het verifiëren van je account.");
+                        ChatUtils.sendMessage(player, MessageConfiguration.message("portal_link_error"));
                         OpenMinetopia.getInstance().getLogger().warning(
                                 "Response code " + response.statusCode() + " " + response.statusMessage()
                                         + " while trying to verify player " + player.getName()
                         );
                         return;
                     }
-                    ChatUtils.sendMessage(player, "<green>Je account is succesvol gekoppeld!");
+                    ChatUtils.sendMessage(player, MessageConfiguration.message("portal_link_success"));
                 })
                 .onFailure(err -> {
-                    ChatUtils.sendMessage(player, "<red>Er is iets fout gegaan bij het verifiëren van je account.");
+                    ChatUtils.sendMessage(player, MessageConfiguration.message("portal_link_error"));
                     OpenMinetopia.getInstance().getLogger().severe(
                             "An error occurred while trying to verify player " + player.getName() + ": " + err.getMessage()
                     );

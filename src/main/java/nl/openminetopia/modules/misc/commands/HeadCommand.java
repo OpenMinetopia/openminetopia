@@ -4,8 +4,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.configuration.DefaultConfiguration;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.misc.utils.MiscUtils;
-import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +18,7 @@ public class HeadCommand extends BaseCommand {
         ItemStack item = player.getInventory().getItemInMainHand().clone();
 
         if (item.getType() == Material.AIR || !MiscUtils.isValidHeadItem(item)) {
-            player.sendMessage(ChatUtils.color("<red>Je kan dit item niet op je hoofd dragen!"));
+            player.sendMessage(MessageConfiguration.component("head_item_not_allowed"));
             return;
         }
 
@@ -27,7 +27,7 @@ public class HeadCommand extends BaseCommand {
         if (player.getInventory().getHelmet() != null) player.getInventory().addItem(player.getInventory().getHelmet());
         player.getInventory().setHelmet(item);
 
-        player.sendMessage(ChatUtils.color("<green>Je hebt het item op je hoofd gezet!"));
+        player.sendMessage(MessageConfiguration.component("head_item_equipped"));
     }
 
     @Subcommand("add")
@@ -37,14 +37,14 @@ public class HeadCommand extends BaseCommand {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if (item.getType() != Material.AIR && MiscUtils.isValidHeadItem(item)) {
-            player.sendMessage(ChatUtils.color("<red>Dit item staat al op de head whitelist!"));
+            player.sendMessage(MessageConfiguration.component("head_item_already_whitelisted"));
             return;
         }
 
         DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
         configuration.addToHeadWhitelist(item);
 
-        player.sendMessage(ChatUtils.color("<green>Je hebt het item toegevoegd aan de head whitelist!"));
+        player.sendMessage(MessageConfiguration.component("head_item_added_whitelist"));
     }
 
     @Subcommand("remove")
@@ -54,13 +54,13 @@ public class HeadCommand extends BaseCommand {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if (item.getType() != Material.AIR && !MiscUtils.isValidHeadItem(item)) {
-            player.sendMessage(ChatUtils.color("<red>Dit item staat niet op de head whitelist!"));
+            player.sendMessage(MessageConfiguration.component("head_item_not_whitelisted"));
             return;
         }
 
         DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
         configuration.removeFromHeadWhitelist(item);
 
-        player.sendMessage(ChatUtils.color("<green>Je hebt het item verwijderd van de head whitelist!"));
+        player.sendMessage(MessageConfiguration.component("head_item_removed_whitelist"));
     }
 }

@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.*;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.lock.utils.LockUtil;
 import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.WorldGuardUtils;
@@ -20,11 +21,11 @@ public class LockCommand extends BaseCommand {
         Block targetBlock = player.getTargetBlockExact(5);
         if (!validateBlock(player, targetBlock)) return;
         if (LockUtil.isLocked(targetBlock)) {
-            player.sendMessage(ChatUtils.color("<red>Dit blok is al <dark_red>vergrendeld<red>!"));
+            player.sendMessage(MessageConfiguration.component("lock_already_locked"));
             return;
         }
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
-        player.sendMessage(ChatUtils.format(minetopiaPlayer, "<gold>Je hebt dit blok <yellow>vergrendeld<gold>."));
+        player.sendMessage(ChatUtils.format(minetopiaPlayer, MessageConfiguration.message("lock_locked")));
         LockUtil.setLocked(targetBlock, player.getUniqueId());
     }
 
@@ -36,7 +37,8 @@ public class LockCommand extends BaseCommand {
         if (!validateTarget(player, target)) return;
 
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
-        player.sendMessage(ChatUtils.format(minetopiaPlayer, "<gold>Je hebt <dark_red>" + target.getName() + " <red>toegevoegd als member van dit slot."));
+        player.sendMessage(ChatUtils.format(minetopiaPlayer, MessageConfiguration.message("lock_member_added")
+                .replace("<player>", target.getName())));
         LockUtil.addLockMember(targetBlock, target.getUniqueId());
     }
 
@@ -48,7 +50,8 @@ public class LockCommand extends BaseCommand {
         if (!validateTarget(player, target)) return;
 
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
-        player.sendMessage(ChatUtils.format(minetopiaPlayer, "<red>Je hebt <dark_red>" + target.getName() + " <red>verwijderd als member van dit slot."));
+        player.sendMessage(ChatUtils.format(minetopiaPlayer, MessageConfiguration.message("lock_member_removed")
+                .replace("<player>", target.getName())));
         LockUtil.removeLockMember(targetBlock, target.getUniqueId());
     }
 
@@ -59,7 +62,8 @@ public class LockCommand extends BaseCommand {
         if (!validateBlock(player, targetBlock)) return;
 
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
-        player.sendMessage(ChatUtils.format(minetopiaPlayer, "<gold>Je hebt de groep <yellow>" + group + " <gold>toegevoegd aan dit slot."));
+        player.sendMessage(ChatUtils.format(minetopiaPlayer, MessageConfiguration.message("lock_group_added")
+                .replace("<group>", group)));
         LockUtil.addLockGroup(targetBlock, group);
     }
 
@@ -70,24 +74,25 @@ public class LockCommand extends BaseCommand {
         if (!validateBlock(player, targetBlock)) return;
 
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
-        player.sendMessage(ChatUtils.format(minetopiaPlayer, "<red>Je hebt de groep <dark_red>" + group + " <red>verwijderd van dit slot."));
+        player.sendMessage(ChatUtils.format(minetopiaPlayer, MessageConfiguration.message("lock_group_removed")
+                .replace("<group>", group)));
         LockUtil.removeLockGroup(targetBlock, group);
     }
 
     private boolean validateBlock(Player player, Block targetBlock) {
         if (targetBlock == null || !LockUtil.isLockable(targetBlock)) {
-            player.sendMessage(ChatUtils.color("<red>Je kijkt niet naar een blok!"));
+            player.sendMessage(MessageConfiguration.component("lock_not_looking_at_block"));
             return false;
         }
 
         ProtectedRegion region = WorldGuardUtils.getProtectedRegion(targetBlock.getLocation(), p -> p >= 0);
         if (!player.hasPermission("openminetopia.lock")) {
             if (region == null) {
-                player.sendMessage(ChatUtils.color("<red>Je staat niet op een plot!"));
+                player.sendMessage(MessageConfiguration.component("lock_not_on_plot"));
                 return false;
             }
             if (!region.getOwners().contains(player.getUniqueId())) {
-                player.sendMessage(ChatUtils.color("<red>Je bent geen eigenaar van dit plot!"));
+                player.sendMessage(MessageConfiguration.component("lock_not_owner"));
                 return false;
             }
         }
@@ -96,12 +101,12 @@ public class LockCommand extends BaseCommand {
 
     private boolean validateTarget(Player player, OfflinePlayer target) {
         if (target == null || !target.hasPlayedBefore()) {
-            player.sendMessage(ChatUtils.color("<red>Deze speler heeft nog nooit gespeeld."));
+            player.sendMessage(MessageConfiguration.component("lock_player_never_played"));
             return false;
         }
 
         if (target.getUniqueId().equals(player.getUniqueId())) {
-            player.sendMessage(ChatUtils.color("<red>Je kan jezelf niet toevoegen als member!"));
+            player.sendMessage(MessageConfiguration.component("lock_cannot_add_self"));
             return false;
         }
         return true;
