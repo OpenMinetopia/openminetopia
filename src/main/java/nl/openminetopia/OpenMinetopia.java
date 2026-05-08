@@ -6,6 +6,8 @@ import co.aikar.commands.PaperCommandManager;
 import com.jazzkuh.modulemanager.spigot.SpigotModuleManager;
 import com.jeff_media.customblockdata.CustomBlockData;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.dns.AddressResolverOptions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -134,7 +136,15 @@ public final class OpenMinetopia extends JavaPlugin {
 
     public Vertx getOrCreateVertx() {
         if (vertx == null) {
-            vertx = Vertx.vertx();
+            VertxOptions options = new VertxOptions();
+            String portalUrl = defaultConfiguration.getPortalUrl();
+            if (portalUrl != null && portalUrl.endsWith(".test")) {
+                options.setAddressResolverOptions(new AddressResolverOptions()
+                        .addServer("127.0.0.1")
+                        .setOptResourceEnabled(false));
+                getLogger().info("Detected .test portal URL (" + portalUrl + "); routing DNS through 127.0.0.1.");
+            }
+            vertx = Vertx.vertx(options);
         }
         return vertx;
     }

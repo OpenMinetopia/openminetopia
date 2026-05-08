@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.Default;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.portal.PortalModule;
@@ -29,7 +30,11 @@ public class LinkCommand extends BaseCommand {
         requestBody.put("minecraft_uuid", player.getUniqueId().toString());
 
         PortalModule portalModule = OpenMinetopia.getModuleManager().get(PortalModule.class);
-        WebClient webClient = WebClient.create(OpenMinetopia.getInstance().getOrCreateVertx());
+        WebClientOptions clientOptions = new WebClientOptions();
+        if (portalModule.getPortalUrl().endsWith(".test")) {
+            clientOptions.setTrustAll(true).setVerifyHost(false);
+        }
+        WebClient webClient = WebClient.create(OpenMinetopia.getInstance().getOrCreateVertx(), clientOptions);
 
         webClient.postAbs(portalModule.getPortalApiUrl() + "/minecraft/verify")
                 .putHeader("Content-Type", "application/json")

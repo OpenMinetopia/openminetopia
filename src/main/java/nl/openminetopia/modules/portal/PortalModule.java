@@ -27,6 +27,7 @@ public class PortalModule extends ExtendedSpigotModule {
     }
 
     public String getPortalApiUrl() {
-        return "https://" + getPortalUrl() + "/api";
+        String scheme = getPortalUrl().endsWith(".test") ? "http://" : "https://";
+        return scheme + getPortalUrl() + "/api";
     }
 }

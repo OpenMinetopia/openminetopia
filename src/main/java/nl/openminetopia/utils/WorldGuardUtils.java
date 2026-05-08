@@ -13,6 +13,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import lombok.experimental.UtilityClass;
+import nl.openminetopia.modules.fitness.listeners.PlayerEatListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -64,8 +65,16 @@ public class WorldGuardUtils {
     }
 
     public int getOwnedRegions(Player player) {
+        int ownedRegions = 0;
+        for (World world : Bukkit.getWorlds()) {
+            ownedRegions += getOwnedRegions(player, world);
+        }
+        return ownedRegions;
+    }
+
+    public int getOwnedRegions(Player player, World world) {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionManager manager = container.get(BukkitAdapter.adapt(player.getWorld()));
+        RegionManager manager = container.get(BukkitAdapter.adapt(world));
         if (manager == null) return 0;
         return (int) manager.getRegions().values().stream().filter(protectedRegion -> protectedRegion.isOwner(WorldGuardPlugin.inst().wrapPlayer(player))).count();
     }
