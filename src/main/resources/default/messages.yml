@@ -47,6 +47,7 @@ banking_pin_request_received: "<dark_green>Je hebt een pinverzoek ontvangen van 
 banking_pin_request_instructions: "<dark_green><green>Rechter-muis</green> op de pin-terminal om te accepteren, <green>linker-muis</green> om te weigeren."
 banking_pin_request_sent: "<dark_green>Je hebt een pinverzoek verzonden naar <green><player></green> voor een bedrag van <green><amount></green>."
 banking_pin_cancelled: "<red>De pintransactie is geannuleerd."
+banking_pin_expired: "<red>De pintransactie is verlopen."
 banking_pin_sent: "<dark_green>Je hebt succesvol <green><amount></green> verzonden via pin naar <green><player></green>."
 banking_pin_received: "<dark_green>Je hebt succesvol <green><amount></green> ontvangen via pin van <green><player></green>."
 banking_pin_insufficient_balance: "<red>Je hebt niet genoeg saldo op je rekening om deze pintransactie te voltooien."

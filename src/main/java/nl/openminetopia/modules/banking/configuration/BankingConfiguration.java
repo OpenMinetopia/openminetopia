@@ -20,6 +20,7 @@ public class BankingConfiguration extends ConfigurateConfig {
     private final String economyFormat;
     private final List<Material> atmMaterials;
     private final List<Material> pinTerminalMaterials;
+    private final int pinTransactionTimeoutSeconds;
 
     private final double startingBalance;
 
@@ -58,6 +59,8 @@ public class BankingConfiguration extends ConfigurateConfig {
             }
             this.pinTerminalMaterials.add(material);
         });
+
+        this.pinTransactionTimeoutSeconds = rootNode.node("banking", "pin-transaction-timeout-seconds").getInt(60);
 
         this.startingBalance = rootNode.node("banking", "starting-balance").getDouble(0);
 

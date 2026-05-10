@@ -9,16 +9,20 @@ import nl.openminetopia.modules.banking.BankingModule;
 import nl.openminetopia.modules.banking.models.BankAccountModel;
 import nl.openminetopia.modules.banking.models.PinTransaction;
 import nl.openminetopia.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class PinTerminalManager {
 
     private final BankingModule bankingModule = OpenMinetopia.getModuleManager().get(BankingModule.class);
     private final List<PinTransaction> pinTransactions = new ArrayList<>();
+    private final Map<PinTransaction, Integer> expiryTasks = new HashMap<>();
 
     public PinTransaction startTransaction(Player sender, Player recipient, double amount, BankAccountModel recipientAccount) {
         sender.sendMessage(ChatUtils.color(MessageConfiguration.message("banking_pin_request_received")
@@ -32,13 +36,19 @@ public class PinTerminalManager {
 
         PinTransaction transaction = new PinTransaction(sender, recipient, amount, recipientAccount);
         pinTransactions.add(transaction);
+
+        long timeoutTicks = 20L * bankingModule.getConfiguration().getPinTransactionTimeoutSeconds();
+        int taskId = Bukkit.getScheduler().runTaskLater(OpenMinetopia.getInstance(),
+                () -> expireTransaction(transaction), timeoutTicks).getTaskId();
+        expiryTasks.put(transaction, taskId);
+
         return transaction;
     }
 
     public void cancelTransaction(PinTransaction transaction) {
         transaction.sender().sendMessage(MessageConfiguration.component("banking_pin_cancelled"));
         transaction.recipient().sendMessage(MessageConfiguration.component("banking_pin_cancelled"));
-        pinTransactions.remove(transaction);
+        removeTransaction(transaction);
     }
 
     public void completeTransaction(PinTransaction transaction) {
@@ -58,6 +68,24 @@ public class PinTerminalManager {
                 .replace("<amount>", bankingModule.format(transaction.amount()))
                 .replace("<player>", transaction.sender().getName())));
 
+        removeTransaction(transaction);
+    }
+
+    private void expireTransaction(PinTransaction transaction) {
+        if (!pinTransactions.contains(transaction)) return;
+        if (transaction.sender().isOnline()) {
+            transaction.sender().sendMessage(MessageConfiguration.component("banking_pin_expired"));
+        }
+        if (transaction.recipient().isOnline()) {
+            transaction.recipient().sendMessage(MessageConfiguration.component("banking_pin_expired"));
+        }
+        pinTransactions.remove(transaction);
+        expiryTasks.remove(transaction);
+    }
+
+    private void removeTransaction(PinTransaction transaction) {
+        Integer taskId = expiryTasks.remove(transaction);
+        if (taskId != null) Bukkit.getScheduler().cancelTask(taskId);
         pinTransactions.remove(transaction);
     }
 

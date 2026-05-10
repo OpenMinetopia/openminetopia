@@ -16,12 +16,12 @@ import java.util.function.Consumer;
 
 public class ChatInputHandler implements Listener {
 
-    private record InputSession(Consumer<String> handler, int timeoutTaskId) {
+    private record InputSession(Consumer<String> onSuccess, Consumer<String> onFailed, int timeoutTaskId) {
     }
 
     private final Map<UUID, InputSession> inputSessions = new HashMap<>();
 
-    public void waitForInput(Player player, Consumer<String> responseHandler) {
+    public void waitForInput(Player player, Consumer<String> onSuccess, Consumer<String> onFailed) {
         UUID playerId = player.getUniqueId();
 
         // Cancel previous session if it exists
@@ -32,12 +32,16 @@ public class ChatInputHandler implements Listener {
         // Schedule timeout
         int taskId = Bukkit.getScheduler().runTaskLater(OpenMinetopia.getInstance(), () -> {
             InputSession session = inputSessions.remove(playerId);
-            if (session != null) {
-                ChatUtils.sendMessage(player, "<red>Actie afgebroken, geen invoer ontvangen.");
-            }
+            if (session == null) return;
+            ChatUtils.sendMessage(player, "<red>Actie afgebroken, geen invoer ontvangen.");
+            if (onFailed != null) onFailed.accept("<red>Actie afgebroken.");
         }, 20L * 60).getTaskId();
 
-        inputSessions.put(playerId, new InputSession(responseHandler, taskId));
+        inputSessions.put(playerId, new InputSession(onSuccess, onFailed, taskId));
+    }
+
+    public void waitForInput(Player player, Consumer<String> onSuccess) {
+        waitForInput(player, onSuccess, null);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -49,7 +53,7 @@ public class ChatInputHandler implements Listener {
         if (session != null) {
             event.setCancelled(true);
             Bukkit.getScheduler().cancelTask(session.timeoutTaskId());
-            session.handler().accept(ChatUtils.rawMiniMessage(event.message()));
+            session.onSuccess().accept(ChatUtils.rawMiniMessage(event.message()));
         }
     }
 }
