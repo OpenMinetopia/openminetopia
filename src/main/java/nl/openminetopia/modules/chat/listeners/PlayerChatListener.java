@@ -2,6 +2,8 @@ package nl.openminetopia.modules.chat.listeners;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
@@ -18,7 +20,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PlayerChatListener implements Listener {
 
@@ -28,13 +31,12 @@ public class PlayerChatListener implements Listener {
 
         Player source = event.getPlayer();
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(source);
-
         if (minetopiaPlayer == null) return;
 
         DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
 
-        String originalMessage = ChatUtils.rawMiniMessage(event.message());
-        SpyUtils.chatSpy(source, originalMessage, new ArrayList<>());
+        String plainMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
+        SpyUtils.chatSpy(source, plainMessage, new ArrayList<>());
 
         if (!configuration.isChatEnabled()) return;
         if (!minetopiaPlayer.isInPlace()) return;
@@ -43,20 +45,19 @@ public class PlayerChatListener implements Listener {
         PoliceModule policeModule = OpenMinetopia.getModuleManager().get(PoliceModule.class);
         if (policeModule.getWalkieTalkieManager().isPoliceChatEnabled(source)) return;
 
-        event.setCancelled(true);
-
-        List<Player> recipients = new ArrayList<>();
-
+        Set<Player> recipients = new HashSet<>();
         if (configuration.isChatRadiusEnabled()) {
-            Bukkit.getServer().getOnlinePlayers().forEach(target -> {
+            double range = configuration.getChatRadiusRange();
+            for (Player target : Bukkit.getOnlinePlayers()) {
+                if (target.equals(source)) continue;
                 if (target.getWorld().equals(source.getWorld())
-                        && source.getLocation().distance(target.getLocation()) <= configuration.getChatRadiusRange())
+                        && source.getLocation().distance(target.getLocation()) <= range) {
                     recipients.add(target);
-            });
-
-            recipients.remove(source);
+                }
+            }
             if (recipients.isEmpty() && configuration.isNotifyWhenNobodyInRange()) {
-                event.getPlayer().sendMessage(MessageConfiguration.component("chat_no_players_in_range"));
+                source.sendMessage(MessageConfiguration.component("chat_no_players_in_range"));
+                event.setCancelled(true);
                 return;
             }
             recipients.add(source);
@@ -64,8 +65,9 @@ public class PlayerChatListener implements Listener {
             recipients.addAll(Bukkit.getOnlinePlayers());
         }
 
-        String formattedMessage = configuration.getChatFormat();
+        event.viewers().removeIf(viewer -> viewer instanceof Player p && !recipients.contains(p));
 
+        String formattedMessage = configuration.getChatFormat();
         if (BalaclavaUtils.isBalaclavaItem(source.getInventory().getHelmet())) {
             formattedMessage = formattedMessage
                     .replace("<level>", configuration.getDefaultLevel() + "")
@@ -77,46 +79,35 @@ public class PlayerChatListener implements Listener {
         }
 
         int messageIndex = formattedMessage.indexOf("<message>");
-        String formatBeforeMessage = messageIndex >= 0 
-            ? formattedMessage.substring(0, messageIndex + "<message>".length())
-            : formattedMessage;
+        String formatBeforeMessage = messageIndex >= 0
+                ? formattedMessage.substring(0, messageIndex + "<message>".length())
+                : formattedMessage;
         String formatAfterMessage = messageIndex >= 0 && messageIndex + "<message>".length() < formattedMessage.length()
-            ? formattedMessage.substring(messageIndex + "<message>".length())
-            : "";
-        
+                ? formattedMessage.substring(messageIndex + "<message>".length())
+                : "";
+
         Component baseComponent = ChatUtils.format(minetopiaPlayer, formatBeforeMessage).replaceText(
                 builder -> builder.matchLiteral("<message>").replacement(Component.empty())
         );
-        
-        Component afterMessageComponent = !formatAfterMessage.isEmpty()
-            ? ChatUtils.format(minetopiaPlayer, formatAfterMessage)
-            : Component.empty();
-        
-        String chatColor = minetopiaPlayer.getActiveChatColor().color();
-        
-        String messageString = ChatUtils.stripMiniMessage(event.message());
-        messageString = chatColor + messageString;
-        Component defaultMessageComponent = ChatUtils.color(messageString);
-        
-        Bukkit.getConsoleSender().sendMessage(baseComponent.append(defaultMessageComponent).append(afterMessageComponent)); // Log the message without potential scrambled name
+        Component afterMessageComponent = formatAfterMessage.isEmpty()
+                ? Component.empty()
+                : ChatUtils.format(minetopiaPlayer, formatAfterMessage);
 
-        for (Player target : recipients) {
+        String chatColor = minetopiaPlayer.getActiveChatColor().color();
+        String escapedMessage = MiniMessage.miniMessage().escapeTags(plainMessage);
+        Component defaultMessageComponent = ChatUtils.color(chatColor + escapedMessage);
+
+        event.renderer((src, srcDisplayName, msg, viewer) -> {
             Component messageComponent = defaultMessageComponent;
-            
-            if (originalMessage.contains(target.getName())) {
-                String highlightedMessageString = ChatUtils.stripMiniMessage(defaultMessageComponent);
-                
-                String highlightedMessage = highlightedMessageString.replace(
-                    target.getName(),
-                    "<green>" + target.getName() + "</green>" + chatColor
+            if (viewer instanceof Player target && plainMessage.contains(target.getName())) {
+                String highlighted = escapedMessage.replace(
+                        target.getName(),
+                        "<green>" + target.getName() + "</green>" + chatColor
                 );
-                
-                messageComponent = ChatUtils.color(highlightedMessage);
+                messageComponent = ChatUtils.color(chatColor + highlighted);
                 target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
-
-            Component finalMessage = baseComponent.append(messageComponent).append(afterMessageComponent);
-            target.sendMessage(finalMessage);
-        }
+            return baseComponent.append(messageComponent).append(afterMessageComponent);
+        });
     }
 }
