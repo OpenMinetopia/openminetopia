@@ -10,7 +10,6 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Door;
-import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,6 +46,14 @@ public class LockInteractListener implements Listener {
                 player.getWorld().playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 3, 3);
             }
             block.setBlockData(door);
+        }
+
+        if (block.getBlockData() instanceof Door clickedDoor) {
+            Block partner = LockUtil.getDoubleDoorPartner(block);
+            if (partner != null) {
+                boolean iron = block.getType().name().startsWith("IRON");
+                LockUtil.setDoorOpen(partner, iron == clickedDoor.isOpen());
+            }
         }
 
         UUID ownerUuid = LockUtil.getLockOwner(event.getClickedBlock());

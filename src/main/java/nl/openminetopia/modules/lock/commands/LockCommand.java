@@ -55,6 +55,27 @@ public class LockCommand extends BaseCommand {
         LockUtil.removeLockMember(targetBlock, target.getUniqueId());
     }
 
+    @Subcommand("setowner")
+    @CommandPermission("openminetopia.lock.setowner")
+    @CommandCompletion("@players")
+    public void setOwner(Player player, OfflinePlayer target) {
+        Block targetBlock = player.getTargetBlockExact(5);
+        if (!validateBlock(player, targetBlock)) return;
+        if (target == null || !target.hasPlayedBefore()) {
+            player.sendMessage(MessageConfiguration.component("lock_player_never_played"));
+            return;
+        }
+        if (!LockUtil.isLocked(targetBlock)) {
+            player.sendMessage(MessageConfiguration.component("lock_not_locked"));
+            return;
+        }
+
+        MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
+        player.sendMessage(ChatUtils.format(minetopiaPlayer, MessageConfiguration.message("lock_owner_changed")
+                .replace("<player>", target.getName())));
+        LockUtil.setLocked(targetBlock, target.getUniqueId());
+    }
+
     @Subcommand("addgroup")
     @CommandPermission("openminetopia.lock.group")
     public void addGroup(Player player, String group) {

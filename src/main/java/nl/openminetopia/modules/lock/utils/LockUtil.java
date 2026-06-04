@@ -22,24 +22,9 @@ import java.util.UUID;
 public class LockUtil {
 
     public void setLocked(Block block, UUID ownerUuid) {
-        PersistentDataContainer data = new CustomBlockData(block, OpenMinetopia.getInstance());
         NamespacedKey ownerKey = new NamespacedKey(OpenMinetopia.getInstance(), "lock.owner");
-        data.set(ownerKey, DataType.UUID, ownerUuid);
-
-        if (block.getBlockData() instanceof Door door) {
-            Block otherHalf = door.getHalf() == Bisected.Half.BOTTOM
-                    ? block.getRelative(BlockFace.UP)
-                    : block.getRelative(BlockFace.DOWN);
-            PersistentDataContainer otherData = new CustomBlockData(otherHalf, OpenMinetopia.getInstance());
-            otherData.set(ownerKey, DataType.UUID, ownerUuid);
-        }
-
-        if (block.getBlockData() instanceof Chest chest && chest.getType() != Chest.Type.SINGLE) {
-            Block connected = getConnectedChest(block, chest);
-            if (connected != null) {
-                PersistentDataContainer otherData = new CustomBlockData(connected, OpenMinetopia.getInstance());
-                otherData.set(ownerKey, DataType.UUID, ownerUuid);
-            }
+        for (Block linked : getLinkedBlocks(block)) {
+            new CustomBlockData(linked, OpenMinetopia.getInstance()).set(ownerKey, DataType.UUID, ownerUuid);
         }
     }
 
@@ -91,29 +76,11 @@ public class LockUtil {
         NamespacedKey membersKey = new NamespacedKey(OpenMinetopia.getInstance(), "lock.members");
         NamespacedKey groupsKey = new NamespacedKey(OpenMinetopia.getInstance(), "lock.groups");
 
-        PersistentDataContainer data = new CustomBlockData(block, OpenMinetopia.getInstance());
-        data.remove(ownerKey);
-        data.remove(membersKey);
-        data.remove(groupsKey);
-
-        if (block.getBlockData() instanceof Door door) {
-            Block otherHalf = door.getHalf() == Bisected.Half.BOTTOM
-                    ? block.getRelative(BlockFace.UP)
-                    : block.getRelative(BlockFace.DOWN);
-            PersistentDataContainer otherData = new CustomBlockData(otherHalf, OpenMinetopia.getInstance());
-            otherData.remove(ownerKey);
-            otherData.remove(membersKey);
-            otherData.remove(groupsKey);
-        }
-
-        if (block.getBlockData() instanceof Chest chest && chest.getType() != Chest.Type.SINGLE) {
-            Block connected = getConnectedChest(block, chest);
-            if (connected != null) {
-                PersistentDataContainer otherData = new CustomBlockData(connected, OpenMinetopia.getInstance());
-                otherData.remove(ownerKey);
-                otherData.remove(membersKey);
-                otherData.remove(groupsKey);
-            }
+        for (Block linked : getLinkedBlocks(block)) {
+            PersistentDataContainer data = new CustomBlockData(linked, OpenMinetopia.getInstance());
+            data.remove(ownerKey);
+            data.remove(membersKey);
+            data.remove(groupsKey);
         }
     }
 
@@ -124,12 +91,9 @@ public class LockUtil {
         String[] members = data.get(key, DataType.STRING_ARRAY);
         List<String> updated = members != null ? new ArrayList<>(List.of(members)) : new ArrayList<>();
 
-        if (!updated.contains(memberUuid.toString())) {
-            updated.add(memberUuid.toString());
-            data.set(key, DataType.STRING_ARRAY, updated.toArray(new String[0]));
-        }
-
-        syncLockData(block, key, updated.toArray(new String[0]));
+        if (updated.contains(memberUuid.toString())) return;
+        updated.add(memberUuid.toString());
+        setLinkedData(block, key, updated.toArray(new String[0]));
     }
 
     public void removeLockMember(Block block, UUID memberUuid) {
@@ -142,9 +106,7 @@ public class LockUtil {
         List<String> updatedMembers = new ArrayList<>(List.of(members));
         updatedMembers.remove(memberUuid.toString());
 
-        data.set(key, DataType.STRING_ARRAY, updatedMembers.toArray(new String[0]));
-        
-        syncLockData(block, key, updatedMembers.toArray(new String[0]));
+        setLinkedData(block, key, updatedMembers.toArray(new String[0]));
     }
 
     public List<UUID> getLockMembers(Block block) {
@@ -178,12 +140,9 @@ public class LockUtil {
         String[] groups = data.get(key, DataType.STRING_ARRAY);
         List<String> updated = groups != null ? new ArrayList<>(List.of(groups)) : new ArrayList<>();
 
-        if (!updated.contains(group)) {
-            updated.add(group);
-            data.set(key, DataType.STRING_ARRAY, updated.toArray(new String[0]));
-        }
-
-        syncLockData(block, key, updated.toArray(new String[0]));
+        if (updated.contains(group)) return;
+        updated.add(group);
+        setLinkedData(block, key, updated.toArray(new String[0]));
     }
 
 
@@ -197,9 +156,7 @@ public class LockUtil {
         List<String> updatedGroups = new ArrayList<>(List.of(groups));
         updatedGroups.remove(group);
 
-        data.set(key, DataType.STRING_ARRAY, updatedGroups.toArray(new String[0]));
-        
-        syncLockData(block, key, updatedGroups.toArray(new String[0]));
+        setLinkedData(block, key, updatedGroups.toArray(new String[0]));
     }
 
     public List<String> getLockGroups(Block block) {
@@ -286,22 +243,99 @@ public class LockUtil {
         return false;
     }
 
-    private void syncLockData(Block block, NamespacedKey key, String[] value) {
+    public void inheritDoubleDoorLock(Block placed) {
+        if (!(placed.getBlockData() instanceof Door door)) return;
+
+        Block bottom = door.getHalf() == Bisected.Half.BOTTOM
+                ? placed
+                : placed.getRelative(BlockFace.DOWN);
+        Block partner = findDoubleDoorPartner(bottom);
+        if (partner == null || !isLocked(partner)) return;
+
+        NamespacedKey ownerKey = new NamespacedKey(OpenMinetopia.getInstance(), "lock.owner");
+        NamespacedKey membersKey = new NamespacedKey(OpenMinetopia.getInstance(), "lock.members");
+        NamespacedKey groupsKey = new NamespacedKey(OpenMinetopia.getInstance(), "lock.groups");
+
+        PersistentDataContainer partnerData = new CustomBlockData(partner, OpenMinetopia.getInstance());
+        UUID owner = partnerData.get(ownerKey, DataType.UUID);
+        String[] members = partnerData.get(membersKey, DataType.STRING_ARRAY);
+        String[] groups = partnerData.get(groupsKey, DataType.STRING_ARRAY);
+
+        for (Block linked : getLinkedBlocks(bottom)) {
+            PersistentDataContainer data = new CustomBlockData(linked, OpenMinetopia.getInstance());
+            if (owner != null) data.set(ownerKey, DataType.UUID, owner);
+            if (members != null) data.set(membersKey, DataType.STRING_ARRAY, members);
+            if (groups != null) data.set(groupsKey, DataType.STRING_ARRAY, groups);
+        }
+    }
+
+    private void setLinkedData(Block block, NamespacedKey key, String[] value) {
+        for (Block linked : getLinkedBlocks(block)) {
+            new CustomBlockData(linked, OpenMinetopia.getInstance()).set(key, DataType.STRING_ARRAY, value);
+        }
+    }
+
+    private List<Block> getLinkedBlocks(Block block) {
+        List<Block> linked = new ArrayList<>();
+        linked.add(block);
+
         if (block.getBlockData() instanceof Door door) {
-            Block other = door.getHalf() == Bisected.Half.TOP
-                    ? block.getRelative(BlockFace.DOWN)
-                    : block.getRelative(BlockFace.UP);
-            PersistentDataContainer otherData = new CustomBlockData(other, OpenMinetopia.getInstance());
-            otherData.set(key, DataType.STRING_ARRAY, value);
+            Block otherHalf = door.getHalf() == Bisected.Half.BOTTOM
+                    ? block.getRelative(BlockFace.UP)
+                    : block.getRelative(BlockFace.DOWN);
+            linked.add(otherHalf);
+
+            Block bottom = door.getHalf() == Bisected.Half.BOTTOM ? block : otherHalf;
+            Block partner = findDoubleDoorPartner(bottom);
+            if (partner != null) {
+                linked.add(partner);
+                linked.add(partner.getRelative(BlockFace.UP));
+            }
+        } else if (block.getBlockData() instanceof Chest chest && chest.getType() != Chest.Type.SINGLE) {
+            Block connected = getConnectedChest(block, chest);
+            if (connected != null) linked.add(connected);
         }
 
-        if (block.getBlockData() instanceof Chest chest && chest.getType() != Chest.Type.SINGLE) {
-            Block connected = getConnectedChest(block, chest);
-            if (connected != null) {
-                PersistentDataContainer otherData = new CustomBlockData(connected, OpenMinetopia.getInstance());
-                otherData.set(key, DataType.STRING_ARRAY, value);
+        return linked;
+    }
+
+    public Block getDoubleDoorPartner(Block block) {
+        if (!(block.getBlockData() instanceof Door door)) return null;
+        Block bottom = door.getHalf() == Bisected.Half.BOTTOM ? block : block.getRelative(BlockFace.DOWN);
+        return findDoubleDoorPartner(bottom);
+    }
+
+    public void setDoorOpen(Block doorBottom, boolean open) {
+        if (doorBottom.getBlockData() instanceof Door bottomData) {
+            bottomData.setOpen(open);
+            doorBottom.setBlockData(bottomData);
+        }
+        Block top = doorBottom.getRelative(BlockFace.UP);
+        if (top.getBlockData() instanceof Door topData) {
+            topData.setOpen(open);
+            top.setBlockData(topData);
+        }
+    }
+
+    private Block findDoubleDoorPartner(Block bottom) {
+        if (!(bottom.getBlockData() instanceof Door door)) return null;
+
+        BlockFace[] sides = switch (door.getFacing()) {
+            case NORTH, SOUTH -> new BlockFace[]{BlockFace.EAST, BlockFace.WEST};
+            case EAST, WEST -> new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH};
+            default -> new BlockFace[0];
+        };
+
+        for (BlockFace side : sides) {
+            Block neighbour = bottom.getRelative(side);
+            if (neighbour.getBlockData() instanceof Door neighbourDoor
+                    && neighbourDoor.getFacing() == door.getFacing()
+                    && neighbourDoor.getHinge() != door.getHinge()) {
+                return neighbour;
             }
         }
+
+        return null;
     }
 
 
