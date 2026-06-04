@@ -240,7 +240,7 @@ public class LockUtil {
             if (player.hasPermission("group." + group)) return true;
         }
 
-        return false;
+        return KeyUtil.fits(player.getInventory().getItemInMainHand(), block);
     }
 
     public void inheritDoubleDoorLock(Block placed) {
@@ -275,7 +275,7 @@ public class LockUtil {
         }
     }
 
-    private List<Block> getLinkedBlocks(Block block) {
+    public List<Block> getLinkedBlocks(Block block) {
         List<Block> linked = new ArrayList<>();
         linked.add(block);
 

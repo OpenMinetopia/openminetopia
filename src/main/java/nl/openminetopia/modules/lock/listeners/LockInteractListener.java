@@ -2,6 +2,8 @@ package nl.openminetopia.modules.lock.listeners;
 
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.configuration.MessageConfiguration;
+import nl.openminetopia.modules.lock.utils.KeyUtil;
 import nl.openminetopia.modules.lock.utils.LockUtil;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -33,7 +35,11 @@ public class LockInteractListener implements Listener {
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
         if (!LockUtil.canOpen(event.getClickedBlock(), player)) {
             event.setCancelled(true);
-            ChatUtils.sendFormattedMessage(minetopiaPlayer,"<red>Dit slot is <dark_red>vergrendeld<red>!");
+            if (KeyUtil.isKey(player.getInventory().getItemInMainHand())) {
+                ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("key_does_not_fit"));
+            } else {
+                ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("lock_protected"));
+            }
             return;
         }
 
@@ -58,7 +64,8 @@ public class LockInteractListener implements Listener {
 
         UUID ownerUuid = LockUtil.getLockOwner(event.getClickedBlock());
         OfflinePlayer owner = Bukkit.getOfflinePlayer(ownerUuid);
-        String ownerName = owner.getName() == null  ? "onbekend" : owner.getName();
-        ChatUtils.sendFormattedMessage(minetopiaPlayer, "<gold>Je opent een slot van <yellow>" + ownerName + "<gold>.");
+        String ownerName = owner.getName() == null ? MessageConfiguration.message("lock_unknown_owner") : owner.getName();
+        ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("lock_opening")
+                .replace("<player>", ownerName));
     }
 }

@@ -270,6 +270,18 @@ lock_player_never_played: "<red>Deze speler heeft nog nooit gespeeld."
 lock_cannot_add_self: "<red>Je kan jezelf niet toevoegen als member!"
 lock_not_locked: "<red>Dit blok is niet <dark_red>vergrendeld<red>!"
 lock_owner_changed: "<gold>Je hebt de eigenaar van dit slot gewijzigd naar <yellow><player><gold>."
+lock_protected: "<red>Dit slot is <dark_red>vergrendeld<red>!"
+lock_opening: "<gold>Je opent een slot van <yellow><player><gold>."
+lock_unknown_owner: "onbekend"
+
+# Key
+key_usage: "<red>Gebruik: <gray>/key <all|lock|plot>"
+key_master_received: "<gold>Je hebt een <yellow>hoofdsleutel<gold> ontvangen die op <green>elk slot<gold> past."
+key_lock_added: "<gold>Je hebt dit slot toegevoegd aan je <yellow>sleutel<gold>."
+key_plot_added: "<gold>Je hebt dit plot toegevoegd aan je <yellow>sleutel<gold>."
+key_not_looking_at_lock: "<red>Je kijkt niet naar een <dark_red>vergrendeld<red> blok!"
+key_not_on_plot: "<red>Je staat niet op een plot!"
+key_does_not_fit: "<red>Deze <dark_red>sleutel<red> past niet op dit slot!"
 
 # Head
 head_item_not_allowed: "<red>Je kan dit item niet op je hoofd dragen!"

@@ -34,8 +34,6 @@ public class PlayerAttackListener implements Listener {
             }
         }
 
-        System.out.println("Damage event: " + event.getDamager().getType() + " -> " + event.getEntity().getType());
-
         // Anti-armorstand shooting
         if (event.getEntity() instanceof ArmorStand && event.getDamager() instanceof Arrow) {
             event.setCancelled(true);

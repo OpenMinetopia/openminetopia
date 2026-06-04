@@ -183,6 +183,18 @@ public class DefaultConfiguration extends ConfigurateConfig {
     private final List<PvPItem> pvpItems = new ArrayList<>();
 
     /**
+     * Lock key configuration
+     */
+    private final Material keyMaterial;
+    private final int keyCustomModelData;
+    private final String keyItemModel;
+    private final String keyName;
+    private final List<String> keyLore;
+    private final String keyLoreMaster;
+    private final String keyLoreBlocks;
+    private final String keyLorePlot;
+
+    /**
      * Trashcan configuration
      */
     private final boolean trashcanEnabled;
@@ -504,6 +516,21 @@ public class DefaultConfiguration extends ConfigurateConfig {
             String victimMessage = pvpItem.node("victim-message").getString("<red>Je bent aangevallen door <dark_red><player> <red>met een <dark_red><item>");
             this.getPvpItems().add(new PvPItem(item, attackerMessage, victimMessage));
         });
+
+        /*
+         * Lock key configuration
+         */
+        Material keyMaterial = Material.matchMaterial(rootNode.node("key", "type").getString("PAPER"));
+        this.keyMaterial = keyMaterial != null ? keyMaterial : Material.PAPER;
+        this.keyCustomModelData = rootNode.node("key", "custom-model-data").getInt(-1);
+        this.keyItemModel = rootNode.node("key", "item-model").getString("minecraft:custom/items/sleutel");
+        this.keyName = rootNode.node("key", "name").getString("<gold>Sleutel");
+        this.keyLore = rootNode.node("key", "lore").getList(String.class, List.of(
+                "<gray>Een sleutel om sloten mee te openen."
+        ));
+        this.keyLoreMaster = rootNode.node("key", "lore-master").getString("<gray>Past op: <green>alle sloten");
+        this.keyLoreBlocks = rootNode.node("key", "lore-blocks").getString("<gray>Vergrendelde blokken: <white><amount>");
+        this.keyLorePlot = rootNode.node("key", "lore-plot").getString("<gray>Plot: <white><plot>");
 
         /*
          * Trashcan configuration
