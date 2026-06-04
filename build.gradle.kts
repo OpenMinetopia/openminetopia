@@ -20,7 +20,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.skriptlang.org/releases")
     maven("https://maven.citizensnpcs.co/repo")
-    maven("https://repo.fancyplugins.de/releases")
+    maven("https://repo.fancyinnovations.com/releases")
     maven("https://dist.labymod.net/api/v1/maven/release/")
     maven("https://repo.triumphteam.dev/snapshots/")
     maven("https://repo.codemc.io/repository/maven-public/")
@@ -47,10 +47,9 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
     /* Scoreboard */
-    val scoreboardLibraryVersion = "2.6.0"
+    val scoreboardLibraryVersion = "2.7.4"
     implementation("net.megavex:scoreboard-library-api:$scoreboardLibraryVersion")
     runtimeOnly("net.megavex:scoreboard-library-implementation:$scoreboardLibraryVersion")
-    runtimeOnly("net.megavex:scoreboard-library-modern:$scoreboardLibraryVersion:mojmap")
 
     /* PlaceholderAPI */
     compileOnly("me.clip:placeholderapi:2.11.6")
