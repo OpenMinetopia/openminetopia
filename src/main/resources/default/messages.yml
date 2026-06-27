@@ -172,7 +172,7 @@ plot_owner_not_added: "<red><player> is geen eigenaar van dit plot."
 plot_owner_removed: "<gold>Je hebt <yellow><player> <gold>verwijderd als eigenaar van dit plot."
 plot_set_tranferable: "<gold>Je hebt plot <yellow><plot> <gold>overdraagbaar gemaakt."
 plot_set_untranferable: "<gold>Je hebt plot <yellow><plot> <gold>onoverdraagbaar gemaakt."
-plot_calculate_summary: "<white>[<red><bold>Calculate<reset><white>] <white>Kosten voor dit gebouw:<new_line><white>[<red><bold>Calculate<reset><white>] <white>Prijs plot: <red>€ <plot_price><new_line><white>[<red><bold>Calculate<reset><white>] <white>Prijs gebouw: <red>€ <building_price><new_line><white>[<red><bold>Calculate<reset><white>] <white>Bouwers kosten: <red>€ <builders_price><new_line><white>[<red><bold>Calculate<reset><white>] <white>Totale kosten: <red>€ <total_price>"
+plot_calculate_summary: "<white>[<red><bold>Calculate<reset><white>] <white>Kosten voor dit gebouw:<new_line><white>[<red><bold>Calculate<reset><white>] <white>Prijs plot: <red>€ <plot_price><new_line><white>[<red><bold>Calculate<reset><white>] <white>Prijs gebouw: <red>€ <building_price><new_line><white>[<red><bold>Calculate<reset><white>] <white>Bouwers kosten: <red>€ <builders_price><new_line><white>[<red><bold>Calculate<reset><white>] <white>Totale kosten: <red>€ <total_price><new_line><white>[<red><bold>Calculate<reset><white>] <white>Totale oppervlakte: <red><total_surface> m²"
 
 # Emergency command
 emergency_too_soon: "<red><b>112</b></red> <dark_gray>| <gray>Je kan niet zo snel achter elkaar een melding maken."

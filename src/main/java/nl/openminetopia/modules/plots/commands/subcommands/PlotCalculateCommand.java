@@ -70,12 +70,20 @@ public class PlotCalculateCommand extends BaseCommand {
         double buildersPrice = calculateBuildersPrice(minLocation, maxLocation);
         double plotPrice = calculatePlotPrice(minLocation, maxLocation);
         double totalPrice = buildingPrice + buildersPrice;
+        int totalSurface = calculateSurface(minLocation, maxLocation);
 
         ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("plot_calculate_summary")
                 .replace("<total_price>", String.valueOf(totalPrice))
                 .replace("<plot_price>", String.valueOf(plotPrice))
                 .replace("<building_price>", String.valueOf(buildingPrice))
-                .replace("<builders_price>", String.valueOf(buildersPrice)));
+                .replace("<builders_price>", String.valueOf(buildersPrice))
+                .replace("<total_surface>", String.valueOf(totalSurface)));
+    }
+
+    private int calculateSurface(Location firstLocation, Location secondLocation) {
+        int length = (int) (Math.abs(firstLocation.x() - secondLocation.x()) + 1);
+        int width = (int) (Math.abs(firstLocation.z() - secondLocation.z()) + 1);
+        return length * width;
     }
 
     private double calculatePlotPrice(Location firstLocation, Location secondLocation) {
