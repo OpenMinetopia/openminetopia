@@ -7,11 +7,13 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
+import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import nl.openminetopia.OpenMinetopia;
@@ -42,15 +44,18 @@ public class PlotCreateCommand extends BaseCommand {
 
         try {
             Region region = WorldEdit.getInstance().getSessionManager().get(bukkitPlayer).getSelection(bukkitPlayer.getWorld());
-            BlockVector3 max = region.getMaximumPoint();
-            BlockVector3 min = region.getMinimumPoint();
 
-            if (doTopToDown) {
-                max = region.getMaximumPoint().withY(bukkitWorld.getMaxHeight());
-                min = region.getMinimumPoint().withY(bukkitWorld.getMinHeight());
+            int minY = doTopToDown ? bukkitWorld.getMinHeight() : region.getMinimumPoint().y();
+            int maxY = doTopToDown ? bukkitWorld.getMaxHeight() : region.getMaximumPoint().y();
+
+            ProtectedRegion wgRegion;
+            if (region instanceof Polygonal2DRegion poly) {
+                wgRegion = new ProtectedPolygonalRegion(name, poly.getPoints(), minY, maxY);
+            } else {
+                BlockVector3 min = region.getMinimumPoint().withY(minY);
+                BlockVector3 max = region.getMaximumPoint().withY(maxY);
+                wgRegion = new ProtectedCuboidRegion(name, min, max);
             }
-
-            ProtectedRegion wgRegion = new ProtectedCuboidRegion(name, min, max);
             wgRegion.setFlag(PlotModule.PLOT_FLAG, StateFlag.State.ALLOW);
 
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
