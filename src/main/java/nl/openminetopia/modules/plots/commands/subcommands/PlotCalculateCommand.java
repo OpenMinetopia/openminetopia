@@ -25,6 +25,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.util.function.Predicate;
+
 @CommandAlias("plot|p")
 public class PlotCalculateCommand extends BaseCommand {
 
@@ -49,9 +51,11 @@ public class PlotCalculateCommand extends BaseCommand {
 
         Location minLocation;
         Location maxLocation;
+        Predicate<BlockVector3> contains;
         if (region != null) {
             minLocation = new Location(player.getWorld(), region.getMinimumPoint().x(), region.getMinimumPoint().y(), region.getMinimumPoint().z());
             maxLocation = new Location(player.getWorld(), region.getMaximumPoint().x(), region.getMaximumPoint().y(), region.getMaximumPoint().z());
+            contains = region::contains;
         } else {
             try {
                 BukkitPlayer bukkitPlayer = BukkitAdapter.adapt(player);
@@ -60,17 +64,18 @@ public class PlotCalculateCommand extends BaseCommand {
                 BlockVector3 max = selection.getMaximumPoint();
                 minLocation = new Location(player.getWorld(), min.x(), min.y(), min.z());
                 maxLocation = new Location(player.getWorld(), max.x(), max.y(), max.z());
+                contains = selection::contains;
             } catch (IncompleteRegionException e) {
                 player.sendMessage(MessageConfiguration.component("plot_no_selection"));
                 return;
             }
         }
 
-        double buildingPrice = calculateBuildingPrice(minLocation, maxLocation);
-        double buildersPrice = calculateBuildersPrice(minLocation, maxLocation);
+        double buildingPrice = calculateBuildingPrice(minLocation, maxLocation, contains);
+        double buildersPrice = calculateBuildersPrice(minLocation, maxLocation, contains);
         double plotPrice = calculatePlotPrice(minLocation, maxLocation);
         double totalPrice = buildingPrice + buildersPrice;
-        int totalSurface = calculateSurface(minLocation, maxLocation);
+        int totalSurface = calculateSurface(minLocation, maxLocation, contains);
 
         ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("plot_calculate_summary")
                 .replace("<total_price>", String.valueOf(totalPrice))
@@ -80,10 +85,21 @@ public class PlotCalculateCommand extends BaseCommand {
                 .replace("<total_surface>", String.valueOf(totalSurface)));
     }
 
-    private int calculateSurface(Location firstLocation, Location secondLocation) {
-        int length = (int) (Math.abs(firstLocation.x() - secondLocation.x()) + 1);
-        int width = (int) (Math.abs(firstLocation.z() - secondLocation.z()) + 1);
-        return length * width;
+    private int calculateSurface(Location firstLocation, Location secondLocation, Predicate<BlockVector3> contains) {
+        int surface = 0;
+
+        for (int x = firstLocation.getBlockX(); x <= secondLocation.getBlockX(); x++) {
+            for (int z = firstLocation.getBlockZ(); z <= secondLocation.getBlockZ(); z++) {
+                for (int y = firstLocation.getBlockY(); y <= secondLocation.getBlockY(); y++) {
+                    if (contains.test(BlockVector3.at(x, y, z))) {
+                        surface++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return surface;
     }
 
     private double calculatePlotPrice(Location firstLocation, Location secondLocation) {
@@ -96,7 +112,7 @@ public class PlotCalculateCommand extends BaseCommand {
         return expression.evaluate();
     }
 
-    private double calculateBuildingPrice(Location firstLocation, Location secondLocation) {
+    private double calculateBuildingPrice(Location firstLocation, Location secondLocation, Predicate<BlockVector3> contains) {
         PlotCalculateConfiguration config = OpenMinetopia.getModuleManager().get(PlotModule.class).getCalculateConfiguration();
 
         double buildingPrice = 0.0;
@@ -104,6 +120,7 @@ public class PlotCalculateCommand extends BaseCommand {
         for (int x = firstLocation.getBlockX(); x <= secondLocation.getBlockX(); x++) {
             for (int y = firstLocation.getBlockY(); y <= secondLocation.getBlockY(); y++) {
                 for (int z = firstLocation.getBlockZ(); z <= secondLocation.getBlockZ(); z++) {
+                    if (!contains.test(BlockVector3.at(x, y, z))) continue;
                     Block block = firstLocation.getWorld().getBlockAt(x, y, z);
                     Material material = block.getType();
                     buildingPrice += config.getBlockValues().getOrDefault(material, 0.0);
@@ -114,7 +131,7 @@ public class PlotCalculateCommand extends BaseCommand {
         return buildingPrice;
     }
 
-    private double calculateBuildersPrice(Location firstLocation, Location secondLocation) {
+    private double calculateBuildersPrice(Location firstLocation, Location secondLocation, Predicate<BlockVector3> contains) {
         PlotCalculateConfiguration config = OpenMinetopia.getModuleManager().get(PlotModule.class).getCalculateConfiguration();
 
         int validBlocks = 0;
@@ -122,6 +139,7 @@ public class PlotCalculateCommand extends BaseCommand {
         for (int x = firstLocation.getBlockX(); x <= secondLocation.getBlockX(); x++) {
             for (int y = firstLocation.getBlockY(); y <= secondLocation.getBlockY(); y++) {
                 for (int z = firstLocation.getBlockZ(); z <= secondLocation.getBlockZ(); z++) {
+                    if (!contains.test(BlockVector3.at(x, y, z))) continue;
                     Block block = firstLocation.getWorld().getBlockAt(x, y, z);
                     Material material = block.getType();
 
