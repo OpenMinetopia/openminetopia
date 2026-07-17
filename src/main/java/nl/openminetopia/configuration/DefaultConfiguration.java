@@ -9,7 +9,10 @@ import nl.openminetopia.modules.misc.objects.PvPItem;
 import nl.openminetopia.utils.config.ConfigUtils;
 import nl.openminetopia.utils.config.ConfigurateConfig;
 import nl.openminetopia.utils.item.ItemBuilder;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -130,6 +133,13 @@ public class DefaultConfiguration extends ConfigurateConfig {
     private final boolean handcuffCanPvP;
     private final boolean handcuffCanChangeSlots;
     private final boolean handcuffShowTitle;
+    private final boolean handcuffTeleportOnLogout;
+    private final String handcuffLogoutWorld;
+    private final double handcuffLogoutX;
+    private final double handcuffLogoutY;
+    private final double handcuffLogoutZ;
+    private final float handcuffLogoutYaw;
+    private final float handcuffLogoutPitch;
 
     /**
      * Pepperspray configuration
@@ -418,6 +428,13 @@ public class DefaultConfiguration extends ConfigurateConfig {
         this.handcuffCanPvP = rootNode.node("handcuffs", "can-pvp").getBoolean(false);
         this.handcuffCanChangeSlots = rootNode.node("handcuffs", "can-change-slots").getBoolean(false);
         this.handcuffShowTitle = rootNode.node("handcuffs", "show-title").getBoolean(true);
+        this.handcuffTeleportOnLogout = rootNode.node("handcuffs", "logout-teleport", "enabled").getBoolean(false);
+        this.handcuffLogoutWorld = rootNode.node("handcuffs", "logout-teleport", "world").getString("world");
+        this.handcuffLogoutX = rootNode.node("handcuffs", "logout-teleport", "x").getDouble(0.5);
+        this.handcuffLogoutY = rootNode.node("handcuffs", "logout-teleport", "y").getDouble(64);
+        this.handcuffLogoutZ = rootNode.node("handcuffs", "logout-teleport", "z").getDouble(0.5);
+        this.handcuffLogoutYaw = (float) rootNode.node("handcuffs", "logout-teleport", "yaw").getDouble(0);
+        this.handcuffLogoutPitch = (float) rootNode.node("handcuffs", "logout-teleport", "pitch").getDouble(0);
 
         /*
          * Pepperspray configuration
@@ -597,5 +614,11 @@ public class DefaultConfiguration extends ConfigurateConfig {
 
         this.headWhitelist.removeIf(itemStack -> itemStack.isSimilar(item));
         saveConfiguration();
+    }
+
+    public Location getHandcuffLogoutLocation() {
+        World world = Bukkit.getWorld(handcuffLogoutWorld);
+        if (world == null) return null;
+        return new Location(world, handcuffLogoutX, handcuffLogoutY, handcuffLogoutZ, handcuffLogoutYaw, handcuffLogoutPitch);
     }
 }

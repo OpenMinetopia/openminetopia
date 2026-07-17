@@ -1,7 +1,10 @@
 package nl.openminetopia.modules.police.handcuff.listeners;
 
+import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.DefaultConfiguration;
 import nl.openminetopia.modules.police.handcuff.HandcuffManager;
 import nl.openminetopia.modules.police.handcuff.objects.HandcuffedPlayer;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +18,12 @@ public class PlayerQuitListener implements Listener {
     public void onQuit(final PlayerQuitEvent event) {
         Player player = event.getPlayer();
         HandcuffManager manager = HandcuffManager.getInstance();
+        DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
+
+        if (configuration.isHandcuffTeleportOnLogout() && manager.isHandcuffed(player)) {
+            Location location = configuration.getHandcuffLogoutLocation();
+            if (location != null) player.teleport(location);
+        }
 
         List<HandcuffedPlayer> affected = manager.getHandcuffedPlayers().stream()
                 .filter(handcuffedPlayer -> handcuffedPlayer.getSource().equals(player)
