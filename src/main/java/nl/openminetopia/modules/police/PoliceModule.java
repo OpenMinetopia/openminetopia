@@ -60,6 +60,7 @@ public class PoliceModule extends ExtendedSpigotModule {
         registerComponent(new PlayerPickupItemListener());
         registerComponent(new PlayerSlotChangeListener());
         registerComponent(new PlayerInventoryClickListener());
+        registerComponent(new PlayerQuitListener());
 
         /* ---- Walkie-talkie ---- */
         registerComponent(new PlayerChatListener());

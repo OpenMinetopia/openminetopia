@@ -3,6 +3,7 @@ package nl.openminetopia.modules.police.handcuff.runnables;
 import net.kyori.adventure.title.Title;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.configuration.MessageConfiguration;
+import nl.openminetopia.modules.police.handcuff.HandcuffManager;
 import nl.openminetopia.modules.police.handcuff.objects.HandcuffedPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,12 +20,13 @@ public class HandcuffRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (!handcuffedPlayer.getSource().isOnline()) {
-            handcuffedPlayer.release();
-        }
-
         Player source = handcuffedPlayer.getSource();
         Player player = handcuffedPlayer.getPlayer();
+
+        if (!source.isOnline() || !player.isOnline()) {
+            HandcuffManager.getInstance().release(handcuffedPlayer);
+            return;
+        }
 
         if (OpenMinetopia.getDefaultConfiguration().isHandcuffShowTitle()) {
             Title title = Title.title(MessageConfiguration.component("police_handcuff_title"),
