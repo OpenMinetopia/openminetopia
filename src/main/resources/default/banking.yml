@@ -3,6 +3,7 @@ banking:
   atm-materials:
     - RED_SANDSTONE_STAIRS
   pin-transaction-timeout-seconds: 60
+  pin-transaction-max-distance: 10.0
   starting-balance: 0.0
   inventories:
     select-type-title: '<gray>Selecteer het rekeningtype:'

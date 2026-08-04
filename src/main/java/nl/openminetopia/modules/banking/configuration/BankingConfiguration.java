@@ -21,6 +21,7 @@ public class BankingConfiguration extends ConfigurateConfig {
     private final List<Material> atmMaterials;
     private final List<Material> pinTerminalMaterials;
     private final int pinTransactionTimeoutSeconds;
+    private final double pinTransactionMaxDistance;
 
     private final double startingBalance;
 
@@ -61,6 +62,7 @@ public class BankingConfiguration extends ConfigurateConfig {
         });
 
         this.pinTransactionTimeoutSeconds = rootNode.node("banking", "pin-transaction-timeout-seconds").getInt(60);
+        this.pinTransactionMaxDistance = rootNode.node("banking", "pin-transaction-max-distance").getDouble(10);
 
         this.startingBalance = rootNode.node("banking", "starting-balance").getDouble(0);
 

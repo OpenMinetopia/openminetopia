@@ -52,6 +52,8 @@ banking_pin_sent: "<dark_green>Je hebt succesvol <green><amount></green> verzond
 banking_pin_received: "<dark_green>Je hebt succesvol <green><amount></green> ontvangen via pin van <green><player></green>."
 banking_pin_insufficient_balance: "<red>Je hebt niet genoeg saldo op je rekening om deze pintransactie te voltooien."
 banking_pin_already_in_progress: "<red>Je hebt al een lopende pintransactie. Voltooi deze eerst voordat je een nieuwe start."
+banking_pin_player_too_far: "<red>Deze speler staat te ver van de pin-terminal vandaan."
+banking_pin_terminal_too_far: "<red>Je moet pinnen op de terminal waar het verzoek is gestart."
 banking_pin_no_business_accounts: "<red>Je hebt geen zakelijke rekeningen om een pintransactie mee te doen."
 banking_transaction_cancelled_by_plugin: "<red>De transactie is geannuleerd door een plugin."
 banking_balance_set: "<gold>De balans van <red><account_name> <gold>is nu ingesteld op <red><balance><gold>."

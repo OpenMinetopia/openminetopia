@@ -2,6 +2,7 @@ package nl.openminetopia.modules.banking.menus;
 
 import dev.triumphteam.gui.guis.GuiItem;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.banking.BankingModule;
 import nl.openminetopia.modules.banking.enums.AccountType;
 import nl.openminetopia.modules.banking.models.BankAccountModel;
@@ -9,6 +10,7 @@ import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.item.ItemBuilder;
 import nl.openminetopia.utils.menu.PaginatedMenu;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +19,7 @@ import java.util.Collection;
 
 public class PinTerminalAccountsMenu extends PaginatedMenu {
 
-    public PinTerminalAccountsMenu(Player player) {
+    public PinTerminalAccountsMenu(Player player, Location terminal) {
         super("<gold>Selecteer een rekening", 6);
 
         gui.disableAllInteractions();
@@ -76,7 +78,11 @@ public class PinTerminalAccountsMenu extends PaginatedMenu {
                             ChatUtils.sendMessage(player, "<red>Je kunt geen pinverzoek naar jezelf sturen. Probeer het opnieuw.");
                             return;
                         }
-                        bankingModule.getPinTerminalManager().startTransaction(sender, clicker, amount, accountModel);
+                        if (!bankingModule.getPinTerminalManager().isWithinRange(terminal, sender.getLocation())) {
+                            player.sendMessage(MessageConfiguration.component("banking_pin_player_too_far"));
+                            return;
+                        }
+                        bankingModule.getPinTerminalManager().startTransaction(sender, clicker, amount, accountModel, terminal);
                     });
                 });
             });

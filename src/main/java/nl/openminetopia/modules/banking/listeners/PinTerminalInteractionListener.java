@@ -49,6 +49,10 @@ public class PinTerminalInteractionListener implements Listener {
                         .filter(t -> t.sender().equals(player))
                         .findFirst().orElse(null);
                 if (transaction == null) return;
+                if (!bankingModule.getPinTerminalManager().isWithinRange(transaction.terminal(), block.getLocation())) {
+                    player.sendMessage(MessageConfiguration.component("banking_pin_terminal_too_far"));
+                    return;
+                }
                 if (senderAccount.getBalance() < amount) {
                     player.sendMessage(MessageConfiguration.component("banking_pin_insufficient_balance"));
                     bankingModule.getPinTerminalManager().cancelTransaction(transaction);
@@ -69,7 +73,7 @@ public class PinTerminalInteractionListener implements Listener {
                 player.sendMessage(MessageConfiguration.component("banking_pin_no_business_accounts"));
                 return;
             }
-            new PinTerminalAccountsMenu(player).open(player);
+            new PinTerminalAccountsMenu(player, block.getLocation()).open(player);
         }
 
         if (event.getAction() == Action.LEFT_CLICK_BLOCK) {

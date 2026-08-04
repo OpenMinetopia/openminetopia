@@ -10,6 +10,7 @@ import nl.openminetopia.modules.banking.models.BankAccountModel;
 import nl.openminetopia.modules.banking.models.PinTransaction;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class PinTerminalManager {
     private final List<PinTransaction> pinTransactions = new ArrayList<>();
     private final Map<PinTransaction, Integer> expiryTasks = new HashMap<>();
 
-    public PinTransaction startTransaction(Player sender, Player recipient, double amount, BankAccountModel recipientAccount) {
+    public PinTransaction startTransaction(Player sender, Player recipient, double amount, BankAccountModel recipientAccount, Location terminal) {
         sender.sendMessage(ChatUtils.color(MessageConfiguration.message("banking_pin_request_received")
                 .replace("<player>", recipient.getName())
                 .replace("<amount>", bankingModule.format(amount))));
@@ -34,7 +35,7 @@ public class PinTerminalManager {
                 .replace("<player>", sender.getName())
                 .replace("<amount>", bankingModule.format(amount))));
 
-        PinTransaction transaction = new PinTransaction(sender, recipient, amount, recipientAccount);
+        PinTransaction transaction = new PinTransaction(sender, recipient, amount, recipientAccount, terminal);
         pinTransactions.add(transaction);
 
         long timeoutTicks = 20L * bankingModule.getConfiguration().getPinTransactionTimeoutSeconds();
@@ -87,6 +88,13 @@ public class PinTerminalManager {
         Integer taskId = expiryTasks.remove(transaction);
         if (taskId != null) Bukkit.getScheduler().cancelTask(taskId);
         pinTransactions.remove(transaction);
+    }
+
+    public boolean isWithinRange(Location terminal, Location location) {
+        double maxDistance = bankingModule.getConfiguration().getPinTransactionMaxDistance();
+        if (maxDistance <= 0) return true;
+        if (!terminal.getWorld().equals(location.getWorld())) return false;
+        return terminal.distanceSquared(location) <= maxDistance * maxDistance;
     }
 
     public boolean isRecipientInTransaction(Player player) {
