@@ -5,7 +5,6 @@ import com.craftmend.storm.api.StormModel;
 import com.craftmend.storm.connection.hikaricp.HikariDriver;
 import com.craftmend.storm.parser.types.TypeRegistry;
 import com.zaxxer.hikari.HikariConfig;
-import lombok.SneakyThrows;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.fitness.FitnessStatisticType;
 import nl.openminetopia.configuration.DefaultConfiguration;
@@ -87,11 +86,7 @@ public class MySQLAdapter implements DatabaseAdapter {
         registerStormModel(new CurrencyModel());
     }
 
-    @SneakyThrows
     private void registerStormModel(StormModel model) {
-        Storm storm = StormDatabase.getInstance().getStorm();
-
-        storm.registerModel(model);
-        storm.runMigrations();
+        StormDatabase.getInstance().registerModel(model);
     }
 }

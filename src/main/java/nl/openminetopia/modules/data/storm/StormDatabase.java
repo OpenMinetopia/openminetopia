@@ -4,6 +4,7 @@ import com.craftmend.storm.Storm;
 import com.craftmend.storm.api.StormModel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +26,12 @@ public class StormDatabase {
             instance = new StormDatabase();
         }
         return instance;
+    }
+
+    @SneakyThrows
+    public void registerModel(StormModel model) {
+        storm.registerModel(model);
+        storm.runMigrations();
     }
 
     public CompletableFuture<Integer> saveStormModel(StormModel stormModel) {
