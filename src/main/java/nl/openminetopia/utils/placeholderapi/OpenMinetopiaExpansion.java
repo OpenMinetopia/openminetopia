@@ -51,6 +51,9 @@ public class OpenMinetopiaExpansion extends PlaceholderExpansion {
         long minutes = ((playtimeInSeconds % 86400) % 3600) / 60;
         long seconds = ((playtimeInSeconds % 86400) % 3600) % 60;
 
+        String registered = PlaceholderRegistry.resolve(params, player, minetopiaPlayer);
+        if (registered != null) return registered;
+
         if (params.startsWith("currency_")) {
             String currencyId = params.substring("currency_".length());
             CurrencyModule module = OpenMinetopia.getModuleManager().get(CurrencyModule.class);
