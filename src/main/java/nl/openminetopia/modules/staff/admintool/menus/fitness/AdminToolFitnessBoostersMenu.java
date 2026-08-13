@@ -33,6 +33,12 @@ public class AdminToolFitnessBoostersMenu extends PaginatedMenu {
 
         if (minetopiaPlayer == null) return;
 
+        ItemBuilder backItemBuilder = new ItemBuilder(Material.OAK_DOOR)
+                .setName("<gray>Terug");
+
+        gui.setItem(22, new GuiItem(backItemBuilder.toItemStack(), event ->
+                new AdminToolFitnessMenu(player, offlinePlayer, minetopiaPlayer, bankAccountModel).open((Player) event.getWhoClicked())));
+
         for (FitnessBoosterModel booster : minetopiaPlayer.getFitness().getBoosters()) {
             ItemBuilder icon = new ItemBuilder(Material.POTION)
                     .setName("<gold>Booster")
@@ -51,14 +57,6 @@ public class AdminToolFitnessBoostersMenu extends PaginatedMenu {
                 new AdminToolFitnessBoostersMenu(player, offlinePlayer, minetopiaPlayer, bankAccountModel).open((Player) event.getWhoClicked());
             });
             gui.addItem(boosterItem);
-
-            ItemBuilder backItemBuilder = new ItemBuilder(Material.OAK_DOOR)
-                    .setName("<gray>Terug");
-
-            GuiItem backItem = new GuiItem(backItemBuilder.toItemStack(), event -> {
-                new AdminToolFitnessMenu(player, offlinePlayer, minetopiaPlayer, bankAccountModel).open((Player) event.getWhoClicked());
-            });
-            gui.setItem(22, backItem);
         }
     }
 }

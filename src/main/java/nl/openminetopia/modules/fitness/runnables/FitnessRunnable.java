@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.fitness.Fitness;
+import nl.openminetopia.api.player.fitness.DefaultFitnessStatisticType;
 import nl.openminetopia.api.player.fitness.FitnessStatisticType;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.framework.runnables.AbstractDirtyRunnable;
@@ -52,11 +53,11 @@ public class FitnessRunnable extends AbstractDirtyRunnable<UUID> {
             fitness.removeBooster(boosterModel);
         }
 
-        updateFitnessStatistic(FitnessStatisticType.WALKING, Statistic.WALK_ONE_CM, fitness, player);
-        updateFitnessStatistic(FitnessStatisticType.CLIMBING, Statistic.CLIMB_ONE_CM, fitness, player);
-        updateFitnessStatistic(FitnessStatisticType.SPRINTING, Statistic.SPRINT_ONE_CM, fitness, player);
-        updateFitnessStatistic(FitnessStatisticType.SWIMMING, Statistic.SWIM_ONE_CM, fitness, player);
-        updateFitnessStatistic(FitnessStatisticType.FLYING, Statistic.AVIATE_ONE_CM, fitness, player);
+        updateFitnessStatistic(DefaultFitnessStatisticType.WALKING, Statistic.WALK_ONE_CM, fitness, player);
+        updateFitnessStatistic(DefaultFitnessStatisticType.CLIMBING, Statistic.CLIMB_ONE_CM, fitness, player);
+        updateFitnessStatistic(DefaultFitnessStatisticType.SPRINTING, Statistic.SPRINT_ONE_CM, fitness, player);
+        updateFitnessStatistic(DefaultFitnessStatisticType.SWIMMING, Statistic.SWIM_ONE_CM, fitness, player);
+        updateFitnessStatistic(DefaultFitnessStatisticType.FLYING, Statistic.AVIATE_ONE_CM, fitness, player);
         updateEatingFitness(fitness);
 
         int totalFitness = calculateTotalFitness(fitness) + calculateFitnessBoost(fitness);
@@ -83,7 +84,7 @@ public class FitnessRunnable extends AbstractDirtyRunnable<UUID> {
     private void updateEatingFitness(Fitness fitness) {
         FitnessConfiguration config = OpenMinetopia.getModuleManager().get(FitnessModule.class).getConfiguration();
 
-        FitnessStatisticModel eatingStat = fitness.getStatistic(FitnessStatisticType.EATING);
+        FitnessStatisticModel eatingStat = fitness.getStatistic(DefaultFitnessStatisticType.EATING);
         double eatingPoints = (eatingStat.getSecondaryPoints() * config.getPointsForCheapFood())
                 + (eatingStat.getTertiaryPoints() * config.getPointsForLuxuryFood());
 
@@ -93,7 +94,7 @@ public class FitnessRunnable extends AbstractDirtyRunnable<UUID> {
             eatingStat.setPoints(0.0);
         }
 
-        fitness.setStatistic(FitnessStatisticType.EATING, eatingStat);
+        fitness.setStatistic(DefaultFitnessStatisticType.EATING, eatingStat);
     }
 
     private int calculateTotalFitness(Fitness fitness) {

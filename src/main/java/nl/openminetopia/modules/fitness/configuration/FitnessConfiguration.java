@@ -3,7 +3,7 @@ package nl.openminetopia.modules.fitness.configuration;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nl.openminetopia.OpenMinetopia;
-import nl.openminetopia.api.player.fitness.FitnessStatisticType;
+import nl.openminetopia.api.player.fitness.DefaultFitnessStatisticType;
 import nl.openminetopia.modules.fitness.objects.FitnessFood;
 import nl.openminetopia.modules.fitness.objects.FitnessItem;
 import nl.openminetopia.modules.fitness.objects.FitnessLevelEffect;
@@ -111,7 +111,7 @@ public class FitnessConfiguration extends ConfigurateConfig {
                 OpenMinetopia.getInstance().getLogger().warning("Couldn't find custom model data for " + value);
                 return;
             }
-            cheapFood.add(new FitnessFood(FitnessStatisticType.EATING, material, customModelData));
+            cheapFood.add(new FitnessFood(DefaultFitnessStatisticType.EATING, material, customModelData));
         });
 
         eatingNode.node("food-items", "luxury").childrenList().forEach((value) -> {
@@ -125,7 +125,7 @@ public class FitnessConfiguration extends ConfigurateConfig {
                 OpenMinetopia.getInstance().getLogger().warning("Couldn't find custom model data for " + value);
                 return;
             }
-            luxuryFood.add(new FitnessFood(FitnessStatisticType.EATING, material, customModelData));
+            luxuryFood.add(new FitnessFood(DefaultFitnessStatisticType.EATING, material, customModelData));
         });
 
         ConfigurationNode statisticsNode = rootNode.node("fitness", "statistics");

@@ -2,7 +2,7 @@ package nl.openminetopia.modules.fitness.listeners;
 
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
-import nl.openminetopia.api.player.fitness.FitnessStatisticType;
+import nl.openminetopia.api.player.fitness.DefaultFitnessStatisticType;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.modules.fitness.FitnessModule;
 import nl.openminetopia.modules.fitness.configuration.FitnessConfiguration;
@@ -46,7 +46,7 @@ public class PlayerEatListener implements Listener {
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
         if (minetopiaPlayer == null) return;
 
-        FitnessStatisticModel eatingStatistic = minetopiaPlayer.getFitness().getStatistic(FitnessStatisticType.EATING);
+        FitnessStatisticModel eatingStatistic = minetopiaPlayer.getFitness().getStatistic(DefaultFitnessStatisticType.EATING);
 
         if (configuration.getCheapFood().contains(food)) {
             eatingStatistic.setPoints(eatingStatistic.getPoints() + configuration.getPointsForCheapFood());
@@ -60,12 +60,12 @@ public class PlayerEatListener implements Listener {
 
         if (eatingStatistic.getPoints() >= 1 && eatingStatistic.getFitnessGained() <= configuration.getMaxFitnessByEating()) {
             if (currentEatingPoints % (eatingStatistic.getSecondaryPoints() + eatingStatistic.getTertiaryPoints()) == 0) {
-                minetopiaPlayer.getFitness().setStatistic(FitnessStatisticType.EATING, eatingStatistic);
+                minetopiaPlayer.getFitness().setStatistic(DefaultFitnessStatisticType.EATING, eatingStatistic);
                 return;
             }
             eatingStatistic.setFitnessGained(eatingStatistic.getFitnessGained() + 1);
             eatingStatistic.setPoints(0.0);
         }
-        minetopiaPlayer.getFitness().setStatistic(FitnessStatisticType.EATING, eatingStatistic);
+        minetopiaPlayer.getFitness().setStatistic(DefaultFitnessStatisticType.EATING, eatingStatistic);
     }
 }

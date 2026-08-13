@@ -2,7 +2,7 @@ package nl.openminetopia.modules.fitness.listeners;
 
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
-import nl.openminetopia.api.player.fitness.FitnessStatisticType;
+import nl.openminetopia.api.player.fitness.DefaultFitnessStatisticType;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.fitness.FitnessModule;
@@ -39,7 +39,7 @@ public class PlayerDrinkListener implements Listener {
             return;
         }
 
-        FitnessStatisticModel drinkingStatistic = minetopiaPlayer.getFitness().getStatistic(FitnessStatisticType.DRINKING);
+        FitnessStatisticModel drinkingStatistic = minetopiaPlayer.getFitness().getStatistic(DefaultFitnessStatisticType.DRINKING);
 
         double currentDrinkingPoints = drinkingStatistic.getPoints(); // Huidige drink punten
         double drinkingPointsPerBottle = configuration.getDrinkingPointsPerWaterBottle();
@@ -63,6 +63,6 @@ public class PlayerDrinkListener implements Listener {
             drinkingStatistic.setPoints(0.0);
         }
 
-        minetopiaPlayer.getFitness().setStatistic(FitnessStatisticType.DRINKING, drinkingStatistic);
+        minetopiaPlayer.getFitness().setStatistic(DefaultFitnessStatisticType.DRINKING, drinkingStatistic);
     }
 }

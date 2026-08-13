@@ -7,7 +7,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import nl.openminetopia.api.player.PlayerManager;
-import nl.openminetopia.api.player.fitness.FitnessStatisticType;
+import nl.openminetopia.api.player.fitness.DefaultFitnessStatisticType;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.modules.fitness.models.FitnessStatisticModel;
 import org.bukkit.entity.Player;
@@ -51,7 +51,7 @@ public class ExprDrinkingPoints extends SimpleExpression<Integer> {
         if (p == null) return new Integer[0];
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
         if (minetopiaPlayer == null) return new Integer[0];
-        FitnessStatisticModel drinkingStatistic = minetopiaPlayer.getFitness().getStatistic(FitnessStatisticType.DRINKING);
+        FitnessStatisticModel drinkingStatistic = minetopiaPlayer.getFitness().getStatistic(DefaultFitnessStatisticType.DRINKING);
         return new Integer[] {drinkingStatistic.getFitnessGained()};
     }
 }

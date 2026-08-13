@@ -3,7 +3,7 @@ package nl.openminetopia.modules.fitness.utils;
 import lombok.experimental.UtilityClass;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
-import nl.openminetopia.api.player.fitness.FitnessStatisticType;
+import nl.openminetopia.api.player.fitness.DefaultFitnessStatisticType;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.modules.fitness.FitnessModule;
 import nl.openminetopia.modules.fitness.configuration.FitnessConfiguration;
@@ -99,7 +99,7 @@ public class FitnessUtils {
         if (player == null) return;
 
         FitnessConfiguration config = getFitnessConfiguration();
-        FitnessStatisticModel healthStatistic = minetopiaPlayer.getFitness().getStatistic(FitnessStatisticType.HEALTH);
+        FitnessStatisticModel healthStatistic = minetopiaPlayer.getFitness().getStatistic(DefaultFitnessStatisticType.HEALTH);
         
         double healthPoints = calculateHealthPoints(player, config, healthStatistic.getPoints());
         healthStatistic.setPoints(healthPoints);
@@ -110,7 +110,7 @@ public class FitnessUtils {
             healthStatistic.setPoints(0.0);
         }
 
-        minetopiaPlayer.getFitness().setStatistic(FitnessStatisticType.HEALTH, healthStatistic);
+        minetopiaPlayer.getFitness().setStatistic(DefaultFitnessStatisticType.HEALTH, healthStatistic);
     }
 
     // Private helper methods

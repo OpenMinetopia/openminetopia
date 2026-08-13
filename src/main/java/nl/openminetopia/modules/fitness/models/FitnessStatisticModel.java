@@ -6,10 +6,7 @@ import com.craftmend.storm.api.markers.Column;
 import com.craftmend.storm.api.markers.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.fitness.FitnessStatisticType;
-import nl.openminetopia.modules.fitness.FitnessModule;
-import nl.openminetopia.modules.fitness.configuration.FitnessConfiguration;
 import nl.openminetopia.modules.player.models.PlayerModel;
 
 @Data
@@ -48,30 +45,10 @@ public class FitnessStatisticModel extends StormModel {
     private Double tertiaryPoints;
 
     public int getMaximum() {
-        FitnessConfiguration configuration = OpenMinetopia.getModuleManager().get(FitnessModule.class).getConfiguration();
-        return switch (type) {
-            case WALKING -> configuration.getMaxFitnessByWalking();
-            case SPRINTING -> configuration.getMaxFitnessBySprinting();
-            case CLIMBING -> configuration.getMaxFitnessByClimbing();
-            case SWIMMING -> configuration.getMaxFitnessBySwimming();
-            case FLYING -> configuration.getMaxFitnessByFlying();
-            case DRINKING -> configuration.getMaxFitnessByDrinking();
-            case EATING -> configuration.getMaxFitnessByEating();
-            case HEALTH -> configuration.getMaxFitnessByHealth();
-        };
+        return type.maximum();
     }
 
     public double getProgressPerPoint() {
-        FitnessConfiguration configuration = OpenMinetopia.getModuleManager().get(FitnessModule.class).getConfiguration();
-        return switch (type) {
-            case WALKING -> configuration.getCmPerWalkingLevel();
-            case SPRINTING -> configuration.getCmPerSprintingLevel();
-            case CLIMBING -> configuration.getCmPerClimbingLevel();
-            case SWIMMING -> configuration.getCmPerSwimmingLevel();
-            case FLYING -> configuration.getCmPerFlyingLevel();
-            case DRINKING -> configuration.getDrinkingPointsPerFitnessLevel();
-            case EATING -> configuration.getEatingPointsPerFitnessLevel();
-            case HEALTH -> configuration.getHealthPointsPerFitnessLevel();
-        };
+        return type.progressPerPoint();
     }
 }

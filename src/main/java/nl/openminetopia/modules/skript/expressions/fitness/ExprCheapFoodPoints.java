@@ -7,7 +7,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import nl.openminetopia.api.player.PlayerManager;
-import nl.openminetopia.api.player.fitness.FitnessStatisticType;
+import nl.openminetopia.api.player.fitness.DefaultFitnessStatisticType;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.modules.fitness.models.FitnessStatisticModel;
 import org.bukkit.entity.Player;
@@ -51,7 +51,7 @@ public class ExprCheapFoodPoints extends SimpleExpression<Double> {
         if (p == null) return new Double[0];
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(p);
         if (minetopiaPlayer == null) return new Double[0];
-        FitnessStatisticModel eatingStatistic = minetopiaPlayer.getFitness().getStatistic(FitnessStatisticType.EATING);
+        FitnessStatisticModel eatingStatistic = minetopiaPlayer.getFitness().getStatistic(DefaultFitnessStatisticType.EATING);
         return new Double[] {eatingStatistic.getSecondaryPoints()};
     }
 }

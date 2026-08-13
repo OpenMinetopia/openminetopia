@@ -5,6 +5,7 @@ import com.craftmend.storm.parser.objects.ParsedField;
 import com.craftmend.storm.parser.types.objects.StormTypeAdapter;
 import lombok.SneakyThrows;
 import nl.openminetopia.api.player.fitness.FitnessStatisticType;
+import nl.openminetopia.api.player.fitness.FitnessStatisticTypes;
 
 public class FitnessStatisticTypeAdapter extends StormTypeAdapter<FitnessStatisticType> {
 
@@ -12,13 +13,13 @@ public class FitnessStatisticTypeAdapter extends StormTypeAdapter<FitnessStatist
     @Override
     public FitnessStatisticType fromSql(ParsedField parsedField, Object sqlValue) {
         if (sqlValue == null) return null;
-        return FitnessStatisticType.valueOf(sqlValue.toString());
+        return FitnessStatisticTypes.byKey(sqlValue.toString());
     }
 
     @Override
     public Object toSql(Storm storm, FitnessStatisticType value) {
         if (value == null) return null;
-        return value.toString();
+        return value.key();
     }
 
     @Override
