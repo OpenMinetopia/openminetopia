@@ -1,6 +1,7 @@
 package nl.openminetopia.modules.books.configuration;
 
 import lombok.Getter;
+import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.modules.books.objects.CustomBook;
 import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.bukkit.Material;
@@ -26,8 +27,12 @@ public class BooksConfiguration extends ConfigurateConfig {
             if (!enabled) return;
 
             boolean copy = value.node("copy").getBoolean();
-            Material material = Material.getMaterial(value.node("menu-item").getString("DIAMOND"));
-            if (material == null) return;
+            String menuItem = value.node("menu-item").getString("DIAMOND");
+            Material material = Material.matchMaterial(menuItem);
+            if (material == null) {
+                OpenMinetopia.getInstance().getLogger().warning("Invalid material in books.yml for book '" + identifier + "': " + menuItem);
+                return;
+            }
 
             String name = value.node("name").getString();
             String itemName = value.node("item-name").getString();

@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     /* Paper */
-    paperweight.paperDevBundle("26.1.2.build.+")
+    paperweight.paperDevBundle("26.2.build.+")
 
     /* Configuration */
     compileOnly("org.spongepowered:configurate-yaml:4.2.0")
@@ -47,15 +47,15 @@ dependencies {
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
     /* Scoreboard */
-    val scoreboardLibraryVersion = "2.7.4"
+    val scoreboardLibraryVersion = "2.8.2"
     implementation("net.megavex:scoreboard-library-api:$scoreboardLibraryVersion")
     runtimeOnly("net.megavex:scoreboard-library-implementation:$scoreboardLibraryVersion")
 
     /* PlaceholderAPI */
-    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("me.clip:placeholderapi:2.12.3")
 
     /* WorldGuard */
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15") {
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.18") {
         exclude("com.google.guava", "guava")
         exclude("com.google.code.gson", "gson")
         exclude("it.unimi.dsi", "fastutil")
@@ -80,7 +80,7 @@ dependencies {
     }
 
     /* Skript */
-    compileOnly("com.github.SkriptLang:Skript:2.10.2")
+    compileOnly("com.github.SkriptLang:Skript:2.16.1")
 
     /* Rest API & Portal dependencies */
     val vertxVersion = "5.0.5"
@@ -91,14 +91,14 @@ dependencies {
     compileOnly("net.objecthunter:exp4j:0.4.8")
 
     /* Npcs */
-    compileOnly("net.citizensnpcs:citizensapi:2.0.38-SNAPSHOT")
-    compileOnly("de.oliver:FancyNpcs:2.6.0")
+    compileOnly("net.citizensnpcs:citizensapi:2.0.43-SNAPSHOT")
+    compileOnly("de.oliver:FancyNpcs:2.11.0")
 
     /* Labymod */
-    compileOnly("net.labymod.serverapi:server-bukkit:1.0.6")
+    compileOnly("net.labymod.serverapi:server-bukkit:1.0.13")
 
     /* QualityArmory Compatibility */
-    compileOnly("me.zombie_striker:QualityArmory:2.1.2")
+    compileOnly("me.zombie_striker:QualityArmory:2.1.3")
 }
 
 val targetJavaVersion = 25
@@ -116,14 +116,14 @@ java {
 
 tasks {
     runServer {
-        minecraftVersion("26.1.2")
+        minecraftVersion("26.2")
         jvmArgs("-Dcom.mojang.eula.agree=true", "-Dfile.encoding=UTF-8")
         downloadPlugins {
             github("MilkBowl", "Vault", "1.7.3", "Vault.jar")
-            hangar("PlaceholderAPI", "2.11.6")
-            modrinth("WorldGuard", "7.0.16-beta-01")
-            modrinth("WorldEdit", "CkT32vix")
-            modrinth("qualityarmory", "2.1.2") // dev
+            hangar("PlaceholderAPI", "2.12.3")
+            modrinth("WorldGuard", "7.0.18")
+            modrinth("WorldEdit", "F5ea2ov3")
+            modrinth("qualityarmory", "2.1.3") // dev
         }
     }
 

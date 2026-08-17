@@ -3,7 +3,6 @@ package nl.openminetopia.utils.config;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import nl.openminetopia.OpenMinetopia;
-import nl.openminetopia.utils.VersionUtil;
 import nl.openminetopia.utils.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -55,7 +54,7 @@ public class ConfigUtils {
             int damage = damageable.hasDamage() ? damageable.getDamage() : -1;
             if (damage != -1) itemMap.put("damage", damage);
 
-            if (VersionUtil.isCompatible("1.21.4") && itemStack.getItemMeta().hasItemModel() && itemStack.getItemMeta().getItemModel() != null) {
+            if (itemStack.getItemMeta().hasItemModel() && itemStack.getItemMeta().getItemModel() != null) {
                 itemMap.put("item-model", itemStack.getItemMeta().getItemModel().toString());
             }
         } catch (Exception e) {
@@ -79,7 +78,7 @@ public class ConfigUtils {
 
         if (customModelData != -1) itemBuilder.setCustomModelData(customModelData);
         if (damage != -1) itemBuilder.setDamage(damage);
-        if (VersionUtil.isCompatible("1.21.4") && !itemModel.isEmpty()) itemBuilder.setItemModel(itemModel);
+        if (!itemModel.isEmpty()) itemBuilder.setItemModel(itemModel);
 
         return itemBuilder.toItemStack();
     }

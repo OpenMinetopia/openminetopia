@@ -3,7 +3,6 @@ package nl.openminetopia.modules.misc.objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import nl.openminetopia.utils.VersionUtil;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -52,7 +51,7 @@ public class PvPItem {
         if (meta.hasCustomModelData() != checkMeta.hasCustomModelData()) return false;
         if (meta.hasCustomModelData() && checkMeta.getCustomModelData() != meta.getCustomModelData()) return false;
 
-        if (VersionUtil.isCompatible("1.21.4") && meta.hasItemModel() && checkMeta.hasItemModel()) {
+        if (meta.hasItemModel() && checkMeta.hasItemModel()) {
             NamespacedKey modelA = meta.getItemModel();
             NamespacedKey modelB = checkMeta.getItemModel();
 

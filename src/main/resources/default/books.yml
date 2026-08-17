@@ -19,7 +19,7 @@ fine:
 receipt:
   enabled: true
   copy: true
-  menu-item: BOOK_AND_QUILL
+  menu-item: WRITABLE_BOOK
   name: <world_color>Bon
   item-name: Bon <player_name>
   description: <yellow>Maak gemakkelijk betaalbewijzen
@@ -73,7 +73,7 @@ kvk:
 plotregistration:
   enabled: true
   copy: true
-  menu-item: GRASS
+  menu-item: GRASS_BLOCK
   name: <world_color>Plotbewijs
   item-name: Plotbewijs <plotnumber> (<city>)
   description: <yellow>Maak gemakkelijk plotbewijzen!
@@ -105,7 +105,7 @@ driverslicense:
 permit:
   enabled: true
   copy: true
-  menu-item: WOOD_STAIRS
+  menu-item: OAK_STAIRS
   name: <world_color>Vergunning
   item-name: <permit_type>-vergunning <player_name>
   description: <yellow>Maak gemakkelijk vergunningen!
@@ -157,7 +157,7 @@ diploma:
 prescription:
   enabled: true
   copy: true
-  menu-item: MUSHROOM_SOUP
+  menu-item: MUSHROOM_STEW
   name: <world_color>Recept
   item-name: Recept <player_name>
   description: <yellow>Maak gemakkelijk recepten voor medicijnen!
