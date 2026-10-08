@@ -31,7 +31,7 @@ public class LinkCommand extends BaseCommand {
 
         PortalModule portalModule = OpenMinetopia.getModuleManager().get(PortalModule.class);
         WebClientOptions clientOptions = new WebClientOptions();
-        if (portalModule.getPortalUrl().endsWith(".test")) {
+        if (portalModule.isLocalDevelopmentPortal()) {
             clientOptions.setTrustAll(true).setVerifyHost(false);
         }
         WebClient webClient = WebClient.create(OpenMinetopia.getInstance().getOrCreateVertx(), clientOptions);

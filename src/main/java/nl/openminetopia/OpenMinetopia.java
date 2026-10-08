@@ -15,6 +15,7 @@ import nl.openminetopia.configuration.DefaultConfiguration;
 import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.framework.runnables.AbstractDirtyRunnable;
 import nl.openminetopia.framework.runnables.listeners.PlayerLifecycleListener;
+import nl.openminetopia.modules.portal.PortalModule;
 import nl.openminetopia.registry.CommandComponentRegistry;
 import nl.openminetopia.utils.input.ChatInputHandler;
 import nl.openminetopia.utils.placeholderapi.OpenMinetopiaExpansion;
@@ -138,7 +139,7 @@ public final class OpenMinetopia extends JavaPlugin {
         if (vertx == null) {
             VertxOptions options = new VertxOptions();
             String portalUrl = defaultConfiguration.getPortalUrl();
-            if (portalUrl != null && portalUrl.endsWith(".test")) {
+            if (PortalModule.isLocalDevelopmentHost(portalUrl)) {
                 options.setAddressResolverOptions(new AddressResolverOptions()
                         .addServer("127.0.0.1")
                         .setOptResourceEnabled(false));

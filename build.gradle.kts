@@ -99,6 +99,11 @@ dependencies {
 
     /* QualityArmory Compatibility */
     compileOnly("me.zombie_striker:QualityArmory:2.1.3")
+
+    /* Tests */
+    testImplementation(platform("org.junit:junit-bom:5.13.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 val targetJavaVersion = 25
@@ -136,6 +141,10 @@ tasks {
         if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
             options.release.set(targetJavaVersion)
         }
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     processResources {
