@@ -1,114 +1,89 @@
 package nl.openminetopia.modules.color.commands.subcommands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
-import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.color.ColorModule;
 import nl.openminetopia.modules.color.enums.OwnableColorType;
-import nl.openminetopia.modules.color.objects.ChatColor;
-import nl.openminetopia.modules.color.objects.LevelColor;
-import nl.openminetopia.modules.color.objects.NameColor;
-import nl.openminetopia.modules.color.objects.PrefixColor;
+import nl.openminetopia.modules.color.objects.OwnableColor;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
-import java.util.Optional;
+import java.util.List;
 
 @CommandAlias("color")
 public class ColorRemoveCommand extends BaseCommand {
 
     @Subcommand("remove")
-    @Syntax("<player> <type> <color>")
+    @Syntax("<speler> <type|all> <kleur|all>")
     @CommandCompletion("@players @colorTypes @playerColors")
     @CommandPermission("openminetopia.color.remove")
     @Description("Remove a color from a player.")
-    public void prefix(Player player, OfflinePlayer offlinePlayer, OwnableColorType type, String draftColor) {
+    public void remove(CommandSender sender, OfflinePlayer offlinePlayer, String draftType, @Optional String draftColor) {
         if (offlinePlayer == null) {
-            ChatUtils.sendMessage(player, MessageConfiguration.message("player_not_found"));
+            ChatUtils.sendMessage(sender, MessageConfiguration.message("player_not_found"));
             return;
         }
 
-        MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
-        if (minetopiaPlayer == null) return;
+        List<OwnableColorType> types;
+        String colorId;
+        if (draftType.equalsIgnoreCase("all")) {
+            types = List.of(OwnableColorType.values());
+            colorId = "all";
+        } else {
+            OwnableColorType type = OwnableColorType.byName(draftType);
+            if (type == null) {
+                ChatUtils.sendMessage(sender, MessageConfiguration.message("color_type_not_found"));
+                return;
+            }
+            if (draftColor == null) throw new InvalidCommandArgument(true);
+
+            types = List.of(type);
+            colorId = draftColor.toLowerCase();
+        }
+
         ColorModule colorModule = OpenMinetopia.getModuleManager().get(ColorModule.class);
+        if (!colorId.equals("all") && !colorModule.getConfiguration().exists(colorId)) {
+            ChatUtils.sendMessage(sender, MessageConfiguration.message("color_not_found"));
+            return;
+        }
 
-        PlayerManager.getInstance().getMinetopiaPlayer(offlinePlayer).whenComplete((targetMinetopiaPlayer, throwable1) -> {
-            if (targetMinetopiaPlayer == null) {
-                ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("player_not_found"));
+        PlayerManager.getInstance().getMinetopiaPlayer(offlinePlayer).whenComplete((target, throwable) -> {
+            if (target == null) {
+                ChatUtils.sendMessage(sender, MessageConfiguration.message("player_not_found"));
                 return;
             }
 
-            final String colorId = draftColor.toLowerCase();
-            if (!colorModule.getConfiguration().exists(colorId)) {
-                ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_not_found"));
+            if (colorId.equals("all")) {
+                List<OwnableColor> colors = target.getColors().stream()
+                        .filter(color -> types.contains(color.getType()))
+                        .toList();
+                colors.forEach(target::removeColor);
+                types.forEach(type -> target.setActiveColor(type.defaultColor(), type));
+
+                ChatUtils.sendMessage(sender, MessageConfiguration.message("color_all_removed")
+                        .replace("<amount>", String.valueOf(colors.size()))
+                        .replace("<player>", String.valueOf(offlinePlayer.getName())));
                 return;
             }
 
-            switch (type) {
-                case PREFIX:
-                    Optional<PrefixColor> prefixColor = targetMinetopiaPlayer.getColors().stream()
-                            .filter(c -> c.getColorId().equals(colorId) && c.getType().equals(type))
-                            .map(c -> (PrefixColor) c)
-                            .findAny();
-                    if (prefixColor.isEmpty()) {
-                        ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_prefix_not_found"));
-                        return;
-                    }
-
-                    targetMinetopiaPlayer.removeColor(prefixColor.get());
-                    ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_prefix_removed")
-                            .replace("<color>", prefixColor.get().getColorId()));
-                    break;
-
-                case CHAT:
-                    Optional<ChatColor> chatColor = targetMinetopiaPlayer.getColors().stream()
-                            .filter(c -> c.getColorId().equals(colorId) && c.getType().equals(type))
-                            .map(c -> (ChatColor) c)
-                            .findAny();
-                    if (chatColor.isEmpty()) {
-                        ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_chat_not_found"));
-                        return;
-                    }
-
-                    targetMinetopiaPlayer.removeColor(chatColor.get());
-                    ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_chat_removed")
-                            .replace("<color>", chatColor.get().getColorId()));
-                    break;
-
-                case NAME:
-                    Optional<NameColor> nameColor = targetMinetopiaPlayer.getColors().stream()
-                            .filter(c -> c.getColorId().equals(colorId) && c.getType().equals(type))
-                            .map(c -> (NameColor) c)
-                            .findAny();
-                    if (nameColor.isEmpty()) {
-                        ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_name_not_found"));
-                        return;
-                    }
-
-                    targetMinetopiaPlayer.removeColor(nameColor.get());
-                    ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_name_removed")
-                            .replace("<color>", nameColor.get().getColorId()));
-                    break;
-
-                case LEVEL:
-                    Optional<LevelColor> levelColor = targetMinetopiaPlayer.getColors().stream()
-                            .filter(c -> c.getColorId().equals(colorId) && c.getType().equals(type))
-                            .map(c -> (LevelColor) c)
-                            .findAny();
-                    if (levelColor.isEmpty()) {
-                        ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_level_not_found"));
-                        return;
-                    }
-
-                    targetMinetopiaPlayer.removeColor(levelColor.get());
-                    ChatUtils.sendFormattedMessage(minetopiaPlayer, MessageConfiguration.message("color_level_removed")
-                            .replace("<color>", levelColor.get().getColorId()));
-                    break;
+            OwnableColorType type = types.getFirst();
+            String key = type.name().toLowerCase();
+            OwnableColor color = target.getColors().stream()
+                    .filter(c -> c.getType() == type && c.getColorId().equals(colorId))
+                    .findAny().orElse(null);
+            if (color == null) {
+                ChatUtils.sendMessage(sender, MessageConfiguration.message("color_" + key + "_not_found"));
+                return;
             }
+
+            target.removeColor(color);
+            ChatUtils.sendMessage(sender, MessageConfiguration.message("color_" + key + "_removed")
+                    .replace("<color>", color.getColorId()));
         });
     }
 }

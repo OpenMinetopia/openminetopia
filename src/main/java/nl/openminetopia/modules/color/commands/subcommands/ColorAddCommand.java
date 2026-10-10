@@ -1,114 +1,110 @@
 package nl.openminetopia.modules.color.commands.subcommands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
 import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.color.ColorModule;
+import nl.openminetopia.modules.color.configuration.components.ColorComponent;
 import nl.openminetopia.modules.color.enums.OwnableColorType;
-import nl.openminetopia.modules.color.objects.ChatColor;
-import nl.openminetopia.modules.color.objects.LevelColor;
-import nl.openminetopia.modules.color.objects.NameColor;
-import nl.openminetopia.modules.color.objects.PrefixColor;
+import nl.openminetopia.modules.color.objects.OwnableColor;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+
+import java.util.List;
 
 @CommandAlias("color")
 public class ColorAddCommand extends BaseCommand {
 
     @Subcommand("add")
-    @Syntax("<speler> <type> <kleur> [<minuten>]")
+    @Syntax("<speler> <type|all> <kleur|all> [<minuten>]")
     @CommandCompletion("@players @colorTypes @colorIds @range:0-1440")
     @CommandPermission("openminetopia.color.add")
     @Description("Add a color to a player.")
-    public void color(CommandSender player, OfflinePlayer offlinePlayer, OwnableColorType type, String draftColor, @Optional Long expiresAt) {
+    public void color(CommandSender sender, OfflinePlayer offlinePlayer, String draftType, @Optional String draftColor, @Optional Long minutes) {
         if (offlinePlayer == null) {
-            ChatUtils.sendMessage(player, MessageConfiguration.message("player_not_found"));
+            ChatUtils.sendMessage(sender, MessageConfiguration.message("player_not_found"));
             return;
+        }
+
+        List<OwnableColorType> types;
+        String colorId;
+        if (draftType.equalsIgnoreCase("all")) {
+            types = List.of(OwnableColorType.values());
+            colorId = "all";
+            // With "all" as type there is no colour argument, so the minutes end up in draftColor.
+            if (draftColor != null) minutes = parseMinutes(draftColor);
+        } else {
+            OwnableColorType type = OwnableColorType.byName(draftType);
+            if (type == null) {
+                ChatUtils.sendMessage(sender, MessageConfiguration.message("color_type_not_found"));
+                return;
+            }
+            if (draftColor == null) throw new InvalidCommandArgument(true);
+
+            types = List.of(type);
+            colorId = draftColor.toLowerCase();
         }
 
         ColorModule colorModule = OpenMinetopia.getModuleManager().get(ColorModule.class);
-
-        final String colorId = draftColor.toLowerCase();
-        if (!colorModule.getConfiguration().exists(colorId)) {
-            ChatUtils.sendMessage(player, MessageConfiguration.message("color_not_found"));
+        if (!colorId.equals("all") && !colorModule.getConfiguration().exists(colorId)) {
+            ChatUtils.sendMessage(sender, MessageConfiguration.message("color_not_found"));
             return;
         }
 
-        if (expiresAt == null) {
-            expiresAt = -1L;
-        }
-        long finalExpiresAt = expiresAt;
+        long expiresAt = minutes == null || minutes == -1 ? -1 : System.currentTimeMillis() + minutes * 60 * 1000L;
 
-        PlayerManager.getInstance().getMinetopiaPlayer(offlinePlayer).whenComplete((targetMinetopiaPlayer, throwable1) -> {
-            if (targetMinetopiaPlayer == null) {
-                ChatUtils.sendMessage(player, MessageConfiguration.message("player_not_found"));
+        PlayerManager.getInstance().getMinetopiaPlayer(offlinePlayer).whenComplete((target, throwable) -> {
+            if (target == null) {
+                ChatUtils.sendMessage(sender, MessageConfiguration.message("player_not_found"));
                 return;
             }
 
-            long expiresAtMillis = System.currentTimeMillis() + minutesToMillis(finalExpiresAt);
-            if (finalExpiresAt == -1) expiresAtMillis = -1;
-
-            switch (type) {
-                case PREFIX:
-                    if (targetMinetopiaPlayer.getColors().stream().anyMatch(prefixColor -> prefixColor.getColorId().equalsIgnoreCase(colorId) && prefixColor.getType() == type)) {
-                        ChatUtils.sendMessage(player, MessageConfiguration.message("color_prefix_exists"));
-                        return;
+            if (colorId.equals("all")) {
+                int added = 0;
+                for (OwnableColorType type : types) {
+                    for (ColorComponent component : colorModule.getConfiguration().components()) {
+                        if (owns(target, type, component.identifier())) continue;
+                        target.addColor(type.create(component.identifier(), expiresAt));
+                        added++;
                     }
+                }
 
-                    PrefixColor prefixColor = new PrefixColor(colorId, expiresAtMillis);
-                    targetMinetopiaPlayer.addColor(prefixColor);
-                    targetMinetopiaPlayer.setActiveColor(prefixColor, OwnableColorType.PREFIX);
-                    ChatUtils.sendMessage(player, MessageConfiguration.message("color_prefix_added")
-                            .replace("<color>", prefixColor.getColorId()));
-                    break;
-
-                case CHAT:
-                    if (targetMinetopiaPlayer.getColors().stream().anyMatch(chatColor -> chatColor.getColorId().equalsIgnoreCase(colorId) && chatColor.getType() == type)) {
-                        ChatUtils.sendMessage(player, MessageConfiguration.message("color_chat_exists"));
-                        return;
-                    }
-
-                    ChatColor chatColor = new ChatColor(colorId, expiresAtMillis);
-                    targetMinetopiaPlayer.addColor(chatColor);
-                    targetMinetopiaPlayer.setActiveColor(chatColor, OwnableColorType.CHAT);
-                    ChatUtils.sendMessage(player, MessageConfiguration.message("color_chat_added")
-                            .replace("<color>", chatColor.getColorId()));
-                    break;
-                case NAME:
-                    if (targetMinetopiaPlayer.getColors().stream().anyMatch(nameColor -> nameColor.getColorId().equalsIgnoreCase(colorId) && nameColor.getType() == type)) {
-                        ChatUtils.sendMessage(player, MessageConfiguration.message("color_name_exists"));
-                        return;
-                    }
-
-                    NameColor nameColor = new NameColor(colorId, expiresAtMillis);
-                    targetMinetopiaPlayer.addColor(nameColor);
-                    targetMinetopiaPlayer.setActiveColor(nameColor, OwnableColorType.NAME);
-                    ChatUtils.sendMessage(player, MessageConfiguration.message("color_name_added")
-                            .replace("<color>", nameColor.getColorId()));
-                    break;
-                case LEVEL:
-                    if (targetMinetopiaPlayer.getColors().stream().anyMatch(levelColor -> levelColor.getColorId().equalsIgnoreCase(colorId) && levelColor.getType() == type)) {
-                        ChatUtils.sendMessage(player, MessageConfiguration.message("color_level_exists"));
-                        return;
-                    }
-
-                    LevelColor levelColor = new LevelColor(colorId, expiresAtMillis);
-                    targetMinetopiaPlayer.addColor(levelColor);
-                    targetMinetopiaPlayer.setActiveColor(levelColor, OwnableColorType.LEVEL);
-                    ChatUtils.sendMessage(player, MessageConfiguration.message("color_level_added")
-                            .replace("<color>", levelColor.getColorId()));
-
-                    break;
+                ChatUtils.sendMessage(sender, MessageConfiguration.message("color_all_added")
+                        .replace("<amount>", String.valueOf(added))
+                        .replace("<player>", String.valueOf(offlinePlayer.getName())));
+                return;
             }
+
+            OwnableColorType type = types.getFirst();
+            String key = type.name().toLowerCase();
+            if (owns(target, type, colorId)) {
+                ChatUtils.sendMessage(sender, MessageConfiguration.message("color_" + key + "_exists"));
+                return;
+            }
+
+            OwnableColor color = type.create(colorId, expiresAt);
+            target.addColor(color);
+            target.setActiveColor(color, type);
+            ChatUtils.sendMessage(sender, MessageConfiguration.message("color_" + key + "_added")
+                    .replace("<color>", color.getColorId()));
         });
     }
 
-    private long minutesToMillis(long minutes) {
-        return minutes * 60 * 1000L;
+    private boolean owns(MinetopiaPlayer player, OwnableColorType type, String colorId) {
+        return player.getColors().stream()
+                .anyMatch(color -> color.getType() == type && color.getColorId().equalsIgnoreCase(colorId));
+    }
+
+    private long parseMinutes(String input) {
+        try {
+            return Long.parseLong(input);
+        } catch (NumberFormatException exception) {
+            throw new InvalidCommandArgument(true);
+        }
     }
 }

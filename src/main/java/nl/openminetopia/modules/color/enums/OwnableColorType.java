@@ -30,6 +30,22 @@ public enum OwnableColorType {
         };
     }
 
+    public static OwnableColorType byName(String name) {
+        for (OwnableColorType type : values()) {
+            if (type.name().equalsIgnoreCase(name)) return type;
+        }
+        return null;
+    }
+
+    public OwnableColor create(String colorId, long expiresAt) {
+        return switch (this) {
+            case PREFIX -> new PrefixColor(colorId, expiresAt);
+            case NAME -> new NameColor(colorId, expiresAt);
+            case CHAT -> new ChatColor(colorId, expiresAt);
+            case LEVEL -> new LevelColor(colorId, expiresAt);
+        };
+    }
+
     public OwnableColor defaultColor() {
         DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
         return switch (this) {

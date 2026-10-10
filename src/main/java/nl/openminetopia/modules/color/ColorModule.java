@@ -50,21 +50,25 @@ public class ColorModule extends ExtendedSpigotModule {
         registerComponent(new ColorRemoveCommand());
         registerComponent(new ColorCreateCommand());
 
-        OpenMinetopia.getCommandManager().getCommandCompletions().registerCompletion("colorTypes", context ->
-                Arrays.stream(OwnableColorType.values()).map(OwnableColorType::name).toList());
+        OpenMinetopia.getCommandManager().getCommandCompletions().registerCompletion("colorTypes", context -> {
+            List<String> types = new ArrayList<>(List.of("all"));
+            Arrays.stream(OwnableColorType.values()).map(OwnableColorType::name).forEach(types::add);
+            return types;
+        });
 
-        OpenMinetopia.getCommandManager().getCommandCompletions().registerCompletion("colorIds", context ->
-                configuration.components().stream()
-                        .map(ColorComponent::identifier)
-                        .toList());
+        OpenMinetopia.getCommandManager().getCommandCompletions().registerCompletion("colorIds", context -> {
+            List<String> ids = new ArrayList<>(List.of("all"));
+            configuration.components().stream().map(ColorComponent::identifier).forEach(ids::add);
+            return ids;
+        });
 
         OpenMinetopia.getCommandManager().getCommandCompletions().registerCompletion("playerColors", context -> {
             MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(context.getPlayer());
-            if (minetopiaPlayer == null) return new ArrayList<>();
+            if (minetopiaPlayer == null) return List.of("all");
 
-            return minetopiaPlayer.getColors().stream()
-                    .map(OwnableColor::getColorId)
-                    .toList();
+            List<String> ids = new ArrayList<>(List.of("all"));
+            minetopiaPlayer.getColors().stream().map(OwnableColor::getColorId).forEach(ids::add);
+            return ids;
         });
     }
 
