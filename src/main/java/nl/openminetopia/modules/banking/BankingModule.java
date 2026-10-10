@@ -1,5 +1,7 @@
 package nl.openminetopia.modules.banking;
 
+import nl.openminetopia.api.stattop.StatTopTypes;
+import nl.openminetopia.modules.banking.stattop.BalanceStatTopType;
 import com.craftmend.storm.api.enums.Where;
 import nl.openminetopia.modules.banking.listeners.PinTerminalInteractionListener;
 import nl.openminetopia.modules.banking.manager.PinTerminalManager;
@@ -109,6 +111,8 @@ public class BankingModule extends ExtendedSpigotModule {
         registerComponent(new PlayerLoginListener());
         registerComponent(new BankingInteractionListener());
         registerComponent(new PinTerminalInteractionListener());
+
+        StatTopTypes.register(new BalanceStatTopType(this));
 
         wagePaymentTask = new WagePaymentTask(OpenMinetopia.getModuleManager().get(PlayerModule.class)::getConfiguration, PlayerManager.getInstance(), 5000L, 50, 30 * 1000L, () -> new ArrayList<>(PlayerManager.getInstance().getOnlinePlayers().keySet()));
         OpenMinetopia.getInstance().registerDirtyPlayerRunnable(wagePaymentTask, 20L);

@@ -3,9 +3,13 @@ package nl.openminetopia.modules.data.utils;
 import com.craftmend.storm.api.StormModel;
 import com.craftmend.storm.api.builders.QueryBuilder;
 import lombok.experimental.UtilityClass;
+import nl.openminetopia.api.stattop.StatTopEntry;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -44,6 +48,29 @@ public class StormUtils {
             } catch (Exception exception) {
                 exception.printStackTrace();
                 completableFuture.completeExceptionally(exception);  // Handle errors
+            }
+        });
+
+        return completableFuture;
+    }
+
+    /**
+     * Runs a raw leaderboard query. The query must select the columns {@code uuid} and {@code score}.
+     */
+    public CompletableFuture<List<StatTopEntry>> queryTop(String sql, Object... args) {
+        CompletableFuture<List<StatTopEntry>> completableFuture = new CompletableFuture<>();
+
+        StormDatabase.getExecutorService().submit(() -> {
+            try {
+                List<StatTopEntry> entries = new ArrayList<>();
+                StormDatabase.getInstance().getStorm().getDriver().executeQuery(sql, resultSet -> {
+                    while (resultSet.next()) {
+                        entries.add(new StatTopEntry(UUID.fromString(resultSet.getString("uuid")), resultSet.getDouble("score")));
+                    }
+                }, args);
+                completableFuture.complete(entries);
+            } catch (Exception exception) {
+                completableFuture.completeExceptionally(exception);
             }
         });
 

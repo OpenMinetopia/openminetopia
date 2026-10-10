@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
+import nl.openminetopia.api.stattop.StatTopTypes;
 import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.fitness.commands.FitnessCommand;
 import nl.openminetopia.modules.fitness.commands.subcommands.FitnessBoosterCommand;
@@ -14,6 +15,7 @@ import nl.openminetopia.modules.fitness.configuration.FitnessConfiguration;
 import nl.openminetopia.modules.fitness.listeners.*;
 import nl.openminetopia.modules.fitness.runnables.FitnessRunnable;
 import nl.openminetopia.modules.fitness.runnables.HealthStatisticRunnable;
+import nl.openminetopia.modules.fitness.stattop.FitnessStatTopType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -51,6 +53,8 @@ public class FitnessModule extends ExtendedSpigotModule {
         registerComponent(new PlayerDeathListener());
         registerComponent(new PlayerChangeWorldListener());
         registerComponent(new PlayerConsumeBoosterListener());
+
+        StatTopTypes.register(new FitnessStatTopType(this));
 
         healthStatisticRunnable = new HealthStatisticRunnable(PlayerManager.getInstance(), 15000L, 50, 50 * 1000L, () -> new ArrayList<>(PlayerManager.getInstance().getOnlinePlayers().keySet()));
         OpenMinetopia.getInstance().registerDirtyPlayerRunnable(healthStatisticRunnable, 20L * 3);

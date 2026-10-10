@@ -22,6 +22,8 @@ import nl.openminetopia.modules.player.PlayerModule;
 import nl.openminetopia.modules.player.configuration.LevelCheckConfiguration;
 import nl.openminetopia.modules.plots.PlotModule;
 import nl.openminetopia.modules.plots.configuration.PlotCalculateConfiguration;
+import nl.openminetopia.modules.stattop.StatTopModule;
+import nl.openminetopia.modules.stattop.configuration.StatTopConfiguration;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -82,6 +84,13 @@ public class OpenMinetopiaCommand extends BaseCommand {
             LabymodModule labymodModule = OpenMinetopia.getModuleManager().get(LabymodModule.class);
             labymodModule.setConfiguration(new LabymodConfiguration(dataFolder));
             labymodModule.getConfiguration().saveConfiguration();
+        }
+
+        if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(StatTopModule.class)) {
+            StatTopModule statTopModule = OpenMinetopia.getModuleManager().get(StatTopModule.class);
+            statTopModule.setConfiguration(new StatTopConfiguration(dataFolder));
+            statTopModule.getConfiguration().saveConfiguration();
+            statTopModule.getService().clearCache();
         }
 
         if (!OpenMinetopia.getDefaultConfiguration().isModuleDisabled(ItemsModule.class)) {

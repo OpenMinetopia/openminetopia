@@ -308,6 +308,14 @@ books_no_permission: "<red>Je hebt geen toestemming om dit boek te krijgen."
 books_not_found: "<red>Dit boek bestaat niet."
 books_received: "<gold>Je hebt het boek <yellow><book> <gold>ontvangen!"
 
+# Stattop
+stattop_header: "<gold>Top <yellow><amount> <gold>- <yellow><stat><gold>:"
+stattop_entry: "<gray><rank>. <yellow><player> <gray>- <gold><value>"
+stattop_empty: "<red>Er zijn nog geen gegevens voor deze toplijst."
+stattop_unknown: "<red>Deze toplijst bestaat niet."
+stattop_no_permission: "<red>Je hebt geen toestemming om deze toplijst te bekijken."
+stattop_available: "<gold>Beschikbare toplijsten: <yellow><stats><gold>. Gebruik <yellow>/stattop <statistiek><gold>."
+
 # Mod / Staff
 mod_chatspy_toggled: "<gold>Je hebt <yellow>ChatSpy <gold><state>!"
 mod_chatspy_state_enabled: "aangezet"

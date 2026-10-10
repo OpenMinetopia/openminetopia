@@ -8,6 +8,7 @@ import lombok.Setter;
 import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.api.player.objects.MinetopiaPlayer;
+import nl.openminetopia.api.stattop.StatTopTypes;
 import nl.openminetopia.modules.data.DataModule;
 import nl.openminetopia.modules.data.storm.StormDatabase;
 import nl.openminetopia.modules.player.commands.PlaytimeCommand;
@@ -16,6 +17,8 @@ import nl.openminetopia.modules.player.listeners.LevelcheckNpcListener;
 import nl.openminetopia.modules.player.listeners.PlayerPreLoginListener;
 import nl.openminetopia.modules.player.listeners.PlayerQuitListener;
 import nl.openminetopia.modules.player.models.PlayerModel;
+import nl.openminetopia.modules.player.stattop.LevelStatTopType;
+import nl.openminetopia.modules.player.stattop.PlaytimeStatTopType;
 
 import nl.openminetopia.modules.player.runnables.LevelCalculateRunnable;
 import nl.openminetopia.modules.player.runnables.MinetopiaPlayerSaveRunnable;
@@ -50,6 +53,9 @@ public class PlayerModule extends ExtendedSpigotModule {
         if (OpenMinetopia.getInstance().isNpcSupport()) registerComponent(new LevelcheckNpcListener());
 
         registerComponent(new PlaytimeCommand());
+
+        StatTopTypes.register(new PlaytimeStatTopType());
+        StatTopTypes.register(new LevelStatTopType());
 
         levelCalculateRunnable = new LevelCalculateRunnable(this, PlayerManager.getInstance(), 5000L, 50, 30 * 1000L, () -> new ArrayList<>(PlayerManager.getInstance().getOnlinePlayers().keySet()));
         OpenMinetopia.getInstance().registerDirtyPlayerRunnable(levelCalculateRunnable, 20L);

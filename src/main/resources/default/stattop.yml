@@ -1,0 +1,15 @@
+entries: 10
+cache-seconds: 60
+stats:
+  playtime:
+    enabled: true
+    display-name: "Speeltijd"
+  level:
+    enabled: true
+    display-name: "Level"
+  fitness:
+    enabled: true
+    display-name: "Fitheid"
+  balance:
+    enabled: true
+    display-name: "Saldo"
