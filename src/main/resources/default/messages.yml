@@ -305,6 +305,10 @@ core_help_invalid_page: "<red>Deze pagina bestaat niet."
 core_help_command_entry: "<gray>/<yellow><click:suggest_command:'/<command>'><command> <gray>- <description></click>"
 core_help_no_description: "Geen beschrijving"
 core_help_footer: "<gold>Gebruik <yellow>/openminetopia help <pagina> <gold>om naar een andere pagina te gaan."
+core_playerdata_unknown_category: "<red>Deze categorie bestaat niet. Kies uit: <yellow>all, <categories><red>."
+core_playerdata_confirm: "<red>Let op! <gold>Je staat op het punt <yellow><category> <gold>van <yellow><player> <gold>te verwijderen. Dit kan niet ongedaan worden gemaakt. <click:run_command:'<command>'><red><bold>[Bevestigen]</bold></red></click>"
+core_playerdata_removed: "<gold>De gegevens (<yellow><category><gold>) van <yellow><player> <gold>zijn verwijderd."
+core_playerdata_kick: "<red>Je spelersgegevens zijn gereset door een stafflid."
 
 # Books
 books_no_permission: "<red>Je hebt geen toestemming om dit boek te krijgen."

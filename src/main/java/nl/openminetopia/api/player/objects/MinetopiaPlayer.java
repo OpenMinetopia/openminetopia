@@ -334,6 +334,13 @@ public class MinetopiaPlayer {
         this.playerModel.setPlaytime(this.playtime);
     }
 
+    public void setPlaytime(long playtime) {
+        this.playtime = playtime;
+        this.startTime = System.currentTimeMillis();
+        this.playerModel.setPlaytime(playtime);
+        StormDatabase.getInstance().saveStormModel(this.playerModel);
+    }
+
     public void setWageTime(long wageTime) {
         this.wageTime = wageTime;
         this.playerModel.setWageTime(wageTime);

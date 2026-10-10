@@ -160,7 +160,7 @@ public class Fitness {
 
         this.totalFitness = OpenMinetopia.getModuleManager().get(FitnessModule.class).getConfiguration().getDefaultFitnessLevel();
 
-        FitnessUtils.clearFitnessEffects(minetopiaPlayer.getBukkit().getPlayer());
+        if (minetopiaPlayer.getBukkit().getPlayer() != null) FitnessUtils.clearFitnessEffects(minetopiaPlayer.getBukkit().getPlayer());
 
         save();
         fitnessModule.getFitnessRunnable().forceMarkDirty(minetopiaPlayer.getUuid());
