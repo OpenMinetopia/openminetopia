@@ -156,21 +156,15 @@ public class PlacesModule extends ExtendedSpigotModule {
     }
 
     public CompletableFuture<WorldModel> createWorld(String worldName, String title, String color, double temperature, String loadingName) {
-        CompletableFuture<WorldModel> completableFuture = new CompletableFuture<>();
+        WorldModel worldModel = new WorldModel();
+        worldModel.setName(worldName);
+        worldModel.setTitle(title);
+        worldModel.setTemperature(temperature);
+        worldModel.setColor(color);
+        worldModel.setLoadingName(loadingName);
 
-        StormDatabase.getExecutorService().submit(() -> {
-            WorldModel worldModel = new WorldModel();
-            worldModel.setName(worldName);
-            worldModel.setTitle(title);
-            worldModel.setTemperature(temperature);
-            worldModel.setColor(color);
-            worldModel.setLoadingName(loadingName);
-
-            StormDatabase.getInstance().saveStormModel(worldModel);
-            completableFuture.complete(worldModel);
-        });
-
-        return completableFuture;
+        // Completes only once the row is written, and fails when the save fails.
+        return StormDatabase.getInstance().saveStormModel(worldModel).thenApply(id -> worldModel);
     }
 
     public CompletableFuture<Void> deleteWorld(String worldName) {
@@ -180,21 +174,15 @@ public class PlacesModule extends ExtendedSpigotModule {
     }
 
     public CompletableFuture<CityModel> createCity(String cityName, String title, String color, double temperature, String loadingName) {
-        CompletableFuture<CityModel> completableFuture = new CompletableFuture<>();
+        CityModel cityModel = new CityModel();
+        cityModel.setName(cityName);
+        cityModel.setTitle(title);
+        cityModel.setTemperature(temperature);
+        cityModel.setColor(color);
+        cityModel.setLoadingName(loadingName);
 
-        StormDatabase.getExecutorService().submit(() -> {
-            CityModel cityModel = new CityModel();
-            cityModel.setName(cityName);
-            cityModel.setTitle(title);
-            cityModel.setTemperature(temperature);
-            cityModel.setColor(color);
-            cityModel.setLoadingName(loadingName);
-
-            StormDatabase.getInstance().saveStormModel(cityModel);
-            completableFuture.complete(cityModel);
-        });
-
-        return completableFuture;
+        // Completes only once the row is written, and fails when the save fails.
+        return StormDatabase.getInstance().saveStormModel(cityModel).thenApply(id -> cityModel);
     }
 
     public CompletableFuture<Void> deleteCity(CityModel city) {

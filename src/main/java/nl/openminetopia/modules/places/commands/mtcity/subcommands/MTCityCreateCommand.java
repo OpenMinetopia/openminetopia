@@ -12,7 +12,10 @@ import nl.openminetopia.modules.places.models.CityModel;
 import nl.openminetopia.modules.places.models.WorldModel;
 import nl.openminetopia.utils.ChatUtils;
 import nl.openminetopia.utils.WorldGuardUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.concurrent.CompletionException;
 
 @CommandAlias("mtstad|mtcity")
 public class MTCityCreateCommand extends BaseCommand {
@@ -45,19 +48,24 @@ public class MTCityCreateCommand extends BaseCommand {
 
                 String title = "<bold>" + loadingName.toUpperCase();
                 placesModule.createCity(name, title, "<gold>", 21.64, loadingName)
-                        .whenComplete((cityModel, throwable1) -> {
-                            if (throwable != null) {
-                                player.sendMessage(ChatUtils.color("<red>Failed to create city: " + throwable.getMessage()));
+                        .whenComplete((cityModel, saveError) -> Bukkit.getScheduler().runTask(OpenMinetopia.getInstance(), () -> {
+                            if (saveError != null) {
+                                OpenMinetopia.getInstance().getLogger().severe("Failed to save city " + name + ": " + cause(saveError).getMessage());
+                                player.sendMessage(ChatUtils.color("<red>Failed to create city: " + cause(saveError).getMessage()));
                                 return;
                             }
                             placesModule.getCityModels().add(cityModel);
-                        });
-
-                player.sendMessage(ChatUtils.color("<green>City <white>" + loadingName + " <green>has been created!"));
+                            player.sendMessage(ChatUtils.color("<green>City <white>" + loadingName + " <green>has been created!"));
+                        }));
                 return;
             }
 
             player.sendMessage(ChatUtils.color("<red>Region <white>" + name + " <red>does not exist!"));
         });
+    }
+
+    /** The save's own exception rather than the CompletionException wrapping it. */
+    private static Throwable cause(Throwable throwable) {
+        return throwable instanceof CompletionException && throwable.getCause() != null ? throwable.getCause() : throwable;
     }
 }
