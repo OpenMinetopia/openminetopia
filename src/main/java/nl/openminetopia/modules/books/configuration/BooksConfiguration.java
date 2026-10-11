@@ -18,12 +18,16 @@ public class BooksConfiguration extends ConfigurateConfig {
 
     private final List<CustomBook> customBooks = new ArrayList<>();
 
+    /** Whether the plugin decides and saves VOGs (automatic of the VOG book), or the officer types the outcome. */
+    private final boolean vogAutomatic;
+
     /** How long a VOG is valid: valid-days of the VOG book. */
     private final int vogValidDays;
 
     public BooksConfiguration(File file) {
         super(file, "books.yml", "default/books.yml", true);
 
+        this.vogAutomatic = rootNode.node(BooksModule.VOG_BOOK, "automatic").getBoolean(true);
         this.vogValidDays = Math.max(1, rootNode.node(BooksModule.VOG_BOOK, "valid-days").getInt(7));
 
         this.rootNode.childrenMap().forEach((key, value) -> {

@@ -123,6 +123,9 @@ permit:
 vog:
   enabled: true
   copy: true
+  # true: the plugin fills in <status> from the criminal record and saves the VOG, so the
+  # portal can show and issue VOGs. false: the officer types <status>, nothing is saved.
+  automatic: true
   # How long a VOG is valid. <valid_until> in the content shows the date it ends.
   valid-days: 7
   menu-item: STICK
@@ -132,9 +135,9 @@ vog:
   variables:
     <player_name>:
       explanation: <world_color>Typ nu de <yellow>spelersnaam<world_color>.
-    # Not asked: the plugin fills in books_vog_positive or books_vog_negative from the criminal record.
+    # Only asked when automatic is false; otherwise the plugin fills in books_vog_positive or books_vog_negative.
     <status>:
-      explanation: <world_color>De uitslag van de <yellow>VOG aanvraag<world_color>, op basis van het strafblad.
+      explanation: <world_color>Typ de uitslag van de <yellow>VOG aanvraag<world_color> (normaal 'positief' of 'negatief').
     <issuer>:
       explanation: <world_color>Typ nu de <yellow>uitgever<world_color>.
   content: '<black><b>Minist. van Just.:<new_line><black>-------------------<new_line><blue>===================<new_line><black><b>VOG VERKLARING<new_line><black><status><new_line><blue>===================<new_line><black><b>Burger:<new_line><black><player_name><new_line><black><b>Datum: <black><date><new_line><black><b>Geldig tot: <black><valid_until><new_line><blue>===================<new_line><new_line><black>© <issuer>'

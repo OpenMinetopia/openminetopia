@@ -20,7 +20,8 @@ import java.util.UUID;
 
 /**
  * The VOGs of a player, and issuing one for an officer: the plugin decides the outcome from the
- * criminal record and gives the online officer the VOG book, as with /boek krijg vog.
+ * criminal record and gives the online officer the VOG book, as with /boek krijg vog. With
+ * automatic: false on the VOG book officers type the outcome in-game, and the portal cannot issue one.
  * Errors carry a "code" next to "error" so the portal can tell them apart.
  */
 @SuppressWarnings("unchecked")
@@ -50,6 +51,7 @@ public class VogsVerticle extends BaseVerticle {
 
             JSONObject response = new JSONObject();
             response.put("success", true);
+            response.put("automatic", OpenMinetopia.getModuleManager().get(BooksModule.class).getConfiguration().isVogAutomatic());
             response.put("vogs", vogs);
             context.response().end(response.toJSONString());
         });
@@ -80,6 +82,11 @@ public class VogsVerticle extends BaseVerticle {
         }
 
         BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
+        if (!booksModule.getConfiguration().isVogAutomatic()) {
+            fail(context, 409, "vog_manual", "VOGs are filled in by hand in-game (automatic: false in books.yml).");
+            return;
+        }
+
         CustomBook book = booksModule.getVogBook();
         if (book == null) {
             fail(context, 409, "book_disabled", "The VOG book is turned off in books.yml.");

@@ -30,6 +30,7 @@ public class BooksModule extends ExtendedSpigotModule {
     /** The book whose <status> the plugin fills in from the criminal record instead of asking. */
     public static final String VOG_BOOK = "vog";
     public static final String VOG_STATUS = "<status>";
+    public static final String VOG_VALID_UNTIL = "<valid_until>";
 
     private BooksConfiguration configuration;
     private Map<UUID, Map<String, String>> variableResponses;
@@ -69,11 +70,15 @@ public class BooksModule extends ExtendedSpigotModule {
         if (answers != null) variables.putAll(answers);
         variables.put("<player_name>", playerName);
         variables.put(VOG_STATUS, MessageConfiguration.message(vog.getPositive() ? "books_vog_positive" : "books_vog_negative"));
-        variables.put("<valid_until>", new SimpleDateFormat(MessageConfiguration.message("books_vog_date_format")).format(new Date(vog.getValidUntil())));
+        variables.put(VOG_VALID_UNTIL, formatVogDate(vog.getValidUntil()));
 
         if (book.isCopy()) {
             officer.getInventory().addItem(book.getBookItem(variables, officer, true));
         }
         officer.getInventory().addItem(book.getBookItem(variables, officer, false));
+    }
+
+    public String formatVogDate(long millis) {
+        return new SimpleDateFormat(MessageConfiguration.message("books_vog_date_format")).format(new Date(millis));
     }
 }

@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @CommandAlias("boek|book|boeken|books")
 public class BooksCommand extends BaseCommand {
@@ -40,12 +41,12 @@ public class BooksCommand extends BaseCommand {
     }
 
     private void askForVariables(Player player, CustomBook book, int index) {
-        boolean vog = book.getIdentifier().equalsIgnoreCase(BooksModule.VOG_BOOK);
-        // The outcome of a VOG comes from the criminal record, not from the officer.
+        BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
+        boolean vog = book.getIdentifier().equalsIgnoreCase(BooksModule.VOG_BOOK) && booksModule.getConfiguration().isVogAutomatic();
+        // An automatic VOG gets its outcome from the criminal record, not from the officer.
         String[] keys = book.getVariables().keySet().stream()
                 .filter(key -> !(vog && key.equals(BooksModule.VOG_STATUS)))
                 .toArray(String[]::new);
-        BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
 
         if (index >= keys.length && vog) {
@@ -54,6 +55,13 @@ public class BooksCommand extends BaseCommand {
         }
 
         if (index >= keys.length) {
+            // A VOG filled in by hand still shows until when it is valid.
+            if (book.getIdentifier().equalsIgnoreCase(BooksModule.VOG_BOOK)) {
+                long validUntil = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(booksModule.getConfiguration().getVogValidDays());
+                booksModule.getVariableResponses().computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>())
+                        .put(BooksModule.VOG_VALID_UNTIL, booksModule.formatVogDate(validUntil));
+            }
+
             // Alle variabelen zijn ingevuld, geef het boek
             Bukkit.getScheduler().runTask(OpenMinetopia.getInstance(), () -> {
                 if (book.isCopy()) {
