@@ -36,4 +36,7 @@ public class VogModel extends StormModel {
 
     @Column(name = "date")
     private Long date;
+
+    @Column(name = "valid_until")
+    private Long validUntil;
 }

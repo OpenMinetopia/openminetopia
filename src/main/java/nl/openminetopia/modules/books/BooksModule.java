@@ -9,11 +9,14 @@ import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.books.commands.BooksCommand;
 import nl.openminetopia.modules.books.configuration.BooksConfiguration;
 import nl.openminetopia.modules.books.objects.CustomBook;
+import nl.openminetopia.modules.police.models.VogModel;
 import nl.openminetopia.utils.input.ChatInputHandler;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -60,12 +63,13 @@ public class BooksModule extends ExtendedSpigotModule {
      * Gives the officer the VOG book (and its copy) for a VOG that was just issued. Run on the main thread.
      * Variables the officer did not answer, like the issuer when the VOG comes from the portal, get the officer's name.
      */
-    public void giveVogBook(Player officer, CustomBook book, String playerName, boolean positive, @Nullable Map<String, String> answers) {
+    public void giveVogBook(Player officer, CustomBook book, String playerName, VogModel vog, @Nullable Map<String, String> answers) {
         Map<String, String> variables = new HashMap<>();
         book.getVariables().keySet().forEach(key -> variables.put(key, officer.getName()));
         if (answers != null) variables.putAll(answers);
         variables.put("<player_name>", playerName);
-        variables.put(VOG_STATUS, MessageConfiguration.message(positive ? "books_vog_positive" : "books_vog_negative"));
+        variables.put(VOG_STATUS, MessageConfiguration.message(vog.getPositive() ? "books_vog_positive" : "books_vog_negative"));
+        variables.put("<valid_until>", new SimpleDateFormat(MessageConfiguration.message("books_vog_date_format")).format(new Date(vog.getValidUntil())));
 
         if (book.isCopy()) {
             officer.getInventory().addItem(book.getBookItem(variables, officer, true));

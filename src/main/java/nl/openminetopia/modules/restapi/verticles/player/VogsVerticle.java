@@ -7,7 +7,6 @@ import nl.openminetopia.OpenMinetopia;
 import nl.openminetopia.api.player.PlayerManager;
 import nl.openminetopia.modules.books.BooksModule;
 import nl.openminetopia.modules.books.objects.CustomBook;
-import nl.openminetopia.modules.police.PoliceModule;
 import nl.openminetopia.modules.police.models.VogModel;
 import nl.openminetopia.modules.restapi.base.BaseVerticle;
 import org.bukkit.Bukkit;
@@ -101,7 +100,7 @@ public class VogsVerticle extends BaseVerticle {
 
                 Bukkit.getScheduler().runTask(OpenMinetopia.getInstance(), () -> {
                     if (officer.isOnline()) {
-                        booksModule.giveVogBook(officer, book, player.getName() == null ? "Onbekend" : player.getName(), vog.getPositive(), null);
+                        booksModule.giveVogBook(officer, book, player.getName() == null ? "Onbekend" : player.getName(), vog, null);
                     }
                 });
 
@@ -134,7 +133,7 @@ public class VogsVerticle extends BaseVerticle {
         json.put("record_count", vog.getRecordCount());
         json.put("officer", vog.getOfficerId() == null ? null : vog.getOfficerId().toString());
         json.put("date", vog.getDate());
-        json.put("valid_until", vog.getDate() + PoliceModule.VOG_VALID_MILLIS);
+        json.put("valid_until", vog.getValidUntil());
         return json;
     }
 

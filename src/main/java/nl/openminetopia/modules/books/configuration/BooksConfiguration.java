@@ -2,6 +2,7 @@ package nl.openminetopia.modules.books.configuration;
 
 import lombok.Getter;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.modules.books.BooksModule;
 import nl.openminetopia.modules.books.objects.CustomBook;
 import nl.openminetopia.utils.config.ConfigurateConfig;
 import org.bukkit.Material;
@@ -17,8 +18,13 @@ public class BooksConfiguration extends ConfigurateConfig {
 
     private final List<CustomBook> customBooks = new ArrayList<>();
 
+    /** How long a VOG is valid: valid-days of the VOG book. */
+    private final int vogValidDays;
+
     public BooksConfiguration(File file) {
         super(file, "books.yml", "default/books.yml", true);
+
+        this.vogValidDays = Math.max(1, rootNode.node(BooksModule.VOG_BOOK, "valid-days").getInt(7));
 
         this.rootNode.childrenMap().forEach((key, value) -> {
             if (!(key instanceof String identifier)) return;

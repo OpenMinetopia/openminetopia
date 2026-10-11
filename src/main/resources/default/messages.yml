@@ -316,6 +316,7 @@ books_not_found: "<red>Dit boek bestaat niet."
 books_received: "<gold>Je hebt het boek <yellow><book> <gold>ontvangen!"
 books_vog_positive: "Positief"
 books_vog_negative: "Negatief"
+books_vog_date_format: "dd-MM-yyyy"
 
 # Stattop
 stattop_header: "<gold>Top <yellow><amount> <gold>- <yellow><stat><gold>:"

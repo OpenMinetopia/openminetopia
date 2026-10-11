@@ -23,6 +23,7 @@ import nl.openminetopia.modules.player.models.PlayerModel;
 import nl.openminetopia.modules.police.PoliceModule;
 import nl.openminetopia.modules.police.models.CriminalRecordModel;
 import nl.openminetopia.modules.police.models.VogModel;
+import nl.openminetopia.modules.books.BooksModule;
 import nl.openminetopia.modules.prefix.PrefixModule;
 import nl.openminetopia.modules.prefix.objects.Prefix;
 import nl.openminetopia.utils.ChatUtils;
@@ -33,6 +34,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 public class MinetopiaPlayer {
@@ -330,10 +332,12 @@ public class MinetopiaPlayer {
 
     /* ---------- VOG ---------- */
 
-    /** Issues a VOG: positive when there is nothing on the criminal record. */
+    /** Issues a VOG: positive when there is nothing on the criminal record, valid for valid-days of the VOG book. */
     public CompletableFuture<VogModel> issueVog(UUID officer) {
         int recordCount = getCriminalRecords().size();
-        return policeModule.addVog(this.playerModel, officer, recordCount == 0, recordCount, System.currentTimeMillis());
+        long now = System.currentTimeMillis();
+        int validDays = OpenMinetopia.getModuleManager().get(BooksModule.class).getConfiguration().getVogValidDays();
+        return policeModule.addVog(this.playerModel, officer, recordCount == 0, recordCount, now, now + TimeUnit.DAYS.toMillis(validDays));
     }
 
     public List<VogModel> getVogs() {

@@ -104,7 +104,7 @@ public class BooksCommand extends BaseCommand {
                 Bukkit.getScheduler().runTask(OpenMinetopia.getInstance(), () -> {
                     if (!officer.isOnline()) return;
                     BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
-                    booksModule.giveVogBook(officer, book, target.getName(), vog.getPositive(), answers);
+                    booksModule.giveVogBook(officer, book, target.getName(), vog, answers);
                     officer.sendMessage(ChatUtils.format(officerMinetopiaPlayer, MessageConfiguration.message("books_received")
                             .replace("<book>", book.getName())));
                 });

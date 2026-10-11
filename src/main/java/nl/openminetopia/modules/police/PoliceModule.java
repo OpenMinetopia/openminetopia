@@ -33,9 +33,6 @@ import java.util.concurrent.CompletableFuture;
 @Getter
 public class PoliceModule extends ExtendedSpigotModule {
 
-    /** How long a VOG is valid, as the VOG book in books.yml says. */
-    public static final long VOG_VALID_MILLIS = 7L * 24 * 60 * 60 * 1000;
-
     private final HashMap<UUID, Long> emergencyCooldowns = new HashMap<>();
 
     private WalkieTalkieManager walkieTalkieManager;
@@ -99,7 +96,7 @@ public class PoliceModule extends ExtendedSpigotModule {
         return completableFuture;
     }
 
-    public CompletableFuture<VogModel> addVog(PlayerModel playerModel, UUID officerUuid, boolean positive, int recordCount, Long date) {
+    public CompletableFuture<VogModel> addVog(PlayerModel playerModel, UUID officerUuid, boolean positive, int recordCount, Long date, Long validUntil) {
         CompletableFuture<VogModel> completableFuture = new CompletableFuture<>();
         StormDatabase.getExecutorService().submit(() -> {
             VogModel vogModel = new VogModel();
@@ -108,6 +105,7 @@ public class PoliceModule extends ExtendedSpigotModule {
             vogModel.setPositive(positive);
             vogModel.setRecordCount(recordCount);
             vogModel.setDate(date);
+            vogModel.setValidUntil(validUntil);
 
             playerModel.getVogs().add(vogModel);
 
