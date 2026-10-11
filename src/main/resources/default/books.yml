@@ -130,8 +130,9 @@ vog:
   variables:
     <player_name>:
       explanation: <world_color>Typ nu de <yellow>spelersnaam<world_color>.
+    # Not asked: the plugin fills in books_vog_positive or books_vog_negative from the criminal record.
     <status>:
-      explanation: <world_color>Typ de uitslag van de <yellow>VOG aanvraag<world_color> (normaal 'positief' of 'negatief').
+      explanation: <world_color>De uitslag van de <yellow>VOG aanvraag<world_color>, op basis van het strafblad.
     <issuer>:
       explanation: <world_color>Typ nu de <yellow>uitgever<world_color>.
   content: '<black><b>Minist. van Just.:<new_line><black>-------------------<new_line><blue>===================<new_line><black><b>VOG VERKLARING<new_line><black><status><new_line><blue>===================<new_line><black><b>Burger:<new_line><black><player_name><new_line><black><b>Datum: <black><date><new_line><black><b>Geldigheid: <black>1 week.<new_line><blue>===================<new_line><new_line><black>© <issuer>'

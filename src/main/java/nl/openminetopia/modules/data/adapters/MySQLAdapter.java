@@ -23,6 +23,7 @@ import nl.openminetopia.modules.places.models.CityModel;
 import nl.openminetopia.modules.places.models.WorldModel;
 import nl.openminetopia.modules.player.models.PlayerModel;
 import nl.openminetopia.modules.police.models.CriminalRecordModel;
+import nl.openminetopia.modules.police.models.VogModel;
 import nl.openminetopia.modules.prefix.models.PrefixModel;
 import nl.openminetopia.modules.transactions.adapter.TransactionTypeAdapter;
 import nl.openminetopia.modules.transactions.enums.TransactionType;
@@ -82,6 +83,7 @@ public class MySQLAdapter implements DatabaseAdapter {
         registerStormModel(new WorldModel());
         registerStormModel(new CityModel());
         registerStormModel(new CriminalRecordModel());
+        registerStormModel(new VogModel());
         registerStormModel(new TransactionModel());
         registerStormModel(new CurrencyModel());
     }

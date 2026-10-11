@@ -12,6 +12,7 @@ import nl.openminetopia.modules.books.BooksModule;
 import nl.openminetopia.modules.books.objects.CustomBook;
 import nl.openminetopia.utils.ChatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -39,9 +40,18 @@ public class BooksCommand extends BaseCommand {
     }
 
     private void askForVariables(Player player, CustomBook book, int index) {
-        String[] keys = book.getVariables().keySet().toArray(new String[0]);
+        boolean vog = book.getIdentifier().equalsIgnoreCase(BooksModule.VOG_BOOK);
+        // The outcome of a VOG comes from the criminal record, not from the officer.
+        String[] keys = book.getVariables().keySet().stream()
+                .filter(key -> !(vog && key.equals(BooksModule.VOG_STATUS)))
+                .toArray(String[]::new);
         BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
         MinetopiaPlayer minetopiaPlayer = PlayerManager.getInstance().getOnlineMinetopiaPlayer(player);
+
+        if (index >= keys.length && vog) {
+            issueVog(player, minetopiaPlayer, book, booksModule.getVariableResponses().remove(player.getUniqueId()));
+            return;
+        }
 
         if (index >= keys.length) {
             // Alle variabelen zijn ingevuld, geef het boek
@@ -70,6 +80,35 @@ public class BooksCommand extends BaseCommand {
             responded.put(key, response); // Sla het antwoord op in de map
             booksModule.getVariableResponses().put(player.getUniqueId(), responded); // Sla het antwoord op in de map
             askForVariables(player, book, index + 1); // Ga naar de volgende variabele
+        });
+    }
+
+    /** Saves a VOG for the player named in the book and gives the officer the book with the outcome filled in. */
+    private void issueVog(Player officer, MinetopiaPlayer officerMinetopiaPlayer, CustomBook book, Map<String, String> answers) {
+        String playerName = answers == null ? null : answers.get("<player_name>");
+        OfflinePlayer target = playerName == null ? null : Bukkit.getOfflinePlayerIfCached(playerName);
+        if (target == null) {
+            officer.sendMessage(MessageConfiguration.component("player_not_found"));
+            return;
+        }
+
+        PlayerManager.getInstance().getMinetopiaPlayer(target).whenComplete((targetMinetopiaPlayer, throwable) -> {
+            if (targetMinetopiaPlayer == null) {
+                officer.sendMessage(MessageConfiguration.component("player_not_found"));
+                return;
+            }
+
+            targetMinetopiaPlayer.issueVog(officer.getUniqueId()).whenComplete((vog, vogThrowable) -> {
+                if (vog == null) return;
+
+                Bukkit.getScheduler().runTask(OpenMinetopia.getInstance(), () -> {
+                    if (!officer.isOnline()) return;
+                    BooksModule booksModule = OpenMinetopia.getModuleManager().get(BooksModule.class);
+                    booksModule.giveVogBook(officer, book, target.getName(), vog.getPositive(), answers);
+                    officer.sendMessage(ChatUtils.format(officerMinetopiaPlayer, MessageConfiguration.message("books_received")
+                            .replace("<book>", book.getName())));
+                });
+            });
         });
     }
 }

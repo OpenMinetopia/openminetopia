@@ -10,6 +10,7 @@ import nl.openminetopia.modules.color.models.ColorModel;
 import nl.openminetopia.modules.fitness.models.FitnessBoosterModel;
 import nl.openminetopia.modules.fitness.models.FitnessStatisticModel;
 import nl.openminetopia.modules.police.models.CriminalRecordModel;
+import nl.openminetopia.modules.police.models.VogModel;
 import nl.openminetopia.modules.prefix.models.PrefixModel;
 
 import java.util.ArrayList;
@@ -91,6 +92,13 @@ public class PlayerModel extends StormModel {
             matchTo = "player_id"
     )
     private List<CriminalRecordModel> criminalRecords = new ArrayList<>();
+
+    @Column(
+            type = ColumnType.ONE_TO_MANY,
+            references = VogModel.class,
+            matchTo = "player_id"
+    )
+    private List<VogModel> vogs = new ArrayList<>();
 
     @Column(name = "fitness_reset", defaultValue = "false")
     private Boolean fitnessReset;

@@ -22,6 +22,7 @@ import nl.openminetopia.modules.player.PlayerModule;
 import nl.openminetopia.modules.player.models.PlayerModel;
 import nl.openminetopia.modules.police.PoliceModule;
 import nl.openminetopia.modules.police.models.CriminalRecordModel;
+import nl.openminetopia.modules.police.models.VogModel;
 import nl.openminetopia.modules.prefix.PrefixModule;
 import nl.openminetopia.modules.prefix.objects.Prefix;
 import nl.openminetopia.utils.ChatUtils;
@@ -325,6 +326,18 @@ public class MinetopiaPlayer {
 
     public List<CriminalRecordModel> getCriminalRecords() {
         return playerModel.getCriminalRecords();
+    }
+
+    /* ---------- VOG ---------- */
+
+    /** Issues a VOG: positive when there is nothing on the criminal record. */
+    public CompletableFuture<VogModel> issueVog(UUID officer) {
+        int recordCount = getCriminalRecords().size();
+        return policeModule.addVog(this.playerModel, officer, recordCount == 0, recordCount, System.currentTimeMillis());
+    }
+
+    public List<VogModel> getVogs() {
+        return playerModel.getVogs();
     }
 
     /* ---------- Playtime ---------- */

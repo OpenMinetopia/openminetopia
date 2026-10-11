@@ -57,7 +57,10 @@ public class RestAPIModule extends ExtendedSpigotModule {
 
                     /* POST */
                     new BankAccountTransactionsVerticle(),
-                    new BankAccountTransactionVerticle()
+                    new BankAccountTransactionVerticle(),
+
+                    /* GET and POST */
+                    new VogsVerticle()
             );
         }
     }

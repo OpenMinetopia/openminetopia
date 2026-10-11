@@ -19,6 +19,7 @@ import nl.openminetopia.modules.police.listeners.PlayerArmorChangeListener;
 import nl.openminetopia.modules.police.listeners.PlayerPeppersprayListener;
 import nl.openminetopia.modules.police.listeners.PlayerTaserListener;
 import nl.openminetopia.modules.police.models.CriminalRecordModel;
+import nl.openminetopia.modules.police.models.VogModel;
 import nl.openminetopia.modules.police.taser.TaserManager;
 import nl.openminetopia.modules.police.walkietalkie.WalkieTalkieManager;
 import nl.openminetopia.modules.police.walkietalkie.listeners.PlayerChatListener;
@@ -31,6 +32,9 @@ import java.util.concurrent.CompletableFuture;
 
 @Getter
 public class PoliceModule extends ExtendedSpigotModule {
+
+    /** How long a VOG is valid, as the VOG book in books.yml says. */
+    public static final long VOG_VALID_MILLIS = 7L * 24 * 60 * 60 * 1000;
 
     private final HashMap<UUID, Long> emergencyCooldowns = new HashMap<>();
 
@@ -91,6 +95,24 @@ public class PoliceModule extends ExtendedSpigotModule {
 
             int id = StormDatabase.getInstance().saveStormModel(criminalRecordModel).join();
             completableFuture.complete(id);
+        });
+        return completableFuture;
+    }
+
+    public CompletableFuture<VogModel> addVog(PlayerModel playerModel, UUID officerUuid, boolean positive, int recordCount, Long date) {
+        CompletableFuture<VogModel> completableFuture = new CompletableFuture<>();
+        StormDatabase.getExecutorService().submit(() -> {
+            VogModel vogModel = new VogModel();
+            vogModel.setPlayerId(playerModel.getId());
+            vogModel.setOfficerId(officerUuid);
+            vogModel.setPositive(positive);
+            vogModel.setRecordCount(recordCount);
+            vogModel.setDate(date);
+
+            playerModel.getVogs().add(vogModel);
+
+            StormDatabase.getInstance().saveStormModel(vogModel).join();
+            completableFuture.complete(vogModel);
         });
         return completableFuture;
     }

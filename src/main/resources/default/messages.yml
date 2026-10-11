@@ -314,6 +314,8 @@ core_playerdata_kick: "<red>Je spelersgegevens zijn gereset door een stafflid."
 books_no_permission: "<red>Je hebt geen toestemming om dit boek te krijgen."
 books_not_found: "<red>Dit boek bestaat niet."
 books_received: "<gold>Je hebt het boek <yellow><book> <gold>ontvangen!"
+books_vog_positive: "Positief"
+books_vog_negative: "Negatief"
 
 # Stattop
 stattop_header: "<gold>Top <yellow><amount> <gold>- <yellow><stat><gold>:"
