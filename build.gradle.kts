@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     /* Paper */
-    paperweight.paperDevBundle("26.2.build.+")
+    paperweight.paperDevBundle("26.3.build.+")
 
     /* Configuration */
     compileOnly("org.spongepowered:configurate-yaml:4.2.0")
@@ -121,7 +121,7 @@ java {
 
 tasks {
     runServer {
-        minecraftVersion("26.2")
+        minecraftVersion("26.3")
         jvmArgs("-Dcom.mojang.eula.agree=true", "-Dfile.encoding=UTF-8")
         downloadPlugins {
             github("MilkBowl", "Vault", "1.7.3", "Vault.jar")
