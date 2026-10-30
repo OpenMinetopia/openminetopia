@@ -2,6 +2,7 @@ package nl.openminetopia.modules.police.walkietalkie.listeners;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.configuration.DefaultConfiguration;
 import nl.openminetopia.configuration.MessageConfiguration;
 import nl.openminetopia.modules.police.PoliceModule;
 import nl.openminetopia.utils.ChatUtils;
@@ -24,10 +25,16 @@ public class PlayerChatListener implements Listener {
         if (!policeModule.getWalkieTalkieManager().isPoliceChatEnabled(source)) return;
         event.setCancelled(true);
 
+        DefaultConfiguration configuration = OpenMinetopia.getDefaultConfiguration();
+        String message = ChatUtils.stripMiniMessage(event.message());
+        if (configuration.isChatFilterEnabled() && !source.hasPermission(configuration.getChatFilterBypassPermission())) {
+            message = configuration.getChatFilter().censor(message);
+        }
+
         String formattedMessage = MessageConfiguration.message("police_walkietalkie_format")
                 .replace("<player>", source.getName())
                 .replace("<world_name>", source.getWorld().getName())
-                .replace("<message>", ChatUtils.stripMiniMessage(event.message()));
+                .replace("<message>", message);
 
         for (Player recipient : Bukkit.getOnlinePlayers()) {
             if (!recipient.hasPermission("openminetopia.walkietalkie")) continue;

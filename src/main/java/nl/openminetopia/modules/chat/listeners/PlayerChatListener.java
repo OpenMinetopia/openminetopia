@@ -93,13 +93,17 @@ public class PlayerChatListener implements Listener {
                 ? Component.empty()
                 : ChatUtils.format(minetopiaPlayer, formatAfterMessage);
 
+        String message = configuration.isChatFilterEnabled() && !source.hasPermission(configuration.getChatFilterBypassPermission())
+                ? configuration.getChatFilter().censor(plainMessage)
+                : plainMessage;
+
         String chatColor = minetopiaPlayer.getActiveChatColor().color();
-        String escapedMessage = MiniMessage.miniMessage().escapeTags(plainMessage);
+        String escapedMessage = MiniMessage.miniMessage().escapeTags(message);
         Component defaultMessageComponent = ChatUtils.color(chatColor + escapedMessage);
 
         event.renderer((src, srcDisplayName, msg, viewer) -> {
             Component messageComponent = defaultMessageComponent;
-            if (viewer instanceof Player target && plainMessage.contains(target.getName())) {
+            if (viewer instanceof Player target && message.contains(target.getName())) {
                 String highlighted = escapedMessage.replace(
                         target.getName(),
                         "<green>" + target.getName() + "</green>" + chatColor

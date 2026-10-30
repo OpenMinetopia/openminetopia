@@ -4,6 +4,7 @@ import nl.openminetopia.utils.modules.ExtendedSpigotModule;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nl.openminetopia.OpenMinetopia;
+import nl.openminetopia.modules.chat.filter.ChatFilter;
 import nl.openminetopia.modules.data.types.DatabaseType;
 import nl.openminetopia.modules.misc.objects.PvPItem;
 import nl.openminetopia.utils.config.ConfigUtils;
@@ -65,6 +66,9 @@ public class DefaultConfiguration extends ConfigurateConfig {
     private final boolean chatRadiusEnabled;
     private final int chatRadiusRange;
     private final boolean notifyWhenNobodyInRange;
+    private final boolean chatFilterEnabled;
+    private final String chatFilterBypassPermission;
+    private final ChatFilter chatFilter;
 
     /**
      * Scoreboard configuration
@@ -288,6 +292,24 @@ public class DefaultConfiguration extends ConfigurateConfig {
         this.chatRadiusEnabled = rootNode.node("chat", "radius", "enabled").getBoolean(true);
         this.chatRadiusRange = rootNode.node("chat", "radius", "range").getInt(20);
         this.notifyWhenNobodyInRange = rootNode.node("chat", "radius", "notify-when-nobody-in-range").getBoolean(false);
+        this.chatFilterEnabled = rootNode.node("chat", "filter", "enabled").getBoolean(true);
+        this.chatFilterBypassPermission = rootNode.node("chat", "filter", "bypass-permission").getString("openminetopia.chat.filter.bypass");
+        this.chatFilter = new ChatFilter(
+                rootNode.node("chat", "filter", "words").getList(String.class, List.of(
+                        "kut", "kutje", "kutwijf", "lul", "lulletje", "hoer", "hoeren", "slet", "sletje",
+                        "tering", "teringlijer", "klere", "klerelijer", "pleuris", "mongool", "mongolen",
+                        "neger", "negers", "flikker", "flikkers", "ass", "asshole", "bitch", "bitches",
+                        "retard", "retarded"
+                )),
+                rootNode.node("chat", "filter", "contains").getList(String.class, List.of(
+                        "kanker", "kenker", "tyfus", "tiefus", "hoerenzoon", "hoerenjong",
+                        "fuck", "shit", "cunt", "nigger", "nigga", "faggot", "hitler", "siegheil"
+                )),
+                rootNode.node("chat", "filter", "allowed").getList(String.class, List.of(
+                        "scunthorpe", "shiitake", "longkanker", "borstkanker", "huidkanker", "darmkanker",
+                        "prostaatkanker", "kankeronderzoek", "kankerpatient", "kankerbestrijding"
+                ))
+        );
 
         /*
          * Scoreboard configuration
